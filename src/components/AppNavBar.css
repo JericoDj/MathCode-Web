@@ -1,47 +1,197 @@
-/* AppNavBar.css */
+/* ================= Brand ================= */
+:root {
+  --navy: #122054;
+  --green: #60b64d;
+  --text: #e9ecf4;
+  --muted: #b7bfd4;
+  --glass: rgba(18,32,84,0.82);
 
+  /* layout spacing */
+  --nav-gap: clamp(1rem, 4vw, 3rem);
+}
+
+/* Fixed, full-width, glassy bar */
 .navbar {
-  background-color: #1e1e2f;
-  padding: 0.5rem 1rem;
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: Arial, sans-serif;
+  position: fixed;
+  top: 0; left: 0; width: 100%;
+  background: var(--glass);
+  backdrop-filter: saturate(140%) blur(10px);
+  -webkit-backdrop-filter: saturate(140%) blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+  z-index: 1000;
 }
 
+/* ================= Container ================= */
 .navbar-container {
-  width: 100%;
   max-width: 1200px;
-  display: flex;
-  justify-content: space-between;
+  margin: 0 auto;
+  padding: 0.6rem clamp(1rem, 3vw, 2rem);
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* logo | menu | ctas */
   align-items: center;
+  column-gap: var(--nav-gap);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
+/* ================= Logo ================= */
 .navbar-logo {
-  font-size: 1.5rem;
-  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
   text-decoration: none;
-  color: #fff;
+  color: var(--text);
+  font-weight: 800;
+  letter-spacing: .2px;
+  white-space: nowrap;
+  margin-right: var(--nav-gap); /* space after logo */
+}
+.logo-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--green), #6fd45b);
+  color: #0b1a45;
+  font-size: .9rem;
+}
+.logo-word {
+  background: linear-gradient(90deg, #eaf0ff, #b7d9c0);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 
+/* ================= Menu ================= */
 .navbar-menu {
   list-style: none;
   display: flex;
-  margin: 0;
+  align-items: center;
+  gap: clamp(0.9rem, 2.2vw, 1.6rem); /* space between links */
+  margin: 0 0 0 var(--nav-gap);      /* push menu away from logo */
   padding: 0;
 }
-
-.navbar-item {
-  margin-left: 1rem;
-}
-
+.navbar-item { margin: 0; }
 .navbar-link {
   text-decoration: none;
-  color: #fff;
-  transition: color 0.2s;
+  color: var(--text);
+  padding: .4rem .2rem;
+  border-radius: 6px;
+  transition: color .2s ease, background .2s ease, opacity .2s ease;
+}
+.navbar-link:hover { color: var(--green); }
+.navbar-link.muted { color: var(--muted); }
+
+/* ================= CTAs (desktop) ================= */
+.navbar-cta {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.6rem, 2vw, 1.1rem);
+  margin-left: var(--nav-gap); /* push CTAs away from menu */
+}
+.btn-cta {
+  background: var(--green);
+  color: #e5e5e5;
+  font-weight: 800;
+  text-decoration: none;
+  padding: .55rem .9rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 14px rgba(96,182,77,0.35);
+  transition: transform .12s ease, box-shadow .2s ease, background .2s ease;
+  white-space: nowrap;
+}
+.btn-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(96,182,77,0.45); }
+
+/* default outline (used elsewhere) */
+.btn-outline {
+  text-decoration: none;
+  color: var(--text);
+  border: 2px solid rgba(233,236,244,0.3);
+  padding: .5rem .85rem;
+  border-radius: 10px;
+  transition: color .2s ease, border-color .2s ease, transform .12s ease, background .2s ease;
+  white-space: nowrap;
+}
+.btn-outline:hover {
+  color: var(--green);
+  border-color: var(--green);
+  transform: translateY(-2px);
 }
 
-.navbar-link:hover {
-  color: #4fc3f7;
+/* ===== NAV-SPECIFIC outline: lighter white border for “Try a Sample” ===== */
+.navbar .btn-outline{
+  border: 1.5px solid rgba(255,255,255,0.70);
+  color: #eef2ff;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
 }
+.navbar .btn-outline:hover{
+  border-color: rgba(255,255,255,0.95);
+  color: #ffffff;
+  background: rgba(255,255,255,0.10);
+  transform: translateY(-2px);
+}
+.navbar .btn-outline:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.35);
+}
+.navbar .btn-outline:active{
+  transform: translateY(0);
+  background: rgba(255,255,255,0.14);
+}
+
+/* ================= Mobile toggle ================= */
+.navbar-toggle {
+  display: none;
+  width: 38px; height: 34px;
+  border: 0; background: transparent; padding: 0; margin-left: .25rem;
+  position: relative; cursor: pointer;
+}
+.navbar-toggle span {
+  position: absolute; left: 6px; right: 6px; height: 2px; background: var(--text);
+  transition: transform .2s ease, opacity .2s ease, top .2s ease, bottom .2s ease;
+}
+.navbar-toggle span:nth-child(1) { top: 9px; }
+.navbar-toggle span:nth-child(2) { top: 16px; }
+.navbar-toggle span:nth-child(3) { top: 23px; }
+.navbar-toggle.is-open span:nth-child(1) { top: 16px; transform: rotate(45deg); }
+.navbar-toggle.is-open span:nth-child(2) { opacity: 0; }
+.navbar-toggle.is-open span:nth-child(3) { top: 16px; transform: rotate(-45deg); }
+
+/* ================= Mobile drawer ================= */
+.menu-cta-mobile { display: none; }
+
+@media (max-width: 900px) {
+  .navbar-container { grid-template-columns: auto auto auto; }
+  .navbar-toggle { display: inline-block; }
+
+  .navbar-menu {
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: rgba(10,18,48,0.97);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 16px 24px rgba(0,0,0,0.22);
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    padding: .75rem 1rem 1rem;
+    gap: .5rem;
+    margin-left: 0; /* reset */
+  }
+  .navbar-menu.open { display: flex; }
+
+  .navbar-cta { display: none; } /* desktop-only */
+  .menu-cta-mobile { display: block; }
+  .menu-cta-mobile .btn-cta,
+  .menu-cta-mobile .btn-outline {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    margin-top: .25rem;
+  }
+
+  /* tighten logo/menu spacing on small screens */
+  .navbar-logo { margin-right: 0; }
+}
+
+/* ================= Body offset for fixed nav ================= */
+/* Put this in global CSS if content sits under the navbar */
+/* body { padding-top: 64px; } */

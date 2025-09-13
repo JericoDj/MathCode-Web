@@ -1,20 +1,82 @@
-.faq {
-  max-width: 900px;
-  margin: 0 auto;
+:root{
+  --brand-navy: #122054;
+  --brand-green: #60b64d;
+
+  /* top spacing knob; stays 0 unless you override */
+  --faq-mt: 0;
+}
+
+/* Wrapper: centered, 60% on wide screens, 100% on small */
+/* Wrapper stays centered and responsive */
+.mini-faq{
+  margin: var(--faq-mt) auto 0;
+  width: 60%;
+  max-width: 920px;
+  padding: 0 1rem;
+  display: flex;                 /* new */
+  flex-direction: column;        /* new */
+  align-items: center;           /* centers the heading + card */
+}
+
+@media (max-width: 880px){
+  .mini-faq{ width: 100%; max-width: 100%; }
+}
+
+/* Center the H2 */
+.faq-heading{
+  margin: 0 0 .5rem 0;
+  text-align: center;            /* new */
+  color: var(--brand-navy);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  font-size: clamp(1.1rem, 2.4vw, 1.35rem);
+}
+
+/* Card fills the wrapper width but stays centered */
+.contact-faq{
+  width: 100%;                   /* new */
+  background: #ffffff;
+  border: 1px solid rgba(18,32,84,0.14);
+  border-radius: 16px;
+  padding: clamp(1rem, 2.2vw, 1.25rem);
+  box-shadow: 0 6px 22px rgba(18,32,84,0.06);
   display: grid;
-  gap: 0.75rem;
+  gap: .6rem;
+  margin: 0;
 }
-.faq details {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  padding: 0.75rem 1rem;
+
+
+.faq-title{
+  margin: 0 0 .5rem 0;
+  color: var(--brand-navy);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: .1px;
 }
-.faq summary {
-  cursor: pointer;
-  font-weight: 600;
+
+.contact-faq details{
+  border: 1px solid rgba(18,32,84,0.12);
+  border-radius: 12px;
+  padding: .6rem .8rem;
+  background: #fff;
+  transition: border-color .2s ease, background .2s ease, transform .12s ease;
 }
-.faq p {
-  margin-top: 0.5rem;
-  opacity: 0.9;
+.contact-faq details:hover{ transform: translateY(-1px); border-color: var(--brand-green); }
+
+.contact-faq summary{
+  cursor: pointer; font-weight: 700; color: var(--brand-navy);
 }
+
+.contact-faq p{
+  margin: .4rem 0 0 0; color: var(--brand-navy); opacity: .9;
+}
+
+.faq-cta{ margin-top: .25rem; }
+.faq-cta .btn{
+  width: 100%; text-align: center;
+  padding: .55rem .85rem; border-radius: 10px; font-weight: 800;
+  text-decoration: none; display: inline-block;
+  border: 2px solid var(--brand-navy); color: var(--brand-navy);
+  transition: transform .12s ease, background .2s ease, color .2s ease, border-color .2s ease;
+}
+.faq-cta .btn:hover{ transform: translateY(-2px); background: var(--brand-navy); color: #fff; }

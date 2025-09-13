@@ -1,16 +1,20 @@
 import Hero from "./Hero/HeroSection.jsx";
 import Highlights from "./Highlights/HighlightSection.jsx";
-import CtaStrip from "./CtaStrip/CtaStrip.jsx";
+import PricingSection from "./Pricing/PricingSection.jsx";
+import ContactSection from "./Contact/ContactSection.jsx";
 import MiniFaq from "./MiniFaq/MiniFaq.jsx";
-import styles from "./HomePage.css";
+
+import "./HomePage.css";
 
 export default function HomePage() {
   return (
-    <main className={styles.homepage}>
+    <main className="homepage">
       <Hero />
+      <PricingSection />
       <Highlights />
-      <CtaStrip />
+      <ContactSection />
       <MiniFaq />
+   
     </main>
   );
 }

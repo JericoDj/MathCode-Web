@@ -1,42 +1,154 @@
-.hero {
-  text-align: center;
-  max-width: 900px;
-  margin: 0 auto;
+/* ========= Brand + layout ========= */
+:root {
+  --brand-navy: #122054;
+  --brand-green: #60b64d;
+  --brand-yellow: #ffd166;
+  --bg-soft: #f7fafb;
+  --nav-height: 60px;
+  --bar-width: 100px;     /* exact bar width */
+  --bar-divider: 2px;     /* divider thickness */
 }
+
+/* ========= HERO (full-bleed) ========= */
+.hero {
+  position: relative;
+
+  /* full-bleed even inside a constrained parent */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+
+  min-height: calc(100svh - var(--nav-height));
+  display: grid;
+  align-content: center;
+  padding: clamp(2rem, 6vw, 6rem) max(1rem, env(safe-area-inset-left))
+           clamp(3rem, 5vw, 4rem) max(1rem, env(safe-area-inset-right));
+  text-align: center;
+  overflow: clip;
+  background-image:
+    /* base ambiance */
+    radial-gradient(80rem 60rem at 0% 0%, rgba(96,182,77,0.10), transparent 60%),
+    radial-gradient(80rem 60rem at 100% 10%, rgba(18,32,84,0.10), transparent 60%),
+    linear-gradient(180deg, #ffffff, var(--bg-soft));
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-position: left top, right 10% top, center;
+  background-size: auto, auto, 100% 100%;
+}
+
+.hero-inner { max-width: 960px; margin-inline: auto; }
+
+/* animated soft blob */
+.hero::before {
+  content: "";
+  position: absolute;
+  width: 40rem; height: 40rem;
+  top: -18rem; right: -8rem;
+  background: radial-gradient(circle at 30% 30%, rgba(96,182,77,0.18), transparent 60%);
+  filter: blur(20px);
+  transform: translateZ(0);
+  animation: float 14s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes float { from {transform: translate3d(0,0,0)} to {transform: translate3d(-20px,10px,0)} }
+@media (prefers-reduced-motion: reduce) { .hero::before { animation: none; } }
+
+/* lighter grid + gentle vertical fade so it doesn’t fight the text */
+.hero::after {
+  content: "";
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(18,32,84,0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(18,32,84,0.035) 1px, transparent 1px);
+  background-size: 28px 28px, 28px 28px;
+  /* fade grid top/bottom */
+  mask-image: linear-gradient(to bottom, transparent 0 8%, black 18% 82%, transparent 92% 100%);
+  pointer-events: none;
+}
+
+/* ===== Singapore Math ribbon (100px modules) ===== */
+.hero.hero--sg {
+  /* topmost layer: ribbon with a soft fade at its top edge */
+  background-image:
+    linear-gradient(to top, rgba(255,255,255,0.9), rgba(255,255,255,0)) , /* fade */
+    repeating-linear-gradient(
+      90deg,
+      rgba(18, 32, 84, 0.12) 0 var(--bar-divider),                 /* divider */
+      rgba(96, 182, 77, 0.12) var(--bar-divider) var(--bar-width)  /* fill */
+    ),
+    radial-gradient(80rem 60rem at 0% 0%, rgba(96,182,77,0.10), transparent 60%),
+    radial-gradient(80rem 60rem at 100% 10%, rgba(18,32,84,0.10), transparent 60%),
+    linear-gradient(180deg, #ffffff, var(--bg-soft));
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+  background-position: center bottom, center bottom, left top, right 10% top, center;
+  background-size: 100% 120px, 100% 120px, auto, auto, 100% 100%;
+}
+
+/* ========= Type ========= */
 .title {
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
   font-weight: 800;
   letter-spacing: -0.02em;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
+  background: linear-gradient(90deg, var(--brand-navy), var(--brand-green));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,0.05));
 }
+
 .subtitle {
   font-size: clamp(1rem, 2.2vw, 1.25rem);
-  opacity: 0.9;
-  margin-bottom: 1.5rem;
+  color: var(--brand-navy); opacity: .9;
+  max-width: 60ch; margin: 0 auto 1.3rem;
 }
-.actions {
-  display: flex;
-  justify-content: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+
+/* ========= Chips ========= */
+.chips {
+  display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap;
+  margin: 0 0 1.5rem 0; padding: 0; list-style: none;
 }
+.chip {
+  background: #fff; color: var(--brand-navy);
+  border: 1px solid rgba(18,32,84,0.15);
+  border-radius: 999px; padding: .4rem .75rem;
+  font-size: .85rem; font-weight: 600;
+}
+
+/* ========= CTAs ========= */
+.actions { display: flex; justify-content: center; gap: .75rem; flex-wrap: wrap; }
+
 .btn {
-  padding: 0.75rem 1.25rem;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-weight: 700;
-  text-decoration: none;
-  display: inline-block;
-  transition: transform 0.1s ease, background 0.2s ease, opacity 0.2s ease;
+  padding: .9rem 1.25rem; border-radius: 12px; font-size: 1rem; font-weight: 700;
+  text-decoration: none; display: inline-block;
+  transition: transform .12s ease, box-shadow .2s ease, background .2s ease, color .2s ease, border-color .2s ease, opacity .2s ease;
+  will-change: transform;
 }
+
 .primary {
-  background: #4fc3f7;
-  color: #101020;
+  background: var(--brand-green); color: #fff;
+  box-shadow: 0 6px 16px rgba(96,182,77,.30);
 }
-.primary:hover { transform: translateY(-2px); opacity: 0.95; }
+.primary:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(96,182,77,.42); }
+
 .secondary {
-  background: transparent;
-  color: #4fc3f7;
-  border: 2px solid #4fc3f7;
+  background: transparent; color: var(--brand-navy); border: 2px solid var(--brand-navy);
 }
-.secondary:hover { transform: translateY(-2px); background: rgba(79,195,247,0.1); }
+.secondary:hover { transform: translateY(-2px); background: rgba(18,32,84,.08); }
+
+/* “Soon” style */
+.tertiary { background: #fff8e6; color: #7a5b00; border: 2px solid var(--brand-yellow); }
+.tertiary:hover { transform: translateY(-2px); background: #fff2cc; }
+.soon-pill {
+  display: inline-block; margin-left: .5rem; padding: .15rem .5rem; border-radius: 999px;
+  background: var(--brand-yellow); color: #3f2c00; font-size: .75rem; font-weight: 800; letter-spacing: .02em;
+}
+
+/* ========= Scroll hint ========= */
+.scroll-hint {
+  position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%);
+  font-size: .9rem; color: rgba(18,32,84,.6); animation: bob 1.8s ease-in-out infinite; user-select: none;
+}
+@keyframes bob { 0%,100% { transform: translate(-50%,0) } 50% { transform: translate(-50%,-6px) } }
+@media (prefers-reduced-motion: reduce) { .scroll-hint { animation: none; } }
+
+/* ========= Small screens ========= */
+@media (max-width: 600px) {
+  .btn { width: 100%; text-align: center; }
+}

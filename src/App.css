@@ -49,3 +49,11 @@ h6 {
 #__next {
   isolation: isolate;
 }
+
+:root {
+  --brand-navy: #122054;
+  --brand-green: #60b64d;
+  --brand-yellow: #ffd166;   /* friendly accent for kids/“soon” */
+  --bg-soft: #f7fafb;
+  --nav-height: 60px;        /* adjust if your navbar is taller */
+}

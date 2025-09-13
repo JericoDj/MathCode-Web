@@ -2,6 +2,6 @@
   display: grid;
   gap: 3rem;
   padding: 3rem 1.25rem 4rem;
-  background: radial-gradient(1200px 600px at 10% -10%, #2c2c44 0%, #1e1e2f 45%, #161626 100%);
+  background: #ffffff;
   color: #fff;
 }
