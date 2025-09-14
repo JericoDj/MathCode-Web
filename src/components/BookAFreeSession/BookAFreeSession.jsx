@@ -1,5 +1,5 @@
-// controllers/BookAFreeSessionController.jsx
-export default class BookAFreeSessionController {
+// controllers/BookAPackageController.jsx
+export default class BookAPackageController {
   constructor({ analytics = null } = {}) {
     this.analytics = analytics; // optional DI if you have a wrapper
   }
@@ -8,9 +8,9 @@ export default class BookAFreeSessionController {
    * Handle "Book a Package" click.
    * Runs side effects (analytics/localStorage) then lets the Link navigate.
    */
-  bookFreeSessionClick({ user = null, source = 'navbar', location = null, extras = {} } = {}) {
+  bookPackageClick({ user = null, source = 'navbar', location = null, extras = {} } = {}) {
     const payload = {
-      event: 'book_free_session_click',
+      event: 'book_package_click',
       source,
       path: location?.pathname || (typeof window !== 'undefined' ? window.location.pathname : ''),
       ts: Date.now(),
