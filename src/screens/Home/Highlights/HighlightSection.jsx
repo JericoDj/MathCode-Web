@@ -24,7 +24,7 @@ const items = [
 
 export default function Highlights() {
   return (
-    <section className="highlights" aria-labelledby="highlights-heading">
+    <section className="highlights" aria-labelledby="highlights-heading mt-5 pt-5">
       <div className="highlights-inner">
         <header className="highlights-header">
           <h2 id="highlights-heading" className="highlights-title">What you’ll get</h2>
@@ -101,17 +101,7 @@ export default function Highlights() {
           </figcaption>
         </figure>
           <br />
-        <figure className="testimonial">
-          <blockquote>
-            “The bar models finally clicked. My child actually looks forward to the challenges!”
-          </blockquote>
-          <figcaption>
-            <span className="avatar" aria-hidden="true">👩‍🏫</span>
-            <span>
-              <strong>Elaine T.</strong> — Parent, Primary 4
-            </span>
-          </figcaption>
-        </figure>
+       
       </div>
     </section>
   );
