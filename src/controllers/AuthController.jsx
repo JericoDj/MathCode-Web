@@ -5,46 +5,71 @@ export default class AuthController {
   }
 
   async login({ email, password }) {
-    // If your existing UserController exposes login(), use it here.
-    // Fallback to a common REST path if not.
     try {
       if (window?.UserControllerInstance?.login) {
-        return await window.UserControllerInstance.login({ email, password });
+        const data = await window.UserControllerInstance.login({ email, password });
+        localStorage.setItem("auth", JSON.stringify(data));
+        return data;
       }
 
-      // Fallback REST example; change to your API routes as needed.
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ email, password })
+      const res = await fetch("https://mathcode-backend.onrender.com/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password }),
       });
+
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data?.message || 'Unable to sign in');
+        throw new Error(data?.message || "Unable to sign in");
       }
-      return await res.json();
+
+      const data = await res.json();
+
+      // ✅ Save to localStorage
+      localStorage.setItem("auth", JSON.stringify(data));
+
+      return data;
     } catch (err) {
       throw err;
     }
   }
 
-  async register({ name, email, password, childAge }) {
+  async register({ firstName, lastName, phone, email, password, childAge }) {
     try {
       if (window?.UserControllerInstance?.register) {
-        return await window.UserControllerInstance.register({ name, email, password, childAge });
+        return await window.UserControllerInstance.register({
+          firstName,
+          lastName,
+          phone,
+          email,
+          password,
+          childAge,
+        });
       }
 
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ name, email, password, childAge })
-      });
+      const res = await fetch(
+        'https://mathcode-backend.onrender.com/api/users/register',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            firstName,
+            lastName,
+            phone,
+            email,
+            password,
+            childAge,
+          }),
+        }
+      );
+
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data?.message || 'Unable to sign up');
       }
+
       return await res.json();
     } catch (err) {
       throw err;
@@ -56,7 +81,12 @@ export default class AuthController {
       if (window?.UserControllerInstance?.logout) {
         return await window.UserControllerInstance.logout();
       }
-      const res = await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+
+      const res = await fetch('https://mathcode-backend.onrender.com/api/users/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+
       if (!res.ok) throw new Error('Logout failed');
       return true;
     } catch (err) {

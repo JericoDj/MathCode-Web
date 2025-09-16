@@ -11,7 +11,7 @@ export default class UserController {
   }
 
   static async register(username, email, password) {
-    const response = await fetch('/api/register', {
+    const response = await fetch('https://mathcode-backend.onrender.com/api/users/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, email, password }),

@@ -20,6 +20,7 @@ import LogoutPage from "./screens/Auth/LogoutPage.jsx";
 import NotFoundPage from "./screens/NotFound/NotFoundPage.jsx";
 import ForgotPasswordPage from "./screens/Auth/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "./screens/Auth/ResetPasswordPage.jsx";
+import Dashboard from "./screens/Dashboard/Dashboard.jsx";
 
 import "./App.css";
 
@@ -37,6 +38,9 @@ function AppRoutes() {
       <Route path="/reset-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password/confirm" element={<ResetPasswordPage />} />
 
+      {/* Dashboard */}
+      <Route path="/dashboard" element={<Dashboard />} />
+
     </Routes>
   );
 }
@@ -46,7 +50,7 @@ export default function App() {
     <UserProvider>
       <Router>
         <FreeSessionProvider /* analytics={window.mixpanel} config={{ spamWindowDays: 30 }} */>
-          <ScrollToHash offset={50} />
+
           <AppNavBar />
           <div>
             <AppRoutes />

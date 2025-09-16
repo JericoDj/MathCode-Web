@@ -1,0 +1,107 @@
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr; /* left:1/5, middle:3/5, right:1/5 */
+  gap: 1.5rem;
+  margin: 1rem;
+}
+
+.card {
+  background: var(--paper);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+h2, h3 {
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+.progress-bar {
+  background: var(--soft);
+  border-radius: 6px;
+  height: 8px;
+  margin: 0.5rem 0;
+}
+.progress-fill {
+  background: var(--green);
+  height: 100%;
+  border-radius: 6px;
+}
+
+.session-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.session-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.instructor-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.session-actions {
+  margin-left: auto;
+}
+
+.project-gallery {
+  display: flex;
+  gap: 1rem;
+}
+.project-card img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.btn-primary {
+  background: var(--green);
+  color: var(--paper);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.btn-primary.full {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+.btn-outline {
+  border: 1px solid var(--muted);
+  color: var(--ink);
+  background: transparent;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.child-profile .child-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.child-avatar {
+  border-radius: 50%;
+  border: 3px solid #4a90e2;
+}
+
+.skill-tags {
+  margin-top: 0.5rem;
+}
+
+.tag {
+  display: inline-block;
+  background: #eef3ff;
+  color: #4a90e2;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  margin-right: 0.3rem;
+}
+

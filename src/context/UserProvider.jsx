@@ -1,41 +1,83 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { UserContext } from "./UserContext.jsx";
-import UserController from "../controllers/UserController.jsx";
+// context/UserProvider.jsx
+import { useState, useEffect } from 'react';
+import { UserContext } from './UserContext.jsx'; // ✅ import only the context
+import AuthController from '../controllers/AuthController.jsx';
 
-export const UserProvider = ({ children }) => {
+export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const ctrl = new AuthController();
 
-  // fetch current user once
+  // Fetch current session user on load
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userData = await UserController.getCurrentUser();
-        setUser(userData);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
+  async function fetchUser() {
+    try {
+      const saved = localStorage.getItem("auth");
+      if (!saved) {
         setUser(null);
-      } finally {
-        setLoading(false);
+        return;
       }
-    };
-    fetchUser();
-  }, []);
 
-  // ✅ New: expose reset functions via context
-  const requestPasswordReset = useCallback(async (email) => {
-    return UserController.requestPasswordReset({ email });
-  }, []);
+      const { token } = JSON.parse(saved);
 
-  const completePasswordReset = useCallback(async (token, password) => {
-    return UserController.resetPassword({ token, password });
-  }, []);
+      const res = await fetch("https://mathcode-backend.onrender.com/api/users/me", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, 
+        },
+        credentials: "include",
+      });
+
+      if (res.ok) {
+        const u = await res.json();
+        setUser(u);
+      } else {
+        // token expired or invalid
+        localStorage.removeItem("auth");
+        setUser(null);
+      }
+    } catch (err) {
+      console.warn("No active user session:", err);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  fetchUser();
+}, []);
+
+
+  const login = async ({ email, password }) => {
+    const u = await ctrl.login({ email, password });
+    setUser(u);
+    return u;
+  };
+
+  const register = async (data) => {
+    const u = await ctrl.register(data);
+    setUser(u);
+    return u;
+  };
+
+  const logout = async () => {
+    await ctrl.logout();
+    setUser(null);
+  };
 
   return (
     <UserContext.Provider
-      value={{ user, setUser, loading, requestPasswordReset, completePasswordReset }}
+      value={{
+        user,
+        setUser,
+        loading,
+        login,
+        register,
+        logout,
+      }}
     >
       {children}
     </UserContext.Provider>
   );
-};
+}
