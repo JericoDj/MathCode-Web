@@ -21,7 +21,7 @@ export default class UserController {
   }
 
   static async getCurrentUser() {
-    const response = await fetch('/api/user', {
+    const response = await fetch('https://mathcode-backend.onrender.com/api/users/me', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     });
