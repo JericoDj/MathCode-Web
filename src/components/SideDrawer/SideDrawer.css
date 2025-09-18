@@ -161,3 +161,12 @@
   color: #e9ecf4 !important;
 
 }
+
+/* Mobile-specific height */
+@media (max-width: 768px) {
+  .side-drawer {
+    margin-top: 7vh;
+    padding-top: 2rem;
+    height: 85vh; /* only 80% height on mobile */
+  }
+}
