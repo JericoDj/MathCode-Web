@@ -176,3 +176,41 @@
   font-size: 0.9rem;
   margin-bottom: 0.8rem;
 }
+
+/* ===================== */
+/* Mobile Responsiveness */
+@media screen and (max-width: 768px) {
+  .settings-row {
+    flex-direction: column; /* stack left + right */
+  }
+
+  .settings-main,
+  .settings-side {
+    width: 100%;
+  }
+
+  .settings-side {
+    order: 1; /* place child profiles below main settings */
+  }
+
+  /* Make child-item content stack horizontally if needed */
+  .child-item {
+    flex-direction: column;
+  }
+
+  .child-avatar.large {
+    width: 80px;
+    height: 80px;
+  }
+
+  .child-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .btn-small,
+  .btn-outline {
+    width: 100%;
+  }
+}

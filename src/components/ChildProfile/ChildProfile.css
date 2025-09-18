@@ -60,7 +60,7 @@
   padding: 0.6rem 1rem;
   cursor: pointer;
   text-align: center;
-  width: 25vw;
+  width: 30vw;
   box-sizing: border-box;
   transition: background 0.2s;
 }
@@ -119,4 +119,44 @@
   font-size: 0.85rem;
   min-width: 40px;
   text-align: right;
+}
+
+/* ===================== */
+/* Mobile responsiveness */
+@media screen and (max-width: 768px) {
+  .child-grid.half-half {
+    grid-template-columns: 1fr; /* stack columns vertically */
+  }
+
+  .child-left,
+  .child-stats {
+    width: 100%;
+  }
+
+  /* Put stats below left column */
+  .child-left {
+    order: 0;
+  }
+  .child-stats {
+    order: 1;
+  }
+
+  /* Optional: adjust buttons width for mobile */
+  .child-actions {
+    width: 300% !important;
+  }
+
+  .btn.small {
+  background: #4cafef;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 0.85rem;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  text-align: center;
+  width: 80vw;
+  box-sizing: border-box;
+  transition: background 0.2s;
+}
 }

@@ -1,3 +1,4 @@
+/* Dashboard Grid */
 .dashboard-grid {
   display: grid;
   grid-template-columns: 1fr 3fr 1fr; /* left:1/5, middle:3/5, right:1/5 */
@@ -5,6 +6,7 @@
   margin: 1rem;
 }
 
+/* Card Styles */
 .card {
   background: var(--paper);
   border-radius: 12px;
@@ -17,6 +19,7 @@ h2, h3 {
   margin-bottom: 0.5rem;
 }
 
+/* Progress Bar */
 .progress-bar {
   background: var(--soft);
   border-radius: 6px;
@@ -29,6 +32,7 @@ h2, h3 {
   border-radius: 6px;
 }
 
+/* Sessions */
 .session-list {
   list-style: none;
   padding: 0;
@@ -50,6 +54,7 @@ h2, h3 {
   margin-left: auto;
 }
 
+/* Projects */
 .project-gallery {
   display: flex;
   gap: 1rem;
@@ -59,6 +64,7 @@ h2, h3 {
   border-radius: 8px;
 }
 
+/* Buttons */
 .btn-primary {
   background: var(--green);
   color: var(--paper);
@@ -80,6 +86,7 @@ h2, h3 {
   cursor: pointer;
 }
 
+/* Child Profile */
 .child-profile .child-info {
   display: flex;
   align-items: center;
@@ -105,3 +112,40 @@ h2, h3 {
   margin-right: 0.3rem;
 }
 
+/* ========================== */
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  /* Stack columns vertically */
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .col-left,
+  .col-middle,
+  .col-right {
+    width: 100%;
+    margin: 0;
+  }
+
+  /* Reduce padding for mobile cards */
+  .dashboard-grid .card {
+    padding: 1rem;
+  }
+
+  /* Stack session items vertically */
+  .session-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .session-actions {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+
+  /* Stack projects vertically */
+  .project-gallery {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
