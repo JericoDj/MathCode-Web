@@ -183,17 +183,20 @@ export default function AppNavBar() {
 
         {acctOpen && (
           <div className="acct-menu" style={{ top: '100%', marginTop: 0, padding: '0.5rem' }}>
-            <div className="acct-header">
-              <img
-                src={user.photoURL || `https://picsum.photos/seed/${user.name || 'u'}/60`}
-                alt="Avatar"
-                className="acct-header-avatar"
-              />
-              <div className="acct-header-info">
-                <div className="acct-header-name">{user.name || 'User'}</div>
-                <div className="acct-header-email">{user.email || ''}</div>
-              </div>
-            </div>
+            <div className="account-header">
+  <img
+    src={user.photoURL || `https://picsum.photos/seed/${user.firstName || 'u'}/60`}
+    alt="Avatar"
+    className="account-avatar"
+  />
+  <div className="account-info">
+    <div className="account-name">
+      {user.firstName || 'User'} {user.lastName || ''}
+    </div>
+    <div className="account-email">{user.email || ''}</div>
+  </div>
+</div>
+
 
             <button id="DButton" className="acct-item acct-primary" onClick={() => navigateAndScrollTop('/dashboard')}>Dashboard</button>
             <button className="acct-item" onClick={() => navigateAndScrollTop('/profile-settings')}>Profile & Settings</button>

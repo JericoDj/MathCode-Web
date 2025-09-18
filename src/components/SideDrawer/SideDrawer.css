@@ -113,13 +113,13 @@
   margin-right: 0.75rem;
 }
 
-.account-info .account-name {
+.account-info .account-names {
   font-weight: bold;
   color: #e9ecf4;
 }
-.account-info .account-email {
+.account-info .account-emails {
   font-size: 0.85rem;
-  color: #b7bfd4;
+  color: #b7bfd4 ;
 }
 
 .account-links button {
@@ -155,4 +155,9 @@
 .account-links:not(.open) {
   max-height: 0;
   opacity: 0;
+}
+
+.account-name  {
+  color: #e9ecf4 !important;
+
 }

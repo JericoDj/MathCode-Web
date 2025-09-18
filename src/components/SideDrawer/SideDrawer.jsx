@@ -104,9 +104,9 @@ const handleCloseDrawer = () => {
       alt="Avatar"
       className="account-avatar"
     />
-    <div className="account-info">
-      <div className="account-name">{user.firstName || "User"} {user.lastName || ""}</div>
-      <div className="account-email">{user.email || ""}</div>
+    <div id="account-infos" className="account-info">
+      <div className="account-names">{user.firstName || "User"} {user.lastName || ""}</div>
+      <div className="account-emails">{user.email || ""}</div>
     </div>
   </div>
 

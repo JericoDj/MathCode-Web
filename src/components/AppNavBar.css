@@ -336,3 +336,21 @@
   }
 }
 
+/* Account Header Colors (Navbar Dropdown / Side Drawer) */
+.account-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--navy) !important; /* Dark blue to match brand palette */
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.account-email {
+  font-size: 0.875rem;
+  color: var(--muted) !important; /* Lighter muted color for contrast */
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin-top: 2px;
+}
