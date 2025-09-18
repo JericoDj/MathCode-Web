@@ -208,7 +208,17 @@ export default function AppNavBar() {
         )}
       </div>
     ) : (
-      <Link to="/login" className="btn-outline d-none d-lg-inline">Login / Join</Link>
+      // <button className="btn-outline d-none d-lg-inline"onClick={() => navigateAndScrollTop('/login') >
+
+      // </button>
+
+       <button
+      className="btn-outline d-none d-lg-inline"
+      onClick={() => navigateAndScrollTop('/login')}
+    >
+      Login / Join
+    </button>
+      // <Link to="/login" ></Link>
     )}
   </>
 )}
