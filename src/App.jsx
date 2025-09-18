@@ -21,6 +21,11 @@ import NotFoundPage from "./screens/NotFound/NotFoundPage.jsx";
 import ForgotPasswordPage from "./screens/Auth/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "./screens/Auth/ResetPasswordPage.jsx";
 import Dashboard from "./screens/Dashboard/Dashboard.jsx";
+import ProfileSettings from "./screens/ProfileSettings/ProfileSettings.jsx";
+import ManageBilling from "./screens/ManageBilling/ManageBilling.jsx";
+import HelpCenter from "./screens/HelpCenter/HelpCenter.jsx";
+
+
 
 import "./App.css";
 
@@ -37,9 +42,13 @@ function AppRoutes() {
       <Route path="/logout" element={<LogoutPage />} />
       <Route path="/reset-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password/confirm" element={<ResetPasswordPage />} />
+      
 
       {/* Dashboard */}
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/profile-settings" element={<ProfileSettings />} />
+      <Route path="/manage-billing" element={<ManageBilling />} />
+      <Route path="/help-center" element={<HelpCenter />} />
 
     </Routes>
   );

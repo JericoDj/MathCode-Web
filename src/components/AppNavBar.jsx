@@ -11,7 +11,8 @@ function useScrollSpy(ids, { offset = 80, enabled = true } = {}) {
   useEffect(() => {
     if (!enabled) return;
     const observer = new IntersectionObserver(
-      (entries) => entries.forEach((entry) => entry.isIntersecting && setActiveId(entry.target.id)),
+      (entries) =>
+        entries.forEach((entry) => entry.isIntersecting && setActiveId(entry.target.id)),
       { rootMargin: `-${offset}px 0px -60% 0px`, threshold: 0.1 }
     );
     const els = ids.map((id) => document.getElementById(id)).filter(Boolean);
@@ -96,7 +97,6 @@ export default function AppNavBar() {
 
     if (location.pathname !== '/' || location.hash !== `#${id}`) {
       navigate(`/#${id}`, { replace: false });
-      // scroll after navigation
       setTimeout(scrollToSection, 50);
     } else {
       scrollToSection();
@@ -111,109 +111,167 @@ export default function AppNavBar() {
     setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
   };
 
-  const handleFreeSessionClick = useCallback((e) => {
-    e?.preventDefault?.();
-    requestFreeSession({ source: 'navbar' });
-    setOpen(false);
-    setAcctOpen(false);
-  }, [requestFreeSession]);
+  const handleFreeSessionClick = useCallback(
+    (e) => {
+      e?.preventDefault?.();
+      requestFreeSession({ source: 'navbar' });
+      setOpen(false);
+      setAcctOpen(false);
+    },
+    [requestFreeSession]
+  );
 
-  const userInitial = (user?.name || user?.email || 'U')[0]?.toUpperCase?.() || 'U';
-  const authHref = `/login?next=${encodeURIComponent(location.pathname + location.hash)}`;
+  const userInitial =
+    (user?.name || user?.email || 'U')[0]?.toUpperCase?.() || 'U';
+  const authHref = `/login?next=${encodeURIComponent(
+    location.pathname + location.hash
+  )}`;
 
   return (
     <nav className="navbar">
-      <div className="navbar-container">
-        <Link className="navbar-logo" to="/" onClick={() => navigateAndScrollTop('/')}>
+      <div className="navbar-container container d-flex justify-content-between align-items-center px-3 px-md-4">
+        {/* Logo */}
+        <Link
+          className="navbar-logo d-flex align-items-center gap-2 me-4"
+          to="/"
+          onClick={() => navigateAndScrollTop('/')}
+        >
           <span className="logo-mark">MC</span>
           <span className="logo-word">MathCode</span>
         </Link>
 
-        <button
-          className={`navbar-toggle ${open ? 'is-open' : ''}`}
-          aria-label="Toggle menu"
-          aria-expanded={open}
-          onClick={() => setOpen(!open)}
-        >
-          <span />
-          <span />
-          <span />
-        </button>
+        {/* Nav menu (desktop + mobile expanded) */}
+        {/* Nav menu (desktop + mobile expanded) */}
+<ul className={`navbar-menu list-unstyled mb-0 ${open ? 'open' : ''}`}>
+  {navLinks.map(({ id, label }) => (
+    <li className="navbar-item" key={id}>
+      <Link
+        to={`/#${id}`}
+        className={`navbar-link ${
+          onHome && activeId === id ? 'active' : ''
+        }`}
+        aria-current={onHome && activeId === id ? 'page' : undefined}
+        onClick={(e) => handleNavLinkClick(id, e)}
+      >
+        {label}
+      </Link>
+    </li>
+  ))}
 
-        <ul className={`navbar-menu ${open ? 'open' : ''}`}>
-          {navLinks.map(({ id, label }) => (
-            <li className="navbar-item" key={id}>
-              <Link
-                to={`/#${id}`}
-                className={`navbar-link ${onHome && activeId === id ? 'active' : ''}`}
-                aria-current={onHome && activeId === id ? 'page' : undefined}
-                onClick={(e) => handleNavLinkClick(id, e)}
-              >
-                {label}
-              </Link>
-            </li>
-          ))}
+  {/* Mobile-only CTA */}
+  <li className="menu-cta-mobile d-lg-none">
+    <button
+      type="button"
+      className="btn-cta w-100"
+      onClick={handleFreeSessionClick}
+    >
+      Book a Free Session
+    </button>
+  </li>
+</ul>
 
-          <li className="menu-cta-mobile">
-            <button type="button" className="btn-cta" onClick={handleFreeSessionClick}>
-              Book a Free Session
-            </button>
+{/* Right side CTA + account */}
+<div className="navbar-cta d-flex align-items-center gap-2 ms-3">
+  {/* Desktop-only CTA */}
+  <button
+    type="button"
+    className="btn-cta d-none d-lg-inline"
+    onClick={handleFreeSessionClick}
+  >
+    Book a Free Session
+  </button>
 
-            {!isLoading && !user && (
-              <div className="stacked-auth">
-                <button className="btn-outline" onClick={() => navigateAndScrollTop(authHref)}>Sign in</button>
-                <button className="btn-outline" onClick={() => navigateAndScrollTop(`/register?next=${encodeURIComponent(location.pathname + location.hash)}`)}>Join</button>
-              </div>
-            )}
+  {/* Account dropdown (desktop = icon + text, mobile = icon only) */}
+  {!isLoading && (
+    <div className="acct-dropdown" ref={acctRef}>
+      <button
+        type="button"
+        className="acct-trigger d-flex align-items-center justify-content-center"
+        aria-haspopup="menu"
+        aria-expanded={acctOpen}
+        onClick={() => {
+          if (user) setAcctOpen((v) => !v);
+          else navigateAndScrollTop(authHref);
+        }}
+      >
+        <span className="acct-avatar" aria-hidden="true">
+          {user ? userInitial : "👤"}
+        </span>
+        {/* Show text only on desktop */}
+        <span className="d-none d-lg-inline ms-1">Account</span>
+      </button>
 
-            {!isLoading && user && (
-              <div className="stacked-auth">
-                <button className="btn-outline" onClick={() => navigateAndScrollTop('/dashboard')}>Dashboard</button>
-                <button className="btn-outline" onClick={() => navigateAndScrollTop('/sessions')}>My Sessions</button>
-                <button className="btn-outline" onClick={() => navigateAndScrollTop('/logout')}>Logout</button>
-              </div>
-            )}
-          </li>
-        </ul>
-
-        <div className="navbar-cta">
-          <button type="button" className="btn-cta" onClick={handleFreeSessionClick}>
-            Book a Free Session
-          </button>
-
-          {!isLoading && !user && (
-            <button className="btn-outline" onClick={() => navigateAndScrollTop(authHref)}>Sign in / Join</button>
-          )}
-
-          {!isLoading && user && (
-            <div className="acct-dropdown" ref={acctRef}>
-              <button
-                type="button"
-                className="acct-trigger"
-                aria-haspopup="menu"
-                aria-expanded={acctOpen}
-                onClick={() => setAcctOpen(v => !v)}
-              >
-                <span className="acct-avatar" aria-hidden="true">{userInitial}</span>
-                <span className="acct-label">Account</span>
-                <svg className={`caret ${acctOpen ? 'open' : ''}`} width="14" height="14" viewBox="0 0 20 20" aria-hidden="true">
-                  <path d="M5 7l5 5 5-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-              </button>
-
-              {acctOpen && (
-                <div className="acct-menu" role="menu">
-                  <button role="menuitem" className="acct-item" onClick={() => navigateAndScrollTop('/dashboard')}>Dashboard</button>
-                  <button role="menuitem" className="acct-item" onClick={() => navigateAndScrollTop('/sessions')}>My Sessions</button>
-                  <button role="menuitem" className="acct-item" onClick={() => navigateAndScrollTop('/profile')}>Profile & Settings</button>
-                  <button role="menuitem" className="acct-item" onClick={() => navigateAndScrollTop('/packages')}>Manage Plan / Billing</button>
-                  <div className="acct-sep" />
-                  <button role="menuitem" className="acct-item danger" onClick={() => navigateAndScrollTop('/logout')}>Logout</button>
-                </div>
-              )}
+      {user && acctOpen && (
+        <div className="acct-menu" role="menu">
+          <div className="acct-header">
+            <img
+              src={
+                user?.photoURL ||
+                `https://picsum.photos/seed/${user?.id || 'u'}/60`
+              }
+              alt="User Avatar"
+              className="acct-header-avatar"
+            />
+            <div className="acct-header-name">
+              {user?.name || user?.email}
             </div>
-          )}
+          </div>
+          <div className="acct-sep" />
+          <button
+            role="menuitem"
+            className="acct-item"
+            onClick={() => navigateAndScrollTop('/dashboard')}
+          >
+            Dashboard
+          </button>
+          <button
+            role="menuitem"
+            className="acct-item"
+            onClick={() => navigateAndScrollTop('/profile-settings')}
+          >
+            Profile & Settings
+          </button>
+          <button
+            role="menuitem"
+            className="acct-item"
+            onClick={() => navigateAndScrollTop('/manage-billing')}
+          >
+            Manage Plan / Billing
+          </button>
+          <button
+            role="menuitem"
+            className="acct-item"
+            onClick={() => navigateAndScrollTop('/help-center')}
+          >
+            Help Center
+          </button>
+          <div className="acct-sep" />
+          <button
+            role="menuitem"
+            className="acct-item danger"
+            onClick={() => navigateAndScrollTop('/logout')}
+          >
+            Logout
+          </button>
         </div>
+      )}
+    </div>
+  )}
+
+  {/* Burger toggle (mobile only) */}
+  <button
+    className={`navbar-toggle d-lg-none ${open ? 'is-open' : ''}`}
+    aria-label="Toggle menu"
+    aria-expanded={open}
+    onClick={() => setOpen(!open)}
+  >
+    <span />
+    <span />
+    <span />
+  </button>
+</div>
+
+
       </div>
     </nav>
   );

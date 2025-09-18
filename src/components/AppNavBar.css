@@ -28,7 +28,7 @@
   margin: 0 auto;
   padding: 0.6rem clamp(1rem, 3vw, 2rem);
   display: grid;
-  grid-template-columns: auto 1fr auto; /* logo | menu | ctas */
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   column-gap: var(--nav-gap);
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -36,15 +36,10 @@
 
 /* ================= Logo ================= */
 .navbar-logo {
-  display: inline-flex;
-  align-items: center;
-  gap: .5rem;
   text-decoration: none;
   color: var(--text);
   font-weight: 800;
   letter-spacing: .2px;
-  white-space: nowrap;
-  margin-right: var(--nav-gap); /* space after logo */
 }
 .logo-mark {
   display: inline-grid;
@@ -65,11 +60,10 @@
   list-style: none;
   display: flex;
   align-items: center;
-  gap: clamp(0.9rem, 2.2vw, 1.6rem); /* space between links */
-  margin: 0 0 0 var(--nav-gap);      /* push menu away from logo */
+  gap: clamp(0.9rem, 2.2vw, 1.6rem);
+  margin: 0 0 0 var(--nav-gap);
   padding: 0;
 }
-.navbar-item { margin: 0; }
 .navbar-link {
   text-decoration: none;
   color: var(--text);
@@ -79,8 +73,6 @@
 }
 .navbar-link:hover { color: var(--green); }
 .navbar-link.muted { color: var(--muted); }
-
-/* Active highlight (scroll-spy + router) */
 .navbar-link.active,
 .navbar-link[aria-current="page"] {
   color: var(--green);
@@ -97,12 +89,12 @@
   border-radius: 2px;
 }
 
-/* ================= CTAs (desktop) ================= */
+/* ================= CTAs ================= */
 .navbar-cta {
   display: flex;
   align-items: center;
   gap: clamp(0.6rem, 2vw, 1.1rem);
-  margin-left: var(--nav-gap); /* push CTAs away from menu */
+  margin-left: var(--nav-gap);
 }
 .btn-cta {
   background: var(--green);
@@ -117,7 +109,6 @@
 }
 .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(96,182,77,0.45); }
 
-/* default outline (used elsewhere) */
 .btn-outline {
   text-decoration: none;
   color: var(--text);
@@ -133,7 +124,7 @@
   transform: translateY(-2px);
 }
 
-/* ===== NAV-SPECIFIC outline: lighter white border for “Try a Sample” ===== */
+/* navbar-specific outline */
 .navbar .btn-outline{
   border: 1.5px solid rgba(255,255,255,0.70);
   color: #eef2ff;
@@ -145,14 +136,6 @@
   color: #ffffff;
   background: rgba(255,255,255,0.10);
   transform: translateY(-2px);
-}
-.navbar .btn-outline:focus-visible{
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(255,255,255,0.35);
-}
-.navbar .btn-outline:active{
-  transform: translateY(0);
-  background: rgba(255,255,255,0.14);
 }
 
 /* ================= Mobile toggle ================= */
@@ -173,9 +156,7 @@
 .navbar-toggle.is-open span:nth-child(2) { opacity: 0; }
 .navbar-toggle.is-open span:nth-child(3) { top: 16px; transform: rotate(-45deg); }
 
-/* ================= Mobile drawer ================= */
 .menu-cta-mobile { display: none; }
-
 @media (max-width: 900px) {
   .navbar-container { grid-template-columns: auto auto auto; }
   .navbar-toggle { display: inline-block; }
@@ -191,11 +172,10 @@
     align-items: stretch;
     padding: .75rem 1rem 1rem;
     gap: .5rem;
-    margin-left: 0; /* reset */
+    margin-left: 0;
   }
   .navbar-menu.open { display: flex; }
-
-  .navbar-cta { display: none; } /* desktop-only */
+  .navbar-cta { display: none; }
   .menu-cta-mobile { display: block; }
   .menu-cta-mobile .btn-cta,
   .menu-cta-mobile .btn-outline {
@@ -204,29 +184,31 @@
     text-align: center;
     margin-top: .25rem;
   }
-
-  /* tighten logo/menu spacing on small screens */
-  .navbar-logo { margin-right: 0; }
 }
 
-/* ================= Body offset for fixed nav ================= */
-/* Put this in global CSS if content sits under the navbar */
-/* body { padding-top: 64px; } */
-
-/* === Account dropdown (desktop) === */
+/* ================= Account dropdown ================= */
 .acct-dropdown { position: relative; }
 .acct-trigger {
   display: inline-flex; align-items: center; gap: .5rem;
   background: rgba(255,255,255,.10);
-  color: var(--text); border: 1.5px solid rgba(255,255,255,.45);
-  padding: .45rem .7rem; border-radius: 10px; cursor: pointer;
+  color: var(--text);
+  border: 1.5px solid rgba(255,255,255,.45);
+  padding: .45rem .7rem;
+  border-radius: 10px;
+  cursor: pointer;
   transition: transform .12s ease, background .2s ease, border-color .2s ease;
 }
-.acct-trigger:hover { transform: translateY(-2px); background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.85); }
+.acct-trigger:hover {
+  transform: translateY(-2px);
+  background: rgba(255,255,255,.16);
+  border-color: rgba(255,255,255,.85);
+}
 .acct-avatar {
   width: 26px; height: 26px; border-radius: 50%;
-  display: inline-grid; place-items: center; font-weight: 800;
-  background: linear-gradient(135deg, var(--green), #6fd45b); color: #0b1a45;
+  display: inline-grid; place-items: center;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--green), #6fd45b);
+  color: #0b1a45;
 }
 .acct-label { font-weight: 700; white-space: nowrap; }
 .caret { transition: transform .15s ease; opacity: .85; }
@@ -234,62 +216,72 @@
 
 .acct-menu {
   position: absolute; right: 0; top: calc(100% + .5rem);
-  min-width: 240px; background: #fff; color: #0b1a45;
-  border-radius: 12px; border: 1px solid rgba(18,32,84,.14);
+  min-width: 260px;
+  background: #fff;
+  color: #0b1a45;
+  border-radius: 12px;
+  border: 1px solid rgba(18,32,84,.14);
   box-shadow: 0 18px 40px rgba(0,0,0,.26);
-  padding: .4rem; z-index: 1500;
+  padding: .4rem;
+  z-index: 1500;
 }
+.acct-header {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .6rem .7rem .8rem;
+  border-bottom: 1px solid rgba(18,32,84,.12);
+}
+.acct-header-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.acct-header-info {
+  display: flex;
+  flex-direction: column;
+}
+.acct-header-name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #0b1a45;
+}
+.acct-header-email {
+  font-size: 0.85rem;
+  color: #6b789d;
+}
+
 .acct-item {
   display: block; width: 100%; text-align: left;
-  padding: .6rem .7rem; border-radius: 8px; text-decoration: none;
-  color: #0b1a45; background: transparent; border: 0; font: inherit; cursor: pointer;
+  padding: .65rem .7rem;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #0b1a45;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
   transition: background .15s ease, transform .12s ease;
 }
 .acct-item:hover { background: #f4f6ff; transform: translateY(-1px); }
 .acct-item.danger:hover { background: #ffe9e9; }
 .acct-item.acct-primary {
-  background: var(--green); color: #0b1a45; font-weight: 800; margin-bottom: .25rem;
+  background: var(--green);
+  color: #0b1a45;
+  font-weight: 800;
+  margin-bottom: .25rem;
   box-shadow: 0 6px 14px rgba(96,182,77,0.30);
 }
 .acct-item.acct-primary:hover { transform: translateY(-2px); }
 
 .acct-sep {
-  height: 1px; background: rgba(18,32,84,.12);
+  height: 1px;
+  background: rgba(18,32,84,.12);
   margin: .35rem .25rem;
 }
 
-/* --- Two-CTA alignment tweaks --- */
-.navbar-cta .btn-cta {
-  /* keep CTAs visually balanced */
-  min-height: 38px;
-  line-height: 1;
-}
-
-/* Make account/auth trigger same height as primary CTA */
-.acct-trigger {
-  min-height: 38px;
-  line-height: 1;
-}
-
-/* Wrap if viewport is tight so CTAs don't overflow */
-@media (max-width: 1020px) {
-  .navbar-cta {
-    flex-wrap: wrap;
-  }
-}
-
-/* --- Mobile stacked auth buttons inside drawer --- */
-.stacked-auth {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: .4rem;
-  margin-top: .5rem;
-}
-@media (max-width: 420px) {
-  .stacked-auth { grid-template-columns: 1fr; }
-}
-
-/* --- Focus-visible for better a11y --- */
+/* ================= Helpers ================= */
 .navbar .btn-cta:focus-visible,
 .navbar .btn-outline:focus-visible,
 .acct-trigger:focus-visible,
@@ -298,8 +290,29 @@
   box-shadow: 0 0 0 3px rgba(255,255,255,0.35);
 }
 
-/* Ensure dropdown sits above other content */
-.acct-menu { z-index: 1500; }
 
-/* Optional: tiny caret alignment improvement */
-.acct-trigger .caret { margin-left: 2px; }
+@media (max-width: 400px) {
+  .acct-menu {
+    min-width: unset;
+    width: 92vw;
+    right: 4vw;
+  }
+}
+
+@media (max-width: 900px) {
+  .navbar-link.active::after,
+  .navbar-link[aria-current="page"]::after {
+    display: none;
+  }
+}
+
+.navbar {
+  box-shadow: 0 8px 18px rgba(0,0,0,0.18),
+              inset 0 0 12px rgba(255,255,255,0.04);
+}
+
+.acct-avatar {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
