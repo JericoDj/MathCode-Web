@@ -49,17 +49,15 @@ export default function ChildProfile({ childName, programName, completedSessions
 
         {/* Right Column: Stats */}
         <div className="child-stats">
-
           <div className="stat-card">
             <h4>🔢 Singapore Math Stats</h4>
             <BarChart stats={mathStats} />
           </div>
-          
+
           <div className="stat-card">
             <h4>⚡ Coding Stats</h4>
             <BarChart stats={codingStats} />
           </div>
-          
         </div>
       </div>
     </section>

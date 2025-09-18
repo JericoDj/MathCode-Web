@@ -48,7 +48,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  width: 180px; /* keeps buttons aligned */
+  width: 180px;
 }
 
 .btn.small {
@@ -60,7 +60,7 @@
   padding: 0.6rem 1rem;
   cursor: pointer;
   text-align: center;
-  width: 30vw;
+  width: 20vw;
   box-sizing: border-box;
   transition: background 0.2s;
 }
@@ -116,16 +116,16 @@
 }
 
 .bar-value {
-  font-size: 0.85rem;
+  font-size: 0.85rem; 
   min-width: 40px;
   text-align: right;
 }
 
 /* ===================== */
 /* Mobile responsiveness */
-@media screen and (max-width: 768px) {
+@media (max-width: 768px) {
   .child-grid.half-half {
-    grid-template-columns: 1fr; /* stack columns vertically */
+    grid-template-columns: 1fr;
   }
 
   .child-left,
@@ -133,30 +133,11 @@
     width: 100%;
   }
 
-  /* Put stats below left column */
-  .child-left {
-    order: 0;
-  }
-  .child-stats {
-    order: 1;
-  }
-
-  /* Optional: adjust buttons width for mobile */
   .child-actions {
-    width: 300% !important;
+    width: 100% !important;
   }
 
   .btn.small {
-  background: #4cafef;
-  border: none;
-  border-radius: 6px;
-  color: white;
-  font-size: 0.85rem;
-  padding: 0.6rem 1rem;
-  cursor: pointer;
-  text-align: center;
-  width: 80vw;
-  box-sizing: border-box;
-  transition: background 0.2s;
-}
+    width: 80vw;
+  }
 }
