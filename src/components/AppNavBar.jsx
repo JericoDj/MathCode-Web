@@ -36,20 +36,20 @@ export default function AppNavBar() {
 
   // Fetch current user
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userController = new UserController();
-        const userData = await userController.getCurrentUser();
-        setUser(userData);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        setUser(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchUser();
-  }, [setUser]);
+  const fetchUser = async () => {
+    try {
+      const userData = await UserController.getCurrentUser(); // ✅ call static method directly
+      setUser(userData);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  fetchUser();
+}, [setUser]);
+
 
   // Close dropdown on outside click or ESC
   useEffect(() => {
