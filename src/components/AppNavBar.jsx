@@ -39,6 +39,7 @@ export default function AppNavBar() {
   const fetchUser = async () => {
     try {
       const userData = await UserController.getCurrentUser(); // ✅ call static method directly
+      console.log("Fetched user data:", userData);
       setUser(userData);
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -165,43 +166,50 @@ export default function AppNavBar() {
             Book a Free Session
           </button>
 
-          {!isLoading && user && (
-            <div
-              className="acct-dropdown d-none d-lg-block"
-              ref={acctRef}
-              onMouseEnter={() => setAcctOpen(true)}
-              onMouseLeave={() => setAcctOpen(false)}
-              style={{ position: 'relative' }}
-            >
-              <button type="button" className="acct-trigger d-flex align-items-center justify-content-center">
-                <span className="acct-avatar">{userInitial}</span>
-                <span className="acct-label ms-1">Account</span>
-              </button>
+          {!isLoading && (
+  <>
+    {user ? (
+      <div
+        className="acct-dropdown d-none d-lg-block"
+        ref={acctRef}
+        onMouseEnter={() => setAcctOpen(true)}
+        onMouseLeave={() => setAcctOpen(false)}
+        style={{ position: 'relative' }}
+      >
+        <button type="button" className="acct-trigger d-flex align-items-center justify-content-center">
+          <span className="acct-avatar">{userInitial}</span>
+          <span className="acct-label ms-1">Account</span>
+        </button>
 
-              {acctOpen && (
-                <div className="acct-menu" style={{ top: '100%', marginTop: 0, padding: '0.5rem' }}>
-                  <div className="acct-header">
-                    <img
-                      src={user.photoURL || `https://picsum.photos/seed/${user.name || 'u'}/60`}
-                      alt="Avatar"
-                      className="acct-header-avatar"
-                    />
-                    <div className="acct-header-info">
-                      <div className="acct-header-name">{user.name || 'User'}</div>
-                      <div className="acct-header-email">{user.email || ''}</div>
-                    </div>
-                  </div>
-
-                  <button id="DButton" className="acct-item acct-primary" onClick={() => navigateAndScrollTop('/dashboard')}>Dashboard</button>
-                  <button className="acct-item" onClick={() => navigateAndScrollTop('/profile-settings')}>Profile & Settings</button>
-                  <button className="acct-item" onClick={() => navigateAndScrollTop('/manage-billing')}>Manage Plan / Billing</button>
-                  <button className="acct-item" onClick={() => navigateAndScrollTop('/help-center')}>Help Center</button>
-                  <div className="acct-sep" />
-                  <button className="acct-item danger" onClick={() => navigateAndScrollTop('/logout')}>Logout</button>
-                </div>
-              )}
+        {acctOpen && (
+          <div className="acct-menu" style={{ top: '100%', marginTop: 0, padding: '0.5rem' }}>
+            <div className="acct-header">
+              <img
+                src={user.photoURL || `https://picsum.photos/seed/${user.name || 'u'}/60`}
+                alt="Avatar"
+                className="acct-header-avatar"
+              />
+              <div className="acct-header-info">
+                <div className="acct-header-name">{user.name || 'User'}</div>
+                <div className="acct-header-email">{user.email || ''}</div>
+              </div>
             </div>
-          )}
+
+            <button id="DButton" className="acct-item acct-primary" onClick={() => navigateAndScrollTop('/dashboard')}>Dashboard</button>
+            <button className="acct-item" onClick={() => navigateAndScrollTop('/profile-settings')}>Profile & Settings</button>
+            <button className="acct-item" onClick={() => navigateAndScrollTop('/manage-billing')}>Manage Plan / Billing</button>
+            <button className="acct-item" onClick={() => navigateAndScrollTop('/help-center')}>Help Center</button>
+            <div className="acct-sep" />
+            <button className="acct-item danger" onClick={() => navigateAndScrollTop('/logout')}>Logout</button>
+          </div>
+        )}
+      </div>
+    ) : (
+      <Link to="/login" className="btn-outline d-none d-lg-inline">Login / Join</Link>
+    )}
+  </>
+)}
+
 
           {/* Burger Toggle */}
           <button

@@ -142,3 +142,17 @@
 .account-links .danger:hover {
   background: rgba(255, 107, 107, 0.15);
 }
+
+.account-links {
+  max-height: 500px;
+  opacity: 1;
+  overflow: hidden;
+  transition: max-height 0.5s ease, opacity 0.5s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.account-links:not(.open) {
+  max-height: 0;
+  opacity: 0;
+}
