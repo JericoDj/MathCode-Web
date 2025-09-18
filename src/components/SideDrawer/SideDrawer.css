@@ -1,0 +1,144 @@
+/* Backdrop */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease;
+  z-index: 1000;
+}
+.drawer-backdrop.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Drawer panel */
+.side-drawer {
+  position: fixed;
+  top: 0;
+  left: -280px;
+  width: 260px;
+  height: 100vh;
+  background: #0a1230;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  transition: left 0.3s ease-in-out;
+  z-index: 1100;
+}
+.side-drawer.open {
+  left: 0;
+}
+
+/* Drawer sections */
+.drawer-section-title {
+  color: #b7bfd4;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.drawer-links li {
+  list-style: none;
+  padding: 0.5rem 0;
+  color: #e9ecf4;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.drawer-links li:hover {
+  color: #60b64d;
+}
+
+/* CTA button */
+.drawer-cta {
+  margin: 0.75rem 0;
+}
+.btn-cta {
+  width: 100%;
+  padding: 0.65rem;
+  background: #60b64d;
+  color: #e5e5e5;
+  font-weight: 800;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.btn-cta:hover {
+  background: #4fa73f;
+}
+
+/* Dashboard button */
+.drawer-account-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.btn-dashboard {
+  width: 100%;
+  padding: 0.6rem;
+  background: #1a1f4a;
+  color: #e9ecf4;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.btn-dashboard:hover {
+  background: #2a2f6a;
+}
+
+/* Account section */
+.drawer-account {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 0.75rem;
+}
+
+.account-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.account-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 0.75rem;
+}
+
+.account-info .account-name {
+  font-weight: bold;
+  color: #e9ecf4;
+}
+.account-info .account-email {
+  font-size: 0.85rem;
+  color: #b7bfd4;
+}
+
+.account-links button {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0.5rem 0;
+  color: #e9ecf4;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.account-links button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+.account-links .danger {
+  color: #ff6b6b;
+}
+.account-links .danger:hover {
+  background: rgba(255, 107, 107, 0.15);
+}

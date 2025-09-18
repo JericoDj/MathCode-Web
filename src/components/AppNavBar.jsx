@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext.jsx';
 import { useFreeSession } from '../context/FreeSessionContext.jsx';
 import UserController from '../controllers/UserController.jsx';
+import SideDrawer from '../components/SideDrawer/SideDrawer.jsx';
 import './AppNavBar.css';
 
 // Scroll spy hook
@@ -25,7 +26,7 @@ function useScrollSpy(ids, { offset = 80, enabled = true } = {}) {
 export default function AppNavBar() {
   const { user, setUser } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [open, setOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [acctOpen, setAcctOpen] = useState(false);
   const acctRef = useRef(null);
 
@@ -49,22 +50,35 @@ export default function AppNavBar() {
     };
     fetchUser();
   }, [setUser]);
+  
 
   // Close account dropdown on outside click or ESC
-  useEffect(() => {
-    const onDocClick = (e) => {
-      if (acctOpen && acctRef.current && !acctRef.current.contains(e.target)) setAcctOpen(false);
-    };
-    const onKey = (e) => {
-      if (e.key === 'Escape') setAcctOpen(false);
-    };
-    document.addEventListener('mousedown', onDocClick);
-    document.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('mousedown', onDocClick);
-      document.removeEventListener('keydown', onKey);
-    };
-  }, [acctOpen]);
+  // Close account dropdown on outside click or ESC
+useEffect(() => {
+  const onDocClick = (e) => {
+    if (acctOpen && acctRef.current && !acctRef.current.contains(e.target)) setAcctOpen(false);
+  };
+  const onKey = (e) => {
+    if (e.key === 'Escape') setAcctOpen(false);
+  };
+  document.addEventListener('mousedown', onDocClick);
+  document.addEventListener('keydown', onKey);
+  return () => {
+    document.removeEventListener('mousedown', onDocClick);
+    document.removeEventListener('keydown', onKey);
+  };
+}, [acctOpen]);
+
+// Close account dropdown on scroll
+useEffect(() => {
+  const handleScroll = () => {
+    if (acctOpen) setAcctOpen(false);
+  };
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  return () => {
+    window.removeEventListener('scroll', handleScroll);
+  };
+}, [acctOpen]);
 
   const onHome = location.pathname === '/';
   const activeId = useScrollSpy(['home', 'pricing', 'program', 'contact', 'faq'], {
@@ -80,10 +94,9 @@ export default function AppNavBar() {
     { id: 'faq', label: 'FAQ' },
   ];
 
-  // Scroll to section on home page
   const handleNavLinkClick = (id, e) => {
     e.preventDefault();
-    setOpen(false);
+    setDrawerOpen(false);
     setAcctOpen(false);
 
     const scrollToSection = () => {
@@ -103,9 +116,8 @@ export default function AppNavBar() {
     }
   };
 
-  // Navigate first, then scroll top on new page
   const navigateAndScrollTop = (to) => {
-    setOpen(false);
+    setDrawerOpen(false);
     setAcctOpen(false);
     navigate(to);
     setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
@@ -115,17 +127,14 @@ export default function AppNavBar() {
     (e) => {
       e?.preventDefault?.();
       requestFreeSession({ source: 'navbar' });
-      setOpen(false);
+      setDrawerOpen(false);
       setAcctOpen(false);
     },
     [requestFreeSession]
   );
 
-  const userInitial =
-    (user?.name || user?.email || 'U')[0]?.toUpperCase?.() || 'U';
-  const authHref = `/login?next=${encodeURIComponent(
-    location.pathname + location.hash
-  )}`;
+  const userInitial = (user?.name || user?.email || 'U')[0]?.toUpperCase?.() || 'U';
+  const authHref = `/login?next=${encodeURIComponent(location.pathname + location.hash)}`;
 
   return (
     <nav className="navbar">
@@ -140,139 +149,122 @@ export default function AppNavBar() {
           <span className="logo-word">MathCode</span>
         </Link>
 
-        {/* Nav menu (desktop + mobile expanded) */}
-        {/* Nav menu (desktop + mobile expanded) */}
-<ul className={`navbar-menu list-unstyled mb-0 ${open ? 'open' : ''}`}>
-  {navLinks.map(({ id, label }) => (
-    <li className="navbar-item" key={id}>
-      <Link
-        to={`/#${id}`}
-        className={`navbar-link ${
-          onHome && activeId === id ? 'active' : ''
-        }`}
-        aria-current={onHome && activeId === id ? 'page' : undefined}
-        onClick={(e) => handleNavLinkClick(id, e)}
-      >
-        {label}
-      </Link>
-    </li>
-  ))}
+        {/* Desktop Menu */}
+        <ul className="navbar-menu list-unstyled mb-0 d-none d-lg-flex">
+          {navLinks.map(({ id, label }) => (
+            <li key={id}>
+              <Link
+                to={`/#${id}`}
+                className={`navbar-link ${onHome && activeId === id ? 'active' : ''}`}
+                aria-current={onHome && activeId === id ? 'page' : undefined}
+                onClick={(e) => handleNavLinkClick(id, e)}
+              >
+                {label}
+              </Link>
+            </li>
+          ))}
+        </ul>
 
-  {/* Mobile-only CTA */}
-  <li className="menu-cta-mobile d-lg-none">
+  
+
+        {/* Right CTA + Account */}
+        <div className="navbar-cta d-flex align-items-center gap-2 ms-3">
+          <button
+            type="button"
+            className="btn-cta d-none d-lg-inline"
+            onClick={handleFreeSessionClick}
+          >
+            Book a Free Session
+          </button>
+
+          {!isLoading && user && (
+  <div
+    className="acct-dropdown d-none d-lg-block"
+    ref={acctRef}
+    onMouseEnter={() => setAcctOpen(true)}
+    onMouseLeave={() => setAcctOpen(false)}
+    style={{ position: 'relative' }} // ensures menu absolute positioning relative to container
+  >
+
+    {/* Trigger Button */}
     <button
       type="button"
-      className="btn-cta w-100"
-      onClick={handleFreeSessionClick}
+      className="acct-trigger d-flex align-items-center justify-content-center"
+      aria-haspopup="menu"
+      aria-expanded={acctOpen}
+      style={{ margin: 5}} 
+      
     >
-      Book a Free Session
+      <span className="acct-avatar">{userInitial}</span>
+      <span className="acct-label ms-1">Account</span>
+
+    
     </button>
-  </li>
-</ul>
-
-{/* Right side CTA + account */}
-<div className="navbar-cta d-flex align-items-center gap-2 ms-3">
-  {/* Desktop-only CTA */}
-  <button
-    type="button"
-    className="btn-cta d-none d-lg-inline"
-    onClick={handleFreeSessionClick}
-  >
-    Book a Free Session
-  </button>
-
-  {/* Account dropdown (desktop = icon + text, mobile = icon only) */}
-  {!isLoading && (
-    <div className="acct-dropdown" ref={acctRef}>
-      <button
-        type="button"
-        className="acct-trigger d-flex align-items-center justify-content-center"
-        aria-haspopup="menu"
-        aria-expanded={acctOpen}
-        onClick={() => {
-          if (user) setAcctOpen((v) => !v);
-          else navigateAndScrollTop(authHref);
-        }}
-      >
-        <span className="acct-avatar" aria-hidden="true">
-          {user ? userInitial : "👤"}
-        </span>
-        {/* Show text only on desktop */}
-        <span className="d-none d-lg-inline ms-1">Account</span>
-      </button>
-
-      {user && acctOpen && (
-        <div className="acct-menu" role="menu">
-          <div className="acct-header">
-            <img
-              src={
-                user?.photoURL ||
-                `https://picsum.photos/seed/${user?.id || 'u'}/60`
-              }
-              alt="User Avatar"
-              className="acct-header-avatar"
-            />
-            <div className="acct-header-name">
-              {user?.name || user?.email}
-            </div>
+    
+    {/* Dropdown Menu */}
+    
+   
+    {acctOpen && (
+      <>
+    
+      <div className="acct-menu" style={{ top: '100%', marginTop: 0, padding: '0.5rem' }}>
+        <div className="acct-header">
+          <img
+            src={user.photoURL || `https://picsum.photos/seed/${user.name || 'u'}/60`}
+            alt="Avatar"
+            className="acct-header-avatar"
+          />
+          <div className="acct-header-info">
+            <div className="acct-header-name">{user.name || 'User'}</div>
+            <div className="acct-header-email">{user.email || ''}</div>
           </div>
-          <div className="acct-sep" />
+        </div>
+
+
+
+        <button id='DButton' className="acct-item acct-primary" onClick={() => navigateAndScrollTop('/dashboard')}>Dashboard</button>
+        <button className="acct-item" onClick={() => navigateAndScrollTop('/profile-settings')}>Profile & Settings</button>
+        <button className="acct-item" onClick={() => navigateAndScrollTop('/manage-billing')}>Manage Plan / Billing</button>
+        <button className="acct-item" onClick={() => navigateAndScrollTop('/help-center')}>Help Center</button>
+        <div className="acct-sep" />
+        <button className="acct-item danger" onClick={() => navigateAndScrollTop('/logout')}>Logout</button>
+      </div>
+      </>
+      
+    )}
+  </div>
+)}
+
+
+
+          {/* Burger Toggle */}
           <button
-            role="menuitem"
-            className="acct-item"
-            onClick={() => navigateAndScrollTop('/dashboard')}
+            className={`navbar-toggle d-lg-none ${drawerOpen ? 'is-open' : ''}`}
+            aria-label="Toggle menu"
+            aria-expanded={drawerOpen}
+            onClick={() => setDrawerOpen(!drawerOpen)}
           >
-            Dashboard
-          </button>
-          <button
-            role="menuitem"
-            className="acct-item"
-            onClick={() => navigateAndScrollTop('/profile-settings')}
-          >
-            Profile & Settings
-          </button>
-          <button
-            role="menuitem"
-            className="acct-item"
-            onClick={() => navigateAndScrollTop('/manage-billing')}
-          >
-            Manage Plan / Billing
-          </button>
-          <button
-            role="menuitem"
-            className="acct-item"
-            onClick={() => navigateAndScrollTop('/help-center')}
-          >
-            Help Center
-          </button>
-          <div className="acct-sep" />
-          <button
-            role="menuitem"
-            className="acct-item danger"
-            onClick={() => navigateAndScrollTop('/logout')}
-          >
-            Logout
+            <span />
+            <span />
+            <span />
           </button>
         </div>
-      )}
-    </div>
-  )}
-
-  {/* Burger toggle (mobile only) */}
-  <button
-    className={`navbar-toggle d-lg-none ${open ? 'is-open' : ''}`}
-    aria-label="Toggle menu"
-    aria-expanded={open}
-    onClick={() => setOpen(!open)}
-  >
-    <span />
-    <span />
-    <span />
-  </button>
-</div>
-
-
       </div>
+
+      {/* Side Drawer (mobile only) */}
+      <SideDrawer
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        onFreeSession={handleFreeSessionClick}
+        onDashboard={() => navigateAndScrollTop('/dashboard')}
+        onProfileSettings={() => navigateAndScrollTop('/profile-settings')}
+        onBilling={() => navigateAndScrollTop('/manage-billing')}
+        onHelpCenter={() => navigateAndScrollTop('/help-center')}
+        onLogout={() => navigateAndScrollTop('/logout')}
+        userName={user?.name}
+        userEmail={user?.email}
+        userAvatarUrl={user?.photoURL}
+      />
     </nav>
   );
 }
