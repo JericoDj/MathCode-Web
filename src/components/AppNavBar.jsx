@@ -36,21 +36,19 @@ export default function AppNavBar() {
 
   // Fetch current user
   useEffect(() => {
-  const fetchUser = async () => {
-    try {
-      const userData = await UserController.getCurrentUser(); // ✅ call static method directly
-      console.log("Fetched user data:", userData);
-      setUser(userData);
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-      setUser(null);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  fetchUser();
-}, [setUser]);
-
+    const fetchUser = async () => {
+      try {
+        const userData = await UserController.getCurrentUser();
+        setUser(userData);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchUser();
+  }, [setUser]);
 
   // Close dropdown on outside click or ESC
   useEffect(() => {
@@ -93,6 +91,7 @@ export default function AppNavBar() {
     { id: 'faq', label: 'FAQ' },
   ];
 
+  // Navigation handler for links (scrolls)
   const handleNavLinkClick = (id, e) => {
     e.preventDefault();
     setDrawerOpen(false);
@@ -112,9 +111,13 @@ export default function AppNavBar() {
     } else scrollToSection();
   };
 
+  // Navigate without scrolling to top (for drawer close only)
+  const navigateNoScroll = (to) => {
+    navigate(to);
+  };
+
+  // Navigate and scroll to top (for main nav buttons)
   const navigateAndScrollTop = (to) => {
-    setDrawerOpen(false);
-    setAcctOpen(false);
     navigate(to);
     setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
   };
@@ -167,69 +170,62 @@ export default function AppNavBar() {
           </button>
 
           {!isLoading && (
-  <>
-    {user ? (
-      <div
-        className="acct-dropdown d-none d-lg-block"
-        ref={acctRef}
-        onMouseEnter={() => setAcctOpen(true)}
-        onMouseLeave={() => setAcctOpen(false)}
-        style={{ position: 'relative' }}
-      >
-        <button type="button" className="acct-trigger d-flex align-items-center justify-content-center">
-          <span className="acct-avatar">{userInitial}</span>
-          <span className="acct-label ms-1">Account</span>
-        </button>
+            <>
+              {user ? (
+                <div
+                  className="acct-dropdown d-none d-lg-block"
+                  ref={acctRef}
+                  onMouseEnter={() => setAcctOpen(true)}
+                  onMouseLeave={() => setAcctOpen(false)}
+                  style={{ position: 'relative' }}
+                >
+                  <button type="button" className="acct-trigger d-flex align-items-center justify-content-center">
+                    <span className="acct-avatar">{userInitial}</span>
+                    <span className="acct-label ms-1">Account</span>
+                  </button>
 
-        {acctOpen && (
-          <div className="acct-menu" style={{ top: '100%', marginTop: 0, padding: '0.5rem' }}>
-            <div className="account-header">
-  <img
-    src={user.photoURL || `https://picsum.photos/seed/${user.firstName || 'u'}/60`}
-    alt="Avatar"
-    className="account-avatar"
-  />
-  <div className="account-info">
-    <div className="account-name">
-      {user.firstName || 'User'} {user.lastName || ''}
-    </div>
-    <div className="account-email">{user.email || ''}</div>
-  </div>
-</div>
+                  {acctOpen && (
+                    <div className="acct-menu" style={{ top: '100%', marginTop: 0, padding: '0.5rem' }}>
+                      <div className="account-header">
+                        <img
+                          src={user.photoURL || `https://picsum.photos/seed/${user.firstName || 'u'}/60`}
+                          alt="Avatar"
+                          className="account-avatar"
+                        />
+                        <div className="account-info">
+                          <div className="account-name">
+                            {user.firstName || 'User'} {user.lastName || ''}
+                          </div>
+                          <div className="account-email">{user.email || ''}</div>
+                        </div>
+                      </div>
 
-
-            <button id="DButton" className="acct-item acct-primary" onClick={() => navigateAndScrollTop('/dashboard')}>Dashboard</button>
-            <button className="acct-item" onClick={() => navigateAndScrollTop('/profile-settings')}>Profile & Settings</button>
-            <button className="acct-item" onClick={() => navigateAndScrollTop('/manage-billing')}>Manage Plan / Billing</button>
-            <button className="acct-item" onClick={() => navigateAndScrollTop('/help-center')}>Help Center</button>
-            <div className="acct-sep" />
-            <button className="acct-item danger" onClick={() => navigateAndScrollTop('/logout')}>Logout</button>
-          </div>
-        )}
-      </div>
-    ) : (
-      // <button className="btn-outline d-none d-lg-inline"onClick={() => navigateAndScrollTop('/login') >
-
-      // </button>
-
-       <button
-      className="btn-outline d-none d-lg-inline"
-      onClick={() => navigateAndScrollTop('/login')}
-    >
-      Login / Join
-    </button>
-      // <Link to="/login" ></Link>
-    )}
-  </>
-)}
-
+                      <button className="acct-item acct-primary" onClick={() => { navigateAndScrollTop('/dashboard'); setDrawerOpen(false); }}>Dashboard</button>
+                      <button className="acct-item" onClick={() => { navigateAndScrollTop('/profile-settings'); setDrawerOpen(false); }}>Profile & Settings</button>
+                      <button className="acct-item" onClick={() => { navigateAndScrollTop('/manage-billing'); setDrawerOpen(false); }}>Manage Plan / Billing</button>
+                      <button className="acct-item" onClick={() => { navigateAndScrollTop('/help-center'); setDrawerOpen(false); }}>Help Center</button>
+                      <div className="acct-sep" />
+                      <button className="acct-item danger" onClick={() => { navigateAndScrollTop('/logout'); setDrawerOpen(false); }}>Logout</button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <button
+                  className="btn-outline d-none d-lg-inline"
+                  onClick={() => navigateAndScrollTop('/login')}
+                >
+                  Login / Join
+                </button>
+              )}
+            </>
+          )}
 
           {/* Burger Toggle */}
           <button
             className={`navbar-toggle d-lg-none ${drawerOpen ? 'is-open' : ''}`}
             aria-label="Toggle menu"
             aria-expanded={drawerOpen}
-            onClick={() => setDrawerOpen(!drawerOpen)}
+            onClick={() => setDrawerOpen((prev) => !prev)} // ✅ Only toggle drawer, no scroll
           >
             <span />
             <span />
@@ -241,7 +237,7 @@ export default function AppNavBar() {
       {/* Side Drawer */}
       <SideDrawer
         isOpen={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        onClose={() => setDrawerOpen(false)} // ✅ Just close, no scroll
         onFreeSession={handleFreeSessionClick}
         onDashboard={() => navigateAndScrollTop('/dashboard')}
         onProfileSettings={() => navigateAndScrollTop('/profile-settings')}

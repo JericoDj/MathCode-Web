@@ -43,7 +43,7 @@ export default function SideDrawer({
 
 const handleCloseDrawer = () => {
   handleCloseAccount(500); // 0.5s delay for smooth closing
-   window.scrollTo({ top: 0, behavior: "smooth" });
+  //  window.scrollTo({ top: 0, behavior: "smooth" });
   onClose?.();
 };
 
@@ -125,7 +125,7 @@ const handleCloseDrawer = () => {
               className="btn-outline"
               onClick={() => {
                    navigate("/login");
-                handleCloseDrawer();
+                handleCloseAccount();
              
               }}
             >
@@ -137,3 +137,4 @@ const handleCloseDrawer = () => {
     </>
   );
 }
+
