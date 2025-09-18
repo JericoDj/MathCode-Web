@@ -4,9 +4,11 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext.jsx';
 import './AuthPage.css';
 
+// Validators
 const emailOk = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 const passOk  = (v) => (v?.length || 0) >= 8;
 
+// Hook to extract "next" redirect from query params
 function useNextRedirect() {
   const location = useLocation();
   return useMemo(() => {
@@ -21,26 +23,37 @@ export default function AuthPage({ mode: initialMode }) {
   const navigate = useNavigate();
   const nextUrl = useNextRedirect();
 
+  // For query string persistence
   const nextQS = useMemo(() => {
     const p = new URLSearchParams(location.search);
     const n = p.get('next');
     return n ? `?next=${encodeURIComponent(n)}` : '';
   }, [location.search]);
 
+  // Determine initial mode based on URL or props
   const derivedMode =
-    location.pathname.includes('/register') ? 'register' :
-    location.pathname.includes('/login')    ? 'login'    :
+    location.pathname === '/register' ? 'register' :
+    location.pathname === '/login'    ? 'login' :
     initialMode || 'login';
 
   const [mode, setMode] = useState(derivedMode);
   const [busy, setBusy] = useState(false);
 
+  // Update mode if pathname changes
   useEffect(() => setMode(derivedMode), [derivedMode]);
 
-  // Already logged in? redirect
-  useEffect(() => {
-    if (!loading && user) navigate(nextUrl, { replace: true });
-  }, [user, loading, navigate, nextUrl]);
+  // Redirect if user is already logged in
+  // Only redirect if trying to access a protected page
+useEffect(() => {
+  if (!loading && user && location.pathname === '/login') {
+    // Don't auto-redirect from login page if already logged in
+    return;
+  }
+
+  if (!loading && user) {
+    navigate(nextUrl, { replace: true });
+  }
+}, [user, loading, navigate, nextUrl, location.pathname]);
 
   const switchTo = (m) => {
     setMode(m);
@@ -84,12 +97,15 @@ export default function AuthPage({ mode: initialMode }) {
   );
 }
 
+// --- Login Form ---
 function LoginForm({ busy, setBusy, nextUrl }) {
   const { login } = useContext(UserContext);
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
   const [err, setErr] = useState('');
+
   const valid = emailOk(email) && pass.length > 0;
+  const navigate = useNavigate();
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -98,7 +114,7 @@ function LoginForm({ busy, setBusy, nextUrl }) {
     setBusy(true);
     try {
       await login({ email, password: pass });
-      window.location.assign(nextUrl);
+      navigate(nextUrl, { replace: true });
     } catch (ex) {
       setErr(ex?.message || 'Sign in failed.');
     } finally {
@@ -124,14 +140,18 @@ function LoginForm({ busy, setBusy, nextUrl }) {
         <button type="submit" className="btn-primary" disabled={!valid || busy}>
           {busy ? 'Signing in…' : 'Sign in'}
         </button>
-        <Link to="/register" className="btn-outline">Create account</Link>
+        <Link to={`/register${nextUrl ? `?next=${encodeURIComponent(nextUrl)}` : ''}`} className="btn-outline">
+          Create account
+        </Link>
       </div>
     </form>
   );
 }
 
+// --- Register Form ---
 function RegisterForm({ busy, setBusy, nextUrl }) {
   const { register } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -164,7 +184,7 @@ function RegisterForm({ busy, setBusy, nextUrl }) {
         password: pass,
         childAge,
       });
-      window.location.assign(nextUrl);
+      navigate(nextUrl, { replace: true });
     } catch (ex) {
       setErr(ex?.message || 'Sign up failed.');
     } finally {
@@ -220,7 +240,9 @@ function RegisterForm({ busy, setBusy, nextUrl }) {
         <button type="submit" className="btn-primary" disabled={!valid || busy}>
           {busy ? 'Creating…' : 'Join'}
         </button>
-        <Link to="/login" className="btn-outline">Sign in</Link>
+        <Link to={`/login${nextUrl ? `?next=${encodeURIComponent(nextUrl)}` : ''}`} className="btn-outline">
+          Sign in
+        </Link>
       </div>
     </form>
   );

@@ -11,8 +11,10 @@ export function UserProvider({ children }) {
   // Fetch current session user on load
   useEffect(() => {
   async function fetchUser() {
+
     try {
       const saved = localStorage.getItem("auth");
+      console.log("Saved auth:", saved);
       if (!saved) {
         setUser(null);
         return;
