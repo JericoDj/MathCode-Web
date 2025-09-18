@@ -50,35 +50,33 @@ export default function AppNavBar() {
     };
     fetchUser();
   }, [setUser]);
-  
 
-  // Close account dropdown on outside click or ESC
-  // Close account dropdown on outside click or ESC
-useEffect(() => {
-  const onDocClick = (e) => {
-    if (acctOpen && acctRef.current && !acctRef.current.contains(e.target)) setAcctOpen(false);
-  };
-  const onKey = (e) => {
-    if (e.key === 'Escape') setAcctOpen(false);
-  };
-  document.addEventListener('mousedown', onDocClick);
-  document.addEventListener('keydown', onKey);
-  return () => {
-    document.removeEventListener('mousedown', onDocClick);
-    document.removeEventListener('keydown', onKey);
-  };
-}, [acctOpen]);
+  // Close dropdown on outside click or ESC
+  useEffect(() => {
+    const onDocClick = (e) => {
+      if (acctOpen && acctRef.current && !acctRef.current.contains(e.target))
+        setAcctOpen(false);
+    };
+    const onKey = (e) => {
+      if (e.key === 'Escape') setAcctOpen(false);
+    };
+    document.addEventListener('mousedown', onDocClick);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDocClick);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [acctOpen]);
 
-// Close account dropdown on scroll
-useEffect(() => {
-  const handleScroll = () => {
-    if (acctOpen) setAcctOpen(false);
-  };
-  window.addEventListener('scroll', handleScroll, { passive: true });
-  return () => {
-    window.removeEventListener('scroll', handleScroll);
-  };
-}, [acctOpen]);
+  // Close dropdown and side drawer on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (acctOpen) setAcctOpen(false);
+      if (drawerOpen) setDrawerOpen(false);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [acctOpen, drawerOpen]);
 
   const onHome = location.pathname === '/';
   const activeId = useScrollSpy(['home', 'pricing', 'program', 'contact', 'faq'], {
@@ -100,9 +98,8 @@ useEffect(() => {
     setAcctOpen(false);
 
     const scrollToSection = () => {
-      if (id === 'faq') {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-      } else {
+      if (id === 'faq') window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      else {
         const el = document.getElementById(id);
         if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
@@ -111,9 +108,7 @@ useEffect(() => {
     if (location.pathname !== '/' || location.hash !== `#${id}`) {
       navigate(`/#${id}`, { replace: false });
       setTimeout(scrollToSection, 50);
-    } else {
-      scrollToSection();
-    }
+    } else scrollToSection();
   };
 
   const navigateAndScrollTop = (to) => {
@@ -134,7 +129,6 @@ useEffect(() => {
   );
 
   const userInitial = (user?.name || user?.email || 'U')[0]?.toUpperCase?.() || 'U';
-  const authHref = `/login?next=${encodeURIComponent(location.pathname + location.hash)}`;
 
   return (
     <nav className="navbar">
@@ -165,77 +159,49 @@ useEffect(() => {
           ))}
         </ul>
 
-  
-
         {/* Right CTA + Account */}
         <div className="navbar-cta d-flex align-items-center gap-2 ms-3">
-          <button
-            type="button"
-            className="btn-cta d-none d-lg-inline"
-            onClick={handleFreeSessionClick}
-          >
+          <button type="button" className="btn-cta d-none d-lg-inline" onClick={handleFreeSessionClick}>
             Book a Free Session
           </button>
 
           {!isLoading && user && (
-  <div
-    className="acct-dropdown d-none d-lg-block"
-    ref={acctRef}
-    onMouseEnter={() => setAcctOpen(true)}
-    onMouseLeave={() => setAcctOpen(false)}
-    style={{ position: 'relative' }} // ensures menu absolute positioning relative to container
-  >
+            <div
+              className="acct-dropdown d-none d-lg-block"
+              ref={acctRef}
+              onMouseEnter={() => setAcctOpen(true)}
+              onMouseLeave={() => setAcctOpen(false)}
+              style={{ position: 'relative' }}
+            >
+              <button type="button" className="acct-trigger d-flex align-items-center justify-content-center">
+                <span className="acct-avatar">{userInitial}</span>
+                <span className="acct-label ms-1">Account</span>
+              </button>
 
-    {/* Trigger Button */}
-    <button
-      type="button"
-      className="acct-trigger d-flex align-items-center justify-content-center"
-      aria-haspopup="menu"
-      aria-expanded={acctOpen}
-      style={{ margin: 5}} 
-      
-    >
-      <span className="acct-avatar">{userInitial}</span>
-      <span className="acct-label ms-1">Account</span>
+              {acctOpen && (
+                <div className="acct-menu" style={{ top: '100%', marginTop: 0, padding: '0.5rem' }}>
+                  <div className="acct-header">
+                    <img
+                      src={user.photoURL || `https://picsum.photos/seed/${user.name || 'u'}/60`}
+                      alt="Avatar"
+                      className="acct-header-avatar"
+                    />
+                    <div className="acct-header-info">
+                      <div className="acct-header-name">{user.name || 'User'}</div>
+                      <div className="acct-header-email">{user.email || ''}</div>
+                    </div>
+                  </div>
 
-    
-    </button>
-    
-    {/* Dropdown Menu */}
-    
-   
-    {acctOpen && (
-      <>
-    
-      <div className="acct-menu" style={{ top: '100%', marginTop: 0, padding: '0.5rem' }}>
-        <div className="acct-header">
-          <img
-            src={user.photoURL || `https://picsum.photos/seed/${user.name || 'u'}/60`}
-            alt="Avatar"
-            className="acct-header-avatar"
-          />
-          <div className="acct-header-info">
-            <div className="acct-header-name">{user.name || 'User'}</div>
-            <div className="acct-header-email">{user.email || ''}</div>
-          </div>
-        </div>
-
-
-
-        <button id='DButton' className="acct-item acct-primary" onClick={() => navigateAndScrollTop('/dashboard')}>Dashboard</button>
-        <button className="acct-item" onClick={() => navigateAndScrollTop('/profile-settings')}>Profile & Settings</button>
-        <button className="acct-item" onClick={() => navigateAndScrollTop('/manage-billing')}>Manage Plan / Billing</button>
-        <button className="acct-item" onClick={() => navigateAndScrollTop('/help-center')}>Help Center</button>
-        <div className="acct-sep" />
-        <button className="acct-item danger" onClick={() => navigateAndScrollTop('/logout')}>Logout</button>
-      </div>
-      </>
-      
-    )}
-  </div>
-)}
-
-
+                  <button id="DButton" className="acct-item acct-primary" onClick={() => navigateAndScrollTop('/dashboard')}>Dashboard</button>
+                  <button className="acct-item" onClick={() => navigateAndScrollTop('/profile-settings')}>Profile & Settings</button>
+                  <button className="acct-item" onClick={() => navigateAndScrollTop('/manage-billing')}>Manage Plan / Billing</button>
+                  <button className="acct-item" onClick={() => navigateAndScrollTop('/help-center')}>Help Center</button>
+                  <div className="acct-sep" />
+                  <button className="acct-item danger" onClick={() => navigateAndScrollTop('/logout')}>Logout</button>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Burger Toggle */}
           <button
@@ -251,7 +217,7 @@ useEffect(() => {
         </div>
       </div>
 
-      {/* Side Drawer (mobile only) */}
+      {/* Side Drawer */}
       <SideDrawer
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
