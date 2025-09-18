@@ -43,10 +43,15 @@ export default function SideDrawer({
 
 const handleCloseDrawer = () => {
   handleCloseAccount(500); // 0.5s delay for smooth closing
-  //  window.scrollTo({ top: 0, behavior: "smooth" });
+  
   onClose?.();
 };
 
+const handleCloseAccountNavigationDrawer = () => {
+  handleCloseAccount(500); // 0.5s delay for smooth closing
+   window.scrollTo({ top: 0, behavior: "smooth" });
+  onClose?.();
+};
   // Close account dropdown on scroll
   useEffect(() => {
     const handleScroll = () => {
@@ -75,7 +80,7 @@ const handleCloseDrawer = () => {
 
   return (
     <>
-      <div className={`drawer-backdrop ${isOpen ? "show" : ""}`} onClick={handleCloseDrawer} />
+      <div className={`drawer-backdrop ${isOpen ? "show" : ""}`} onClick={handleCloseAccountNavigationDrawer} />
       <div className={`side-drawer ${isOpen ? "open" : ""}`}>
         <div className="drawer-section">
           <div className="drawer-section-title">Navigation</div>
@@ -125,7 +130,7 @@ const handleCloseDrawer = () => {
               className="btn-outline"
               onClick={() => {
                    navigate("/login");
-                handleCloseAccount();
+                handleCloseDrawer();
              
               }}
             >
