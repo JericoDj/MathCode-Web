@@ -1,0 +1,136 @@
+/* Layout */
+.pricing-page {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #f9fafb, #ffffff);
+  font-family: 'Inter', sans-serif;
+  padding: 4rem 1rem;
+  text-align: center;
+}
+
+/* Header */
+.pricing-header h1 {
+  font-size: 3rem;
+  color: #047857;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.pricing-header p {
+  font-size: 1.125rem;
+  color: #4b5563;
+  margin-bottom: 3rem;
+}
+
+/* Pricing Cards */
+.pricing-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+  justify-items: center;
+}
+
+.pricing-card {
+  background: #ffffff;
+  border-radius: 1.5rem;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.pricing-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+
+.pricing-card.highlight {
+  border-color: #10b981;
+  background: #f0fdf4;
+}
+
+.pricing-card h2 {
+  font-size: 1.75rem;
+  color: #047857;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.pricing-card .price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #065f46;
+  margin-bottom: 1rem;
+}
+
+.pricing-card .features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+  color: #374151;
+  text-align: left;
+}
+
+.pricing-card .features li {
+  margin-bottom: 0.5rem;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.pricing-card .features li::before {
+  content: "✔";
+  position: absolute;
+  left: 0;
+  color: #10b981;
+  font-weight: bold;
+}
+
+/* Button */
+.btn-select {
+  background: #10b981;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btn-select:hover {
+  background: #059669;
+}
+
+.pricing-card .features li {
+  margin-bottom: 0.5rem;
+  padding-left: 1.8rem; /* increased space from the checkmark to the text */
+  position: relative;
+}
+
+.pricing-card .features li::before {
+  content: "✔";
+  position: absolute;
+  left: 0;
+  top: 0.1rem; /* vertically center the checkmark better */
+  color: #10b981;
+  font-weight: bold;
+}
+
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .pricing-header h1 {
+    font-size: 2.25rem;
+  }
+
+  .pricing-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .pricing-card h2 {
+    font-size: 1.5rem;
+  }
+
+  .pricing-card .price {
+    font-size: 1.25rem;
+  }
+}

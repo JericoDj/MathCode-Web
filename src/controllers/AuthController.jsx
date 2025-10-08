@@ -4,6 +4,34 @@ export default class AuthController {
     this.baseUrl = "https://mathcode-backend.onrender.com/api/users";
   }
 
+  async getCurrentUser() {
+    const savedAuth = localStorage.getItem('auth');
+  if (!savedAuth) return null; 
+  try {
+    const { user, token } = JSON.parse(savedAuth);
+    if (user) return user; 
+
+    // If user is missing, we can optionally exit early
+    if (!user) return null;
+    
+    // 2️⃣ Otherwise, fetch from backend if token exists
+    if (!token) return null;
+
+    const response = await fetch(`${this.baseUrl}/me`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) return null; // fail silently
+    return response.json();
+  } catch (e) {
+    console.warn('Failed to parse saved auth or fetch user:', e);
+    return null;
+  }
+  }
   async login({ email, password }) {
     try {
       // Optional window override
@@ -107,22 +135,24 @@ export default class AuthController {
   }
 
   async logout() {
-    try {
-      if (window?.UserControllerInstance?.logout) {
-        return await window.UserControllerInstance.logout();
-      }
+  try {
+   
+    localStorage.removeItem("auth");
 
-      const res = await fetch(`${this.baseUrl}/logout`, {
-        method: 'POST',
-        credentials: 'include',
-      });
+    //  setUser(null);
 
-      if (!res.ok) throw new Error('Logout failed');
-      localStorage.removeItem("auth");
-      return true;
-    } catch (err) {
-      console.warn('Logout error:', err);
-      return false;
-    }
+    // same below 
+
+    // // If your app keeps a UserControllerInstance, clear it too
+    // if (window?.UserControllerInstance) {
+    //   window.UserControllerInstance = null;
+    // }
+
+    // Return success (no backend call needed)
+    return true;
+  } catch (err) {
+    console.warn("Logout error:", err);
+    return false;
   }
+}
 }

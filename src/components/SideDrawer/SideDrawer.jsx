@@ -11,9 +11,8 @@ export default function SideDrawer({
   onProfileSettings,
   onBilling,
   onHelpCenter,
-  onLogout,
 }) {
-  const { user } = useContext(UserContext);
+  const { user, logout } = useContext(UserContext); // ✅ use logout directly
   const [accountOpen, setAccountOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -31,27 +30,30 @@ export default function SideDrawer({
     setAccountOpen(false);
   }, [user]);
 
-  // Close account dropdown whenever drawer closes
   const handleCloseAccount = (delay = 0) => {
-  if (delay > 0) {
-    // keep it open for the transition duration
-    setTimeout(() => setAccountOpen(false), delay);
-  } else {
-    setAccountOpen(false);
+    if (delay > 0) {
+      setTimeout(() => setAccountOpen(false), delay);
+    } else {
+      setAccountOpen(false);
+    }
+  };
+
+  const handleCloseDrawer = () => {
+    handleCloseAccount(500);
+    onClose?.();
+  };
+
+  const scrollToTop = () => {
+     onClose?.();
+     window.scrollTo({ top: 0, behavior: "smooth" });
   }
-};
 
-const handleCloseDrawer = () => {
-  handleCloseAccount(500); // 0.5s delay for smooth closing
-  
-  onClose?.();
-};
+  const handleCloseAccountNavigationDrawer = () => {
+    handleCloseAccount(500);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    onClose?.();
+  };
 
-const handleCloseAccountNavigationDrawer = () => {
-  handleCloseAccount(500); // 0.5s delay for smooth closing
-   window.scrollTo({ top: 0, behavior: "smooth" });
-  onClose?.();
-};
   // Close account dropdown on scroll
   useEffect(() => {
     const handleScroll = () => {
@@ -76,11 +78,12 @@ const handleCloseAccountNavigationDrawer = () => {
     } else scrollToSection();
   };
 
-  const userInitial = (user?.firstName || user?.email || "U")[0]?.toUpperCase();
-
   return (
     <>
-      <div className={`drawer-backdrop ${isOpen ? "show" : ""}`} onClick={handleCloseAccountNavigationDrawer} />
+      <div
+        className={`drawer-backdrop ${isOpen ? "show" : ""}`}
+        onClick={handleCloseAccountNavigationDrawer}
+      />
       <div className={`side-drawer ${isOpen ? "open" : ""}`}>
         <div className="drawer-section">
           <div className="drawer-section-title">Navigation</div>
@@ -92,7 +95,13 @@ const handleCloseAccountNavigationDrawer = () => {
             ))}
           </ul>
           <div className="drawer-cta">
-            <button className="btn-cta" onClick={() => { handleCloseDrawer(); onFreeSession?.(); }}>
+            <button
+              className="btn-cta"
+              onClick={() => {
+                handleCloseDrawer();
+                onFreeSession?.();
+              }}
+            >
               Book a Free Session
             </button>
           </div>
@@ -100,38 +109,83 @@ const handleCloseAccountNavigationDrawer = () => {
 
         {user ? (
           <div className="drawer-account-group">
-            <button className="btn-dashboard" onClick={() => { handleCloseDrawer(); onDashboard?.(); }}>
+            <button
+              className="btn-dashboard"
+              onClick={() => {
+                handleCloseDrawer();
+                onDashboard?.();
+              }}
+            >
               Dashboard
             </button>
-            <div className="drawer-account" onClick={() => setAccountOpen((prev) => !prev)}>
-  <div className="account-header">
-    <img
-      src={user.photoURL || `https://picsum.photos/seed/${user.firstName || "u"}/60`}
-      alt="Avatar"
-      className="account-avatar"
-    />
-    <div id="account-infos" className="account-info">
-      <div className="account-names">{user.firstName || "User"} {user.lastName || ""}</div>
-      <div className="account-emails">{user.email || ""}</div>
-    </div>
-  </div>
 
-<div className={`account-links ${accountOpen ? "open" : ""}`}>
-  <button onClick={() => { handleCloseAccount(500); onProfileSettings?.(); }}>Profile & Settings</button>
-  <button onClick={() => { handleCloseAccount(500); onBilling?.(); }}>Manage Plan / Billing</button>
-  <button onClick={() => { handleCloseAccount(500); onHelpCenter?.(); }}>Help Center</button>
-  <button className="danger" onClick={() => { handleCloseAccount(500); onLogout?.(); }}>Logout</button>
-</div>
-</div>
+            <div
+              className="drawer-account"
+              onClick={() => setAccountOpen((prev) => !prev)}
+            >
+              <div className="account-header">
+                <img
+                  src={
+                    user.photoURL ||
+                    `https://picsum.photos/seed/${user.firstName || "u"}/60`
+                  }
+                  alt="Avatar"
+                  className="account-avatar"
+                />
+                <div id="account-infos" className="account-info">
+                  <div className="account-names">
+                    {user.firstName || "User"} {user.lastName || ""}
+                  </div>
+                  <div className="account-emails">{user.email || ""}</div>
+                </div>
+              </div>
+
+              <div className={`account-links ${accountOpen ? "open" : ""}`}>
+                <button
+                  onClick={() => {
+                    handleCloseAccount(500);
+                    onProfileSettings?.();
+                  }}
+                >
+                  Profile & Settings
+                </button>
+                <button
+                  onClick={() => {
+                    handleCloseAccount(500);
+                    onBilling?.();
+                  }}
+                >
+                  Manage Plan / Billing
+                </button>
+                <button
+                  onClick={() => {
+                    handleCloseAccount(500);
+                    onHelpCenter?.();
+                  }}
+                >
+                  Help Center
+                </button>
+                <button
+                  className="danger"
+                  onClick={() => {
+                    handleCloseAccount(500);
+                    logout(); // ✅ use context logout
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="drawer-login-join">
             <button
               className="btn-outline"
               onClick={() => {
-                   navigate("/login");
-                handleCloseDrawer();
-             
+               
+                navigate("/login");
+                scrollToTop();
+              
               }}
             >
               Login / Join
@@ -142,4 +196,3 @@ const handleCloseAccountNavigationDrawer = () => {
     </>
   );
 }
-

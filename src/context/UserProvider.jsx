@@ -50,6 +50,12 @@ export function UserProvider({ children }) {
   fetchUser();
 }, []);
 
+  const getCurrentUser = async ({}) => {
+    const u = await ctrl.getCurrentUser({});
+    setUser(u);
+    return u;
+  }
+
 
   const login = async ({ email, password }) => {
     const u = await ctrl.login({ email, password });
@@ -77,6 +83,7 @@ export function UserProvider({ children }) {
         login,
         register,
         logout,
+        getCurrentUser
       }}
     >
       {children}

@@ -76,7 +76,6 @@ export default class UserController {
     return res.json();
   }
 
-  // ✅ New: complete reset with token
   static async resetPassword({ token, password }) {
     const res = await fetch('/api/password/reset', {
       method: 'POST',

@@ -46,7 +46,7 @@ export default function Footer() {
               <li><Link to="/practice">Practice</Link></li>
               <li><Link to="/dashboard">Progress</Link></li>
               <li><Link to="/about">Method</Link></li>
-              <li><Link to="/packages">Pricing</Link></li>
+              <li><Link to="/pricing">Pricing</Link></li>
             </ul>
           </nav>
 

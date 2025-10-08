@@ -7,7 +7,7 @@ import Footer from "./components/Footer/Footer.jsx";
 
 // Context Providers
 import { UserProvider } from "./context/UserProvider.jsx";
-import { FreeSessionProvider } from "./context/FreeSessionProvider.jsx";
+import { SessionProvider } from "./context/SessionProvider.jsx";
 
 // Utils
 import ScrollToHash from "./utils/ScrollToHash.jsx"; 
@@ -20,10 +20,14 @@ import LogoutPage from "./screens/Auth/LogoutPage.jsx";
 import NotFoundPage from "./screens/NotFound/NotFoundPage.jsx";
 import ForgotPasswordPage from "./screens/Auth/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "./screens/Auth/ResetPasswordPage.jsx";
+import PrivacyPage from "./screens/Privacy/PrivacyPage.jsx";
+import TermsPage from "./screens/Terms/TermsPage.jsx";
+import PricingPage from "./screens/Pricing/PricingPage.jsx";
 import Dashboard from "./screens/Dashboard/Dashboard.jsx";
 import ProfileSettings from "./screens/ProfileSettings/ProfileSettings.jsx";
 import ManageBilling from "./screens/ManageBilling/ManageBilling.jsx";
 import HelpCenter from "./screens/HelpCenter/HelpCenter.jsx";
+import ContactPage from "./screens/Contact/ContactPage.jsx";
 
 
 
@@ -50,6 +54,13 @@ function AppRoutes() {
       <Route path="/manage-billing" element={<ManageBilling />} />
       <Route path="/help-center" element={<HelpCenter />} />
 
+      {/* Privacy Policy */}
+      <Route path="/privacy" element={<PrivacyPage />} />
+      <Route path="/terms" element={<TermsPage></TermsPage>}/>
+      <Route path="/contact" element={<ContactPage></ContactPage>}/>
+      <Route path="/pricing" element={<PricingPage></PricingPage>}/>
+      
+
     </Routes>
   );
 }
@@ -59,14 +70,14 @@ export default function App() {
   return (
     <UserProvider>
       <Router>
-        <FreeSessionProvider /* analytics={window.mixpanel} config={{ spamWindowDays: 30 }} */>
+        <SessionProvider /* analytics={window.mixpanel} config={{ spamWindowDays: 30 }} */>
 
           <AppNavBar />
           <div>
             <AppRoutes />
           </div>
           <Footer />
-        </FreeSessionProvider>
+        </SessionProvider>
       </Router>
     </UserProvider>
   );

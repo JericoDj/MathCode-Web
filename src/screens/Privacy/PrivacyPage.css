@@ -1,0 +1,156 @@
+/* Layout */
+.privacy-page {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #ffffff, #f9fafb);
+  padding: 4rem 1rem;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+}
+
+.privacy-article {
+  max-width: 960px;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid #e5e7eb;
+  border-radius: 2rem;
+  padding: 3rem 2rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  backdrop-filter: blur(12px);
+}
+
+/* Header */
+.privacy-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.privacy-header h1 {
+  font-size: 3rem;
+  color: #047857;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+}
+
+.effective-date {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+/* Intro */
+.privacy-intro {
+  color: #374151;
+  margin-bottom: 3rem;
+  line-height: 1.7;
+}
+
+/* Sections */
+.privacy-section {
+  margin-bottom: 2.5rem;
+}
+
+.privacy-section h2 {
+  font-size: 1.75rem;
+  color: #047857;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.privacy-content {
+  color: #374151;
+  line-height: 1.7;
+}
+
+.privacy-content ul {
+  list-style: disc inside;
+  margin-top: 0.5rem;
+  margin-left: 1rem;
+}
+
+/* Footer */
+.privacy-footer {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.contact-info p {
+  margin: 0.25rem 0;
+  color: #374151;
+}
+
+.contact-info a {
+  color: #047857;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+/* Buttons */
+.footer-actions button {
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+}
+
+.btn-print {
+  background: #ffffff;
+  color: #047857;
+  border: 1px solid #10b981;
+}
+
+.btn-print:hover {
+  background: #f0fdf4;
+}
+
+.btn-export {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.btn-export:hover {
+  background: #059669;
+}
+
+/* Decorative bar */
+/* .decorative-bar {
+  display: none;
+}
+
+@media screen and (min-width: 1024px) {
+  .decorative-bar {
+    display: block;
+    position: fixed;
+    left: 2rem;
+    top: 8rem;
+    width: 1.5rem;
+    height: 16rem;
+    border-radius: 9999px;
+    background: linear-gradient(to bottom, #bbf7d0, #34d399);
+    opacity: 0.6;
+    transform: skewX(-12deg);
+  }
+} */
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .privacy-article {
+    padding: 2rem 1rem;
+  }
+
+  .privacy-header h1 {
+    font-size: 2.25rem;
+  }
+
+  .privacy-section h2 {
+    font-size: 1.5rem;
+  }
+}

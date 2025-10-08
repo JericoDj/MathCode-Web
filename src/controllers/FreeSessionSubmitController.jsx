@@ -1,5 +1,5 @@
 // controllers/FreeSessionSubmitController.jsx
-import FreeSessionController from "./FreeSessionController.jsx"; // reuse userUsed/markUserUsed + tracking if you like
+import FreeSessionController from "./SessionController.jsx"; // reuse userUsed/markUserUsed + tracking if you like
 
 export default class FreeSessionSubmitController {
   constructor({ analytics = null } = {}) {
