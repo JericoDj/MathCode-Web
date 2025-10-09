@@ -5,26 +5,21 @@ export default class AuthController {
   }
 
   async getCurrentUser() {
-    const savedAuth = localStorage.getItem('auth');
-  if (!savedAuth) return null; 
+   
+
   try {
-    const { user, token } = JSON.parse(savedAuth);
-    if (user) return user; 
+     const savedAuth = localStorage.getItem('token');
 
-    // If user is missing, we can optionally exit early
-    if (!user) return null;
-    
-    // 2️⃣ Otherwise, fetch from backend if token exists
-    if (!token) return null;
-
+    console.log("fixing");
+         console.log(savedAuth);
+  
     const response = await fetch(`${this.baseUrl}/me`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${JSON.parse(savedAuth)}`,
       },
     });
-
     if (!response.ok) return null; // fail silently
     return response.json();
   } catch (e) {
@@ -56,9 +51,15 @@ export default class AuthController {
 
       const loginData = await res.json();
 
-      // 2️⃣ Save login data to localStorage
-      localStorage.setItem("auth", JSON.stringify(loginData));
+      const userData = JSON.stringify(loginData.user);
+      console.log(userData);
 
+      const token = JSON.stringify(loginData.token);
+      console.log(token);
+
+      // 2️⃣ Save login data to localStorage
+      localStorage.setItem("auth", userData);
+      localStorage.setItem("token", token)
       // 3️⃣ Fetch full user profile
       const profileRes = await fetch(`${this.baseUrl}/me`, {
         method: "GET",
@@ -138,6 +139,7 @@ export default class AuthController {
   try {
    
     localStorage.removeItem("auth");
+    localStorage.removeItem("token");
 
     //  setUser(null);
 

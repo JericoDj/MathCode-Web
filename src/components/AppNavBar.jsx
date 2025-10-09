@@ -48,7 +48,10 @@ export default function AppNavBar() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        console.log("trying to get");
         await getCurrentUser();
+
+  
       } catch (error) {
         console.error('Error fetching user:', error);
         setUser(null);
@@ -277,7 +280,7 @@ export default function AppNavBar() {
       <BookingDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
-        onSubmit={handleDialogSubmit}
+   
       />
     </>
   );

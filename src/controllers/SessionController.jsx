@@ -6,7 +6,7 @@ function daysFrom(ts) {
 }
 
 export default class SessionController {
-  constructor({ analytics = null, baseUrl = "https://mathcode-backend.onrender.com/api/session" } = {}) {
+  constructor({ analytics = null, baseUrl = "https://mathcode-backend.onrender.com/api/request-sessions" } = {}) {
     this.analytics = analytics;
     this.baseUrl = baseUrl;
   }
@@ -123,26 +123,32 @@ export default class SessionController {
   /** Example: Submit a session request to backend */
   async submitSession(formData) {
     try {
-      const token = JSON.parse(localStorage.getItem("auth") || "{}")?.token;
+      const authDetails = localStorage.getItem("token");
+      const token = JSON.parse(authDetails);
+      console.log(token);
 
-      const res = await fetch(`${this.baseUrl}/request`, {
+      const res = await fetch(`${this.baseUrl}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          Authorization: `Bearer ${token}`,
         },
         credentials: "include",
         body: JSON.stringify(formData),
       });
 
       if (!res.ok) {
+        console.log("res is not okay");
         const data = await res.json().catch(() => ({}));
         throw new Error(data?.message || "Failed to submit session request");
       }
 
+        
       const data = await res.json();
-      this._track("session_submitted", { userId: this.user?.id || null });
-      if (this.user) this.markUserUsed(this.user);
+       console.log("res is okay"); 
+      console.log(data);
+       console.log("res is okay"); 
+ 
       return data;
     } catch (err) {
       console.error("session submission failed:", err);

@@ -18,7 +18,7 @@ export default function BookingDialog({ open, onClose }) {
   const [timePref, setTimePref] = useState("");
   const firstRef = useRef(null);
 
-  const { submitBooking, isSubmitting } = useContext(SessionContext); 
+  const { requestSession, isSubmitting } = useContext(SessionContext); 
 
   useEffect(() => {
     if (open) {
@@ -36,9 +36,9 @@ export default function BookingDialog({ open, onClose }) {
     e.preventDefault();
     if (!canSubmit) return;
 
-    const result = await submitBooking({ concerns, age, notes, timePref });
+    const result = await requestSession({ concerns, age, notes, timePref });
 
-    if (result.success) {
+    if (result) {
       onClose?.();
     } else {
       alert(result.message || "Failed to submit session request.");

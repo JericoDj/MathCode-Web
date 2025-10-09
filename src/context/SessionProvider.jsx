@@ -27,7 +27,7 @@ export function SessionProvider({ children, analytics = null, config = {} }) {
   const requestSession = async (opts = {}) => {
     setLoading(true);
     try {
-      const res = await ctrl.handleSessionClick({ user, location, ...opts });
+      const res = await ctrl.submitSession({ user, location, ...opts });
       return res;
     } finally {
       setLoading(false);
@@ -52,7 +52,7 @@ export function SessionProvider({ children, analytics = null, config = {} }) {
         loading,
         requestSession,
         cancelSession,
-        controller: ctrl, // optional raw access
+        controller: ctrl, 
       }}
     >
       {children}
