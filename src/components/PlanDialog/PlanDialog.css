@@ -1,0 +1,268 @@
+.dialog-box {
+  margin-top: 5rem; /* adds spacing from top navbar */
+}
+/* Backdrop */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  backdrop-filter: blur(2px);
+}
+
+/* Dialog box */
+.dialog-box {
+  background: #fff;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  animation: popIn 0.3s ease;
+}
+
+/* Header */
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+/* Content */
+.dialog-content {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  overflow-y: auto;
+}
+
+/* Plan Details */
+.dialog-content h3 {
+  margin-top: 0;
+}
+
+.tasks-section {
+  margin-top: 1rem;
+}
+
+.tasks-section ul {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+  list-style: none;
+  margin: 0;
+}
+
+.tasks-section li {
+  flex: 0 0 auto;
+  background: #f1f1f1;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  min-width: 150px;
+  text-align: center;
+}
+
+/* Footer */
+.dialog-actions {
+  text-align: right;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #ddd;
+}
+
+.btn-secondary {
+  background: #ccc;
+  color: #111;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: #bbb;
+}
+
+/* Animations */
+@keyframes popIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+.transactions-section {
+  margin-top: 1rem;
+}
+
+.transactions-scroll {
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  background: #fafafa;
+}
+
+.transactions-scroll ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.transactions-scroll li {
+  padding: 0.3rem 0;
+  border-bottom: 1px solid #eee;
+  font-size: 0.95rem;
+}
+
+.transactions-scroll li:last-child {
+  border-bottom: none;
+}
+
+.pagination {
+  display: flex;
+  gap: 0.3rem;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.pagination button {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid #ccc;
+  background: #f8f8f8;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.btn-small {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  margin-left: 0.3rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-small.danger {
+  background: #f44336;
+  color: white;
+  border: none;
+}
+
+.payment-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.payment-btn {
+  background: #eee;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.payment-btn.active {
+  background: #007bff;
+  color: white;
+}
+
+.card-section input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.card-details {
+  display: flex;
+  gap: 12px;
+}
+
+.card-brand {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.qr-placeholder {
+  width: 180px;
+  height: 180px;
+  background: #f3f3f3;
+  border: 2px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  margin-top: 8px;
+}
+
+
+/* Transactions and statuses */
+.transactions-section { margin-top: 1rem; }
+.transactions-scroll { max-height: 240px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; padding: 0.5rem; background: #fafafa; }
+.transactions-scroll ul { list-style: none; padding: 0; margin: 0; }
+.tx-row { display:flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #eee; }
+.tx-row:last-child { border-bottom: none; }
+.tx-left .tx-date { font-weight: 600; }
+.tx-left .tx-desc { color: #666; font-size: 0.9rem; }
+.tx-right { text-align: right; display:flex; flex-direction: column; gap:4px; align-items:flex-end; }
+.tx-amount { font-weight: 700; }
+.tx-status { font-weight: 600; padding: 0.2rem 0.5rem; border-radius: 6px; font-size: 0.85rem; text-transform: capitalize; }
+.tx-status.paid { background: #d4edda; color: #155724; }
+.tx-status.failed { background: #f8d7da; color: #721c24; }
+.tx-status.pending { background: #fff3cd; color: #856404; }
+
+.pagination { display:flex; gap:6px; justify-content:center; margin-top:10px; }
+.pagination button { padding: 6px 10px; border-radius: 6px; border: 1px solid #ddd; background: #fafafa; cursor:pointer; }
+.pagination button.active { background:#007bff; color:white; border-color:#007bff; }
+
+.card-brand { color:#444; margin:6px 0; font-size:0.9rem; }
+.card-details { display:flex; gap:12px; margin-top:8px; }
+.field input { padding:8px; border-radius:6px; border:1px solid #ddd; width:150px; }
+.card-form-actions { display:flex; gap:8px; margin-top:8px; }
+.btn-small { padding:6px 10px; font-size:0.85rem; border-radius:6px; border:none; cursor:pointer; background:#e7e7e7; }
+.btn-small.danger { background:#f44336; color:white; }
+.btn-small.warning { background: #ffc107; }
+.btn-primary { background:#007bff; color:white; padding:10px 12px; border-radius:8px; border:none; cursor:pointer; }
+.btn-secondary { background:#ddd; color:#111; padding:8px 12px; border-radius:8px; border:none; cursor:pointer; }
+.qr-placeholder { width:160px; height:160px; background:#f6f6f6; border:2px dashed #ddd; display:flex; align-items:center; justify-content:center; color:#888; margin-top:8px; }
+.payment-buttons { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+.payment-btn { border:none; padding:8px 10px; border-radius:8px; background:#eee; cursor:pointer; }
+.payment-btn.active { background:#007bff; color:white; }
+.empty { color:#666; padding:1rem 0; text-align:center; }

@@ -1,18 +1,15 @@
-// App.jsx
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 
-// Components
 import AppNavBar from "./components/AppNavBar.jsx";
+import AppDashboardNavBar from "./components/AppDashboardNavBar.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 
-// Context Providers
 import { UserProvider } from "./context/UserProvider.jsx";
 import { SessionProvider } from "./context/SessionProvider.jsx";
+import { StudentProvider } from "./context/StudentProvider.jsx";
+import { PlanProvider } from "./context/PlanProvider.jsx";
 
-// Utils
-import ScrollToHash from "./utils/ScrollToHash.jsx"; 
-
-// Screens
 import HomePage from "./screens/Home/HomePage.jsx";
 import AboutPage from "./screens/About/AboutPage.jsx";
 import AuthPage from "./screens/Auth/AuthPage.jsx";
@@ -28,55 +25,53 @@ import ProfileSettings from "./screens/ProfileSettings/ProfileSettings.jsx";
 import ManageBilling from "./screens/ManageBilling/ManageBilling.jsx";
 import HelpCenter from "./screens/HelpCenter/HelpCenter.jsx";
 import ContactPage from "./screens/Contact/ContactPage.jsx";
-
-
-
 import "./App.css";
 
-function AppRoutes() {
+function LayoutWrapper() {
+  const location = useLocation();
+  const isDashboardRoute = location.pathname.startsWith("/dashboard") || 
+    location.pathname.startsWith("/profile-settings") ||
+    location.pathname.startsWith("/manage-billing") ||
+    location.pathname.startsWith("/help-center");
+
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/about" element={<AboutPage />} />
-      <Route path="*" element={<NotFoundPage />} />
+    <>
+      {isDashboardRoute ? <AppDashboardNavBar /> : <AppNavBar />}
 
-       {/* Auth */}
-      <Route path="/login" element={<AuthPage mode="login" />} />
-      <Route path="/register" element={<AuthPage mode="register" />} />
-      <Route path="/logout" element={<LogoutPage />} />
-      <Route path="/reset-password" element={<ForgotPasswordPage />} />
-      <Route path="/reset-password/confirm" element={<ResetPasswordPage />} />
-      
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/login" element={<AuthPage mode="login" />} />
+        <Route path="/register" element={<AuthPage mode="register" />} />
+        <Route path="/logout" element={<LogoutPage />} />
+        <Route path="/reset-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password/confirm" element={<ResetPasswordPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/profile-settings" element={<ProfileSettings />} />
+        <Route path="/manage-billing" element={<ManageBilling />} />
+        <Route path="/help-center" element={<HelpCenter />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/pricing" element={<PricingPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
 
-      {/* Dashboard */}
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/profile-settings" element={<ProfileSettings />} />
-      <Route path="/manage-billing" element={<ManageBilling />} />
-      <Route path="/help-center" element={<HelpCenter />} />
-
-      {/* Privacy Policy */}
-      <Route path="/privacy" element={<PrivacyPage />} />
-      <Route path="/terms" element={<TermsPage></TermsPage>}/>
-      <Route path="/contact" element={<ContactPage></ContactPage>}/>
-      <Route path="/pricing" element={<PricingPage></PricingPage>}/>
-      
-
-    </Routes>
+      {!isDashboardRoute && <Footer />}
+    </>
   );
 }
-
 
 export default function App() {
   return (
     <UserProvider>
       <Router>
-        <SessionProvider /* analytics={window.mixpanel} config={{ spamWindowDays: 30 }} */>
-
-          <AppNavBar />
-          <div>
-            <AppRoutes />
-          </div>
-          <Footer />
+        <SessionProvider>
+          <StudentProvider>
+            <PlanProvider>
+              <LayoutWrapper />
+            </PlanProvider>
+          </StudentProvider>
         </SessionProvider>
       </Router>
     </UserProvider>

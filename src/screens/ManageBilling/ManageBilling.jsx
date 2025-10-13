@@ -1,8 +1,26 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { PlanContext } from "../../context/PlanContext.jsx";
 import "./ManageBilling.css";
 
 export default function ManageBilling() {
   const [plan, setPlan] = useState("Pro Plan");
+  const { openPlanDialog } = useContext(PlanContext);
+
+  const handleUpdatePayment = () => {
+    openPlanDialog({
+      name: "Pro Plan",
+      status: "Active",
+      nextBilling: "2025-11-01",
+      totalSessions: 10,
+      remainingSessions: 7,
+      transactions: [
+        { date: "2025-10-01", amount: 29.99, status: "Paid" },
+        { date: "2025-09-01", amount: 29.99, status: "Paid" },
+        { date: "2025-08-01", amount: 29.99, status: "Failed" },
+        { date: "2025-07-01", amount: 29.99, status: "Pending" },
+      ],
+    });
+  };
 
   return (
     <>
@@ -13,7 +31,7 @@ export default function ManageBilling() {
       <div className="billing-settings">
         <h2>Manage Plan & Billing</h2>
         <p className="intro">
-          View your subscription details, invoices, and payment methods
+          View your subscription details, invoices, and payment methods.
         </p>
 
         <div className="billing-grid">
@@ -37,11 +55,15 @@ export default function ManageBilling() {
                 className="payment-icon"
               />
               <div>
-                <p><strong>Visa ending in 4242</strong></p>
+                <p>
+                  <strong>Visa ending in 4242</strong>
+                </p>
                 <small>Expires 06/27</small>
               </div>
             </div>
-            <button className="btn-outline full">Update Payment Method</button>
+            <button className="btn-outline full" onClick={handleUpdatePayment}>
+              Update Payment Method
+            </button>
           </section>
         </div>
 
@@ -67,7 +89,9 @@ export default function ManageBilling() {
                   <td>Luna – Scratch Coding (3/5 sessions)</td>
                   <td>$49.00</td>
                   <td><span className="status paid">Paid</span></td>
-                  <td><button className="btn-outline small">Download</button></td>
+                  <td>
+                    <button className="btn-outline small">Download</button>
+                  </td>
                 </tr>
                 <tr>
                   <td>Aug 01, 2025</td>
@@ -75,7 +99,9 @@ export default function ManageBilling() {
                   <td>Max – Python Basics (5/10 sessions)</td>
                   <td>$79.00</td>
                   <td><span className="status paid">Paid</span></td>
-                  <td><button className="btn-outline small">Download</button></td>
+                  <td>
+                    <button className="btn-outline small">Download</button>
+                  </td>
                 </tr>
               </tbody>
             </table>

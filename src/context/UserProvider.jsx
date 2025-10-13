@@ -14,13 +14,15 @@ export function UserProvider({ children }) {
 
     try {
       const token = localStorage.getItem("token");
-      console.log("Saved token:", token);
+     
       if (!token) {
         setUser(null);
         return;
       }
+// http://localhost:4000/
 
-      const res = await fetch("https://mathcode-backend.onrender.com/api/users/me", {
+      const res = await fetch("http://localhost:4000/api/users/me", {
+      // const res = await fetch("https://mathcode-backend.onrender.com/api/users/me", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -31,7 +33,7 @@ export function UserProvider({ children }) {
 
       if (res.ok) {
         const u = await res.json();
-        console.log("u:", u)
+     
         setUser(u);
       } else {
         // token expired or invalid
@@ -50,7 +52,7 @@ export function UserProvider({ children }) {
 }, []);
 
   const getCurrentUser = async () => {
-    console.log("running ctrl");
+
     const u = await ctrl.getCurrentUser({});
     setUser(u);
     return u;
@@ -59,6 +61,7 @@ export function UserProvider({ children }) {
 
   const login = async ({ email, password }) => {
     const u = await ctrl.login({ email, password });
+
     setUser(u);
     return u;
   };

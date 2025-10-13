@@ -127,7 +127,7 @@ export default class SessionController {
       const token = JSON.parse(authDetails);
       console.log(token);
 
-      const res = await fetch(`${this.baseUrl}`, {
+      const res = await fetch("http://localhost:4000/api/sessions/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -137,6 +137,8 @@ export default class SessionController {
         body: JSON.stringify(formData),
       });
 
+      console.log(res);
+      
       if (!res.ok) {
         console.log("res is not okay");
         const data = await res.json().catch(() => ({}));
@@ -155,6 +157,38 @@ export default class SessionController {
       throw err;
     }
   }
+
+  /** Fetch all sessions for the current user */
+async getAllSessions() {
+  try {
+    const token = localStorage.getItem("token");
+    console.log(token);
+
+
+    if (!token) throw new Error("No token found");
+
+    const res = await fetch(`http://localhost:4000/api/sessions/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data?.message || "Failed to fetch sessions");
+    }
+    
+    const data = await res.json();
+    console.log(data.items);
+    return data.items;
+  } catch (err) {
+    console.error("getAllSessions failed:", err);
+    return [];
+  }
+}
+
 
   /** Example: Cancel a session */
   async cancelSession(sessionId) {
@@ -193,3 +227,6 @@ export default class SessionController {
     }
   }
 }
+
+
+

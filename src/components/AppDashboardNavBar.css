@@ -1,0 +1,232 @@
+/* ===== MathCode x Apple Professional Theme ===== */
+:root {
+  /* Brand Accents */
+  --accent-yellow: #d8d51d; /* elegant mid-blue */
+  --accent-green: #198d44; /* balanced green */
+  --accent-gradient: linear-gradient(90deg, #d8c21d, #0f7635);
+
+  /* Neutrals */
+  --bg-main: #f9fafb;        /* soft background */
+  --bg-navbar: #ffffff;      /* white nav */
+  --border-light: #e5e7eb;   /* light border */
+  --text-main: #0e3e0d;      /* near-black */
+  --text-muted: #6b7280;     /* muted grey */
+  --hover-bg: #f3f4f6;       /* light hover */
+  --menu-bg: #ffffff;        /* dropdown bg */
+  --danger: #ef4444;
+
+  /* Depth */
+  --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+  /* Animation */
+  --transition: all 0.25s ease;
+}
+
+/* ===== Navbar Container ===== */
+.appdash-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-navbar);
+  border-bottom: 1px solid var(--border-light);
+  padding: 0.75rem 15%;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition);
+}
+
+/* ===== Left Section ===== */
+.appdash-left {
+  display: flex;
+  
+  align-items: center !important;
+  gap: 3rem;
+}
+
+/* Logo */
+.appdash-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: var(--text-main);
+  text-decoration: none;
+  letter-spacing: -0.3px;
+  transition: var(--transition);
+}
+
+.appdash-logo:hover {
+  opacity: 0.85;
+  transform: scale(0.99);
+}
+
+.appdash-logo img {
+  height: 34px;
+  width: auto;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.05));
+}
+
+/* ===== Navigation Links ===== */
+.appdash-nav {
+  display: flex;
+  gap: 1.75rem;
+}
+
+.appdash-link {
+  text-decoration: none;
+  color: var(--text-main);
+  font-weight: 500;
+  font-size: 0.96rem;
+  position: relative;
+  padding-bottom: 3px;
+  transition: var(--transition);
+}
+
+.appdash-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0%;
+  height: 2px;
+  background: var(--accent-gradient);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.appdash-link:hover {
+  color: var(--accent-green);
+}
+
+.appdash-link:hover::after {
+  width: 100%;
+}
+
+/* ===== Right Section ===== */
+.appdash-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Notification Icon */
+.appdash-icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  font-size: 1.25rem;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 6px;
+  transition: var(--transition);
+}
+
+.appdash-icon-btn:hover {
+  background: var(--hover-bg);
+  color: var(--accent-blue);
+}
+
+/* Avatar */
+.appdash-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: var(--transition);
+}
+
+.appdash-avatar:hover {
+  border-color: var(--accent-green);
+  transform: scale(1.04);
+}
+
+/* ===== Dropdown Menu ===== */
+.appdash-menu {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: var(--menu-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  box-shadow: var(--shadow-hover);
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.18s ease-in-out;
+  overflow: hidden;
+}
+
+.appdash-menu-item {
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-main);
+  font-size: 0.93rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.appdash-menu-item:hover {
+  background: var(--hover-bg);
+  color: var(--accent-green);
+}
+
+.appdash-menu-item.danger {
+  color: var(--danger);
+}
+
+.appdash-menu-item.danger:hover {
+  background: #fee2e2;
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 1280px) {
+  .appdash-navbar {
+    padding: 0.75rem 10%;
+  }
+}
+
+@media (max-width: 1024px) {
+  .appdash-navbar {
+    padding: 0.75rem 6%;
+  }
+}
+
+@media (max-width: 768px) {
+  .appdash-nav {
+    display: none;
+  }
+
+  .appdash-navbar {
+    padding: 0.75rem 1rem;
+  }
+
+  .appdash-logo img {
+    height: 30px;
+  }
+
+  .appdash-avatar {
+    width: 34px;
+    height: 34px;
+  }
+}

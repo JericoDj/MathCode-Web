@@ -1,0 +1,517 @@
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  backdrop-filter: blur(2px);
+}
+
+.dialog-box.wide {
+  background: #fff;
+  border-radius: 14px;
+  width: 700px;
+  max-width: 95%;
+  max-height: 90vh;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  animation: popIn 0.3s ease;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.dialog-content.scrollable {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 2rem;
+}
+
+/* Group Sections */
+.session-group {
+  margin-bottom: 1.5rem;
+}
+
+.status-title {
+  font-size: 1.1rem;
+  margin-bottom: 0.6rem;
+  border-left: 4px solid #ccc;
+  padding-left: 0.5rem;
+  text-transform: capitalize;
+}
+
+.status-title.approved {
+  border-color: #4caf50;
+}
+
+.status-title.pending {
+  border-color: #ffc107;
+}
+
+.status-title.declined {
+  border-color: #f44336;
+}
+
+/* Session Card */
+.session-card {
+  background: #fafafa;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  transition: 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.session-card:hover {
+  background: #f5f5f5;
+}
+
+.session-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.session-index {
+  background: #1976d2;
+  color: #fff;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.session-main {
+  flex: 1;
+}
+
+.session-main p {
+  margin: 0;
+  font-weight: 500;
+}
+
+.session-main small {
+  color: #666;
+}
+
+/* Status Tag */
+.status-tag {
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-tag.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-tag.approved {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-tag.declined {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Expanded Details */
+.session-details {
+  margin-top: 0.75rem;
+  border-top: 1px solid #eee;
+  padding-top: 0.5rem;
+  font-size: 0.9rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+}
+
+.dialog-actions {
+  text-align: right;
+  margin-top: 1rem;
+}
+
+.btn-secondary {
+  background: #ccc;
+  color: #111;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: #bbb;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.dialog-box.wide {
+  background: #fff;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 900px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+}
+
+.tab-header {
+  display: flex;
+  overflow-x: auto;
+  background: #fafafa;
+  border-bottom: 1px solid #ddd;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+.tab-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: #e5e5e5;
+  cursor: pointer;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.tab-btn.active {
+  background: #007bff;
+  color: white;
+}
+
+.tab-content {
+  padding: 1rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.session-card {
+  background: #f9f9f9;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  padding: 0.75rem;
+  border-left: 4px solid transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+.session-card:hover {
+  background: #f1f1f1;
+}
+
+.session-card.completed {
+  border-left-color: #28a745;
+}
+
+.session-card.pending {
+  border-left-color: #ffc107;
+}
+
+.session-card.approved {
+  border-left-color: #007bff;
+}
+
+.session-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.session-index {
+  background: #007bff;
+  color: white;
+  font-weight: bold;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+.status-tag {
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  text-transform: capitalize;
+}
+
+.status-tag.completed {
+  background: #28a745;
+  color: white;
+}
+.status-tag.pending {
+  background: #ffc107;
+  color: black;
+}
+.status-tag.approved {
+  background: #007bff;
+  color: white;
+}
+
+.session-details {
+  margin-top: 0.5rem;
+  padding-left: 2rem;
+  border-left: 2px solid #ddd;
+}
+
+.detail-row {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.25rem 0;
+}
+
+.empty {
+  padding: 2rem;
+  text-align: center;
+  color: #666;
+}
+
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  backdrop-filter: blur(2px);
+}
+
+.dialog-box.wide {
+  background: #fff;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 900px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+/* Horizontally scrollable status bar */
+.tab-header.scroll-x {
+  display: flex;
+  overflow-x: auto;
+  gap: 0.6rem;
+  padding: 0.5rem 1rem;
+  background: #fafafa;
+  border-bottom: 1px solid #ddd;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tab-header.scroll-x::-webkit-scrollbar {
+  height: 6px;
+}
+.tab-header.scroll-x::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);
+  border-radius: 3px;
+}
+
+.tab-btn {
+  flex-shrink: 0;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: #e5e5e5;
+  cursor: pointer;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.tab-btn.active {
+  background: #007bff;
+  color: white;
+}
+
+/* Scrollable vertical session container */
+.tab-scroll-container.scroll-y {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.5rem;
+  scroll-behavior: smooth;
+}
+
+/* Session cards */
+.session-card {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  transition: 0.2s;
+  border-left: 4px solid transparent;
+}
+
+.session-card.approved { border-left-color: #007bff; }
+.session-card.pending { border-left-color: #ffc107; }
+.session-card.cancelled { border-left-color: #f44336; }
+
+.session-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.session-index {
+  background: #007bff;
+  color: white;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.status-tag {
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-tag.approved {
+  background: #d4edda;
+  color: #155724;
+}
+.status-tag.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+.status-tag.cancelled {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.session-details {
+  margin-top: 0.75rem;
+  border-top: 1px solid #eee;
+  padding-top: 0.5rem;
+  font-size: 0.9rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+}
+
+.empty {
+  text-align: center;
+  color: #666;
+  padding: 2rem;
+}
+
+.dialog-actions {
+  text-align: right;
+  border-top: 1px solid #eee;
+  padding: 0.75rem 1.5rem;
+  background: #fafafa;
+}
+
+.btn-secondary {
+  background: #ccc;
+  color: #111;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: #bbb;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+

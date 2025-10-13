@@ -33,17 +33,26 @@ export default function BookingDialog({ open, onClose }) {
   const canSubmit = concerns.length > 0 && !!age && !isSubmitting;
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!canSubmit) return;
+  e.preventDefault();
+  if (!canSubmit) return;
 
-    const result = await requestSession({ concerns, age, notes, timePref });
+  // Grab the current user ID (or whatever is stored) from localStorage
+  const auth = localStorage.getItem("auth");
 
-    if (result) {
-      onClose?.();
-    } else {
-      alert(result.message || "Failed to submit session request.");
-    }
-  };
+  const result = await requestSession({
+    concerns,
+    age,
+    notes,
+    timePref,
+    requestedBy: JSON.parse(auth).id, // <-- add this line
+  });
+
+  if (result) {
+    onClose?.();
+  } else {
+    alert(result.message || "Failed to submit session request.");
+  }
+};
 
   const toggleConcern = (id) => {
     setConcerns((prev) =>

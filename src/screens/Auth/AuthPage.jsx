@@ -108,11 +108,13 @@ function LoginForm({ busy, setBusy, nextUrl }) {
   const navigate = useNavigate();
 
   async function onSubmit(e) {
+    console.log("submitted");
     e.preventDefault();
     if (!valid || busy) return;
     setErr('');
     setBusy(true);
     try {
+      console.log("logging in");
       await login({ email, password: pass });
       navigate(nextUrl, { replace: true });
     } catch (ex) {

@@ -1,7 +1,9 @@
 export default class AuthController {
   constructor() {
     // place to inject dependencies later (analytics, endpoints, etc.)
-    this.baseUrl = "https://mathcode-backend.onrender.com/api/users";
+    
+    // this.baseUrl = "https://mathcode-backend.onrender.com/api/users";
+    this.baseUrl = "http://localhost:4000/api/users";
   }
 
   async getCurrentUser() {
@@ -10,8 +12,7 @@ export default class AuthController {
   try {
      const savedAuth = localStorage.getItem('token');
 
-    console.log("fixing");
-         console.log(savedAuth);
+
   
     const response = await fetch(`${this.baseUrl}/me`, {
       method: 'GET',
@@ -32,9 +33,11 @@ export default class AuthController {
       // Optional window override
       if (window?.UserControllerInstance?.login) {
         const data = await window.UserControllerInstance.login({ email, password });
+        console.log(data);
         localStorage.setItem("auth", JSON.stringify(data));
         return data;
       }
+      
 
       // 1️⃣ Log in to get token
       const res = await fetch(`${this.baseUrl}/login`, {

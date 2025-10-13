@@ -1,10 +1,12 @@
 import { useContext } from "react";
 import { UserContext } from "../../context/UserContext.jsx";
 import ChildProfile from "../../components/ChildProfile/ChildProfile.jsx";
+
 import "./Dashboard.css";
 
 export default function Dashboard() {
     const { user } = useContext(UserContext);
+
 
     const parentName = user?.firstName || "Parent";
     const childName = "Luna"; // Replace with API data
@@ -43,9 +45,8 @@ export default function Dashboard() {
 
     return (
         <>
-            <br />
-               <br />
-            <br />
+   
+       
             <br />
             <div className="dashboard-grid">
                 {/* LEFT COLUMN */}
