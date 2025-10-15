@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { UserContext } from "../context/UserContext.jsx";
+import { UserContext } from "../../context/UserContext.jsx";
 import { FiBell, FiLogOut, FiUser, FiSettings, FiBarChart2 } from "react-icons/fi";
 import "./AppDashboardNavBar.css";
 

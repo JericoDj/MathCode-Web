@@ -9,7 +9,7 @@ export default function HelpCenter() {
 
       <div className="help-center">
         <h2>Help Center</h2>
-        <p className="intro">
+        <p className="me-auto">
           Find answers to common questions or get in touch with our support team.
         </p>
 
@@ -59,7 +59,7 @@ export default function HelpCenter() {
         </div>
 
         {/* Contact Support */}
-        <section className="card contact-support">
+        <section className="card contact-support col-sm-12 col-md-6 mx-auto">
           <h3>Need More Help?</h3>
           <p>
             If you couldn’t find the answer, reach out to our support team. We’re

@@ -3,8 +3,85 @@ import { PlanContext } from "../../context/PlanContext.jsx";
 import "./ManageBilling.css";
 
 export default function ManageBilling() {
-  const [plan, setPlan] = useState("Pro Plan");
   const { openPlanDialog } = useContext(PlanContext);
+  const [showPaymentMethodDialog, setShowPaymentMethodDialog] = useState(false);
+  const [selectedChild, setSelectedChild] = useState(null);
+
+  // Mock data - replace with actual data from context/API
+  const children = [
+    {
+      id: 1,
+      name: "Luna",
+      grade: "Grade 3",
+      program: "Beginner Scratch Coding",
+      progress: "3/5 sessions completed",
+      avatar: "https://picsum.photos/seed/luna/80/80",
+      paymentMethod: {
+        type: "visa",
+        last4: "4242",
+        expiry: "06/27",
+        isDefault: true
+      }
+    },
+    {
+      id: 2,
+      name: "Max",
+      grade: "Grade 5",
+      program: "Python Basics",
+      progress: "5/10 sessions completed",
+      avatar: "https://picsum.photos/seed/max/80/80",
+      paymentMethod: {
+        type: "mastercard",
+        last4: "8888",
+        expiry: "12/26",
+        isDefault: false
+      }
+    },
+    {
+      id: 3,
+      name: "Sophia",
+      grade: "Grade 2",
+      program: "Singapore Math",
+      progress: "2/8 sessions completed",
+      avatar: "https://picsum.photos/seed/sophia/80/80",
+      paymentMethod: null // No payment method set
+    }
+  ];
+
+  const availablePaymentMethods = [
+    {
+      id: "card_visa_4242",
+      type: "visa",
+      last4: "4242",
+      expiry: "06/27",
+      name: "Visa ending in 4242"
+    },
+    {
+      id: "card_mc_8888",
+      type: "mastercard",
+      last4: "8888",
+      expiry: "12/26",
+      name: "Mastercard ending in 8888"
+    },
+    {
+      id: "paypal_1",
+      type: "paypal",
+      email: "parent@example.com",
+      name: "PayPal (parent@example.com)"
+    },
+    {
+      id: "card_amex_1234",
+      type: "amex",
+      last4: "1234",
+      expiry: "09/28",
+      name: "American Express ending in 1234"
+    }
+  ];
+
+  const handleManagePayment = (child) => {
+    setSelectedChild(child);
+    setShowPaymentMethodDialog(true);
+  };
 
   const handleUpdatePayment = () => {
     openPlanDialog({
@@ -29,47 +106,150 @@ export default function ManageBilling() {
       <br />
 
       <div className="billing-settings">
-        <h2>Manage Plan & Billing</h2>
-        <p className="intro">
-          View your subscription details, invoices, and payment methods.
+        <h2>Manage Payment Methods</h2>
+        <p className="me-auto">
+          Set up and manage payment methods for each child's tutoring sessions.
         </p>
 
-        <div className="billing-grid">
-          {/* Current Plan */}
-          <section className="card">
-            <h3>Current Plan</h3>
-            <div className="plan-info">
-              <p className="plan-name">{plan}</p>
-              <p className="plan-price">$29 / month</p>
-              <button className="btn-primary">Change Plan</button>
-            </div>
-          </section>
+        {/* Available Payment Methods Section - FULL WIDTH TOP */}
+        <section className="card payment-methods-section full-width">
+          <div className="section-header">
+            <h3>Available Payment Methods</h3>
+            <button 
+              className="btn-primary"
+              onClick={() => setShowPaymentMethodDialog(true)}
+            >
+              + Add New Payment Method
+            </button>
+          </div>
+          
+          <div className="payment-methods-grid">
+            {availablePaymentMethods.map(payment => (
+              <div key={payment.id} className="payment-method-card">
+                <div className="payment-method-header">
+                  <img
+                    src={`https://img.icons8.com/color/48/${payment.type}.png`}
+                    alt={payment.type}
+                    className="payment-icon"
+                  />
+                  <div className="payment-method-actions">
+                    <button className="btn-outline small">Edit</button>
+                    <button className="btn-danger small">Delete</button>
+                  </div>
+                </div>
+                <div className="payment-method-info">
+                  <h4>{payment.name}</h4>
+                  {payment.expiry && <p className="payment-meta">Expires {payment.expiry}</p>}
+                  {payment.email && <p className="payment-meta">{payment.email}</p>}
+                </div>
+                <div className="payment-method-footer">
+                  <span className="usage-badge">
+                    Used by {children.filter(c => c.paymentMethod?.type === payment.type).length} child{children.filter(c => c.paymentMethod?.type === payment.type).length !== 1 ? 'ren' : ''}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
 
-          {/* Payment Method */}
-          <section className="card">
-            <h3>Payment Method</h3>
-            <div className="payment-method">
-              <img
-                src="https://img.icons8.com/color/48/visa.png"
-                alt="Visa"
-                className="payment-icon"
-              />
-              <div>
-                <p>
-                  <strong>Visa ending in 4242</strong>
-                </p>
-                <small>Expires 06/27</small>
+          <div className="payment-methods-summary">
+            <div className="summary-stats">
+              <div className="stat">
+                <span className="stat-number">{availablePaymentMethods.length}</span>
+                <span className="stat-label">Total Methods</span>
+              </div>
+              <div className="stat">
+                <span className="stat-number">
+                  {children.filter(c => c.paymentMethod !== null).length}
+                </span>
+                <span className="stat-label">Active Assignments</span>
+              </div>
+              <div className="stat">
+                <span className="stat-number">
+                  {children.filter(c => c.paymentMethod === null).length}
+                </span>
+                <span className="stat-label">Need Setup</span>
               </div>
             </div>
-            <button className="btn-outline full" onClick={handleUpdatePayment}>
-              Update Payment Method
-            </button>
-          </section>
-        </div>
+          </div>
+        </section>
 
-        {/* Billing History */}
-        <section className="card">
-          <h3>Billing History</h3>
+        {/* Children Payment Methods Section - FULL WIDTH MIDDLE */}
+        <section className="card children-payment-section full-width">
+          <div className="section-header">
+            <h3>Children Payment Assignments</h3>
+            <button 
+              className="btn-outline"
+              onClick={handleUpdatePayment}
+            >
+              View Billing History
+            </button>
+          </div>
+          <div className="children-payment-grid">
+            {children.map(child => (
+              <div key={child.id} className="child-payment-card">
+                <div className="child-info">
+                  <img
+                    src={child.avatar}
+                    alt={child.name}
+                    className="child-avatar"
+                  />
+                  <div className="child-details">
+                    <h4>{child.name}</h4>
+                    <p className="child-grade">{child.grade}</p>
+                    <p className="child-program">{child.program}</p>
+                    <p className="child-progress">{child.progress}</p>
+                  </div>
+                </div>
+                
+                <div className="payment-assignment">
+                  <h5>Assigned Payment Method</h5>
+                  {child.paymentMethod ? (
+                    <div className="current-payment-method">
+                      <img
+                        src={`https://img.icons8.com/color/48/${child.paymentMethod.type}.png`}
+                        alt={child.paymentMethod.type}
+                        className="payment-icon"
+                      />
+                      <div className="payment-info">
+                        <p className="payment-type">
+                          {child.paymentMethod.type.charAt(0).toUpperCase() + child.paymentMethod.type.slice(1)} 
+                          <span className="card-number">•••• {child.paymentMethod.last4}</span>
+                          {child.paymentMethod.isDefault && (
+                            <span className="default-badge">Default</span>
+                          )}
+                        </p>
+                        <p className="payment-expiry">Expires {child.paymentMethod.expiry}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="no-payment-method">
+                      <div className="no-payment-icon">💳</div>
+                      <p>No payment method assigned</p>
+                      <small>Click manage to add a payment method</small>
+                    </div>
+                  )}
+                  
+                  <button 
+                    className="btn-outline full"
+                    onClick={() => handleManagePayment(child)}
+                  >
+                    {child.paymentMethod ? 'Change Payment' : 'Assign Payment'}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Billing History Section - FULL WIDTH BOTTOM */}
+        <section className="card full-width">
+          <div className="section-header">
+            <h3>Billing History</h3>
+            <div className="history-actions">
+              <button className="btn-outline small">Export CSV</button>
+              <button className="btn-outline small">Filter</button>
+            </div>
+          </div>
           <div className="table-wrapper">
             <table className="billing-table">
               <thead>
@@ -77,16 +257,23 @@ export default function ManageBilling() {
                   <th>Date</th>
                   <th>Invoice</th>
                   <th>Child / Package</th>
+                  <th>Payment Method</th>
                   <th>Amount</th>
                   <th>Status</th>
-                  <th></th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>Sep 01, 2025</td>
                   <td>#INV-1001</td>
-                  <td>Luna – Scratch Coding (3/5 sessions)</td>
+                  <td>
+                    <div className="invoice-details">
+                      <strong>Luna</strong>
+                      <span>Scratch Coding (3/5 sessions)</span>
+                    </div>
+                  </td>
+                  <td>Visa •••• 4242</td>
                   <td>$49.00</td>
                   <td><span className="status paid">Paid</span></td>
                   <td>
@@ -96,9 +283,31 @@ export default function ManageBilling() {
                 <tr>
                   <td>Aug 01, 2025</td>
                   <td>#INV-0999</td>
-                  <td>Max – Python Basics (5/10 sessions)</td>
+                  <td>
+                    <div className="invoice-details">
+                      <strong>Max</strong>
+                      <span>Python Basics (5/10 sessions)</span>
+                    </div>
+                  </td>
+                  <td>Mastercard •••• 8888</td>
                   <td>$79.00</td>
                   <td><span className="status paid">Paid</span></td>
+                  <td>
+                    <button className="btn-outline small">Download</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Jul 15, 2025</td>
+                  <td>#INV-0998</td>
+                  <td>
+                    <div className="invoice-details">
+                      <strong>Sophia</strong>
+                      <span>Singapore Math (2/8 sessions)</span>
+                    </div>
+                  </td>
+                  <td>-</td>
+                  <td>$65.00</td>
+                  <td><span className="status pending">Pending</span></td>
                   <td>
                     <button className="btn-outline small">Download</button>
                   </td>
@@ -106,8 +315,262 @@ export default function ManageBilling() {
               </tbody>
             </table>
           </div>
+          <div className="table-footer">
+            <div className="pagination">
+              <button className="btn-outline small">Previous</button>
+              <span className="page-info">Page 1 of 1</span>
+              <button className="btn-outline small">Next</button>
+            </div>
+          </div>
         </section>
       </div>
+
+      {/* Payment Method Dialog */}
+      {showPaymentMethodDialog && (
+        <PaymentMethodDialog 
+          child={selectedChild}
+          availablePaymentMethods={availablePaymentMethods}
+          onClose={() => {
+            setShowPaymentMethodDialog(false);
+            setSelectedChild(null);
+          }} 
+        />
+      )}
     </>
+  );
+}
+
+// Payment Method Dialog Component (unchanged)
+function PaymentMethodDialog({ child, availablePaymentMethods, onClose }) {
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
+    child?.paymentMethod?.type ? 
+    availablePaymentMethods.find(p => p.type === child.paymentMethod.type)?.id : 
+    null
+  );
+  const [showAddPaymentForm, setShowAddPaymentForm] = useState(false);
+  const [newPaymentMethod, setNewPaymentMethod] = useState({
+    type: 'card',
+    cardNumber: '',
+    expiry: '',
+    cvv: '',
+    name: '',
+    email: ''
+  });
+
+  const handleAssignPayment = () => {
+    if (child && selectedPaymentMethod) {
+      // Handle assign payment method to child logic
+      console.log(`Assigning payment method ${selectedPaymentMethod} to child ${child.name}`);
+      onClose();
+    }
+  };
+
+  const handleRemovePayment = () => {
+    if (child) {
+      // Handle remove payment method from child logic
+      console.log(`Removing payment method from child ${child.name}`);
+      onClose();
+    }
+  };
+
+  const handleAddPaymentMethod = (e) => {
+    e.preventDefault();
+    // Handle add new payment method logic
+    console.log('Adding new payment method:', newPaymentMethod);
+    setShowAddPaymentForm(false);
+    setNewPaymentMethod({
+      type: 'card',
+      cardNumber: '',
+      expiry: '',
+      cvv: '',
+      name: '',
+      email: ''
+    });
+  };
+
+  const handleDeletePaymentMethod = (paymentId) => {
+    // Handle delete payment method logic
+    console.log('Deleting payment method:', paymentId);
+  };
+
+  return (
+    <div className="dialog-backdrop">
+      <div className="dialog-box payment-method-dialog">
+        <div className="dialog-header">
+          <h2>
+            {child ? `Payment Method for ${child.name}` : 'Manage Payment Methods'}
+          </h2>
+          <button className="btn-close" onClick={onClose}>✕</button>
+        </div>
+        
+        <div className="dialog-content">
+          {child && (
+            <div className="child-summary">
+              <img src={child.avatar} alt={child.name} className="child-avatar" />
+              <div>
+                <h4>{child.name}</h4>
+                <p>{child.grade} • {child.program}</p>
+              </div>
+            </div>
+          )}
+
+          {!showAddPaymentForm ? (
+            <>
+              <div className="payment-methods-selection">
+                <h4>Select Payment Method</h4>
+                <div className="payment-options">
+                  {availablePaymentMethods.map(payment => (
+                    <div key={payment.id} className="payment-option">
+                      <label className="payment-option-label">
+                        <input
+                          type="radio"
+                          name="payment-method"
+                          value={payment.id}
+                          checked={selectedPaymentMethod === payment.id}
+                          onChange={() => setSelectedPaymentMethod(payment.id)}
+                        />
+                        <div className="payment-option-content">
+                          <img
+                            src={`https://img.icons8.com/color/48/${payment.type}.png`}
+                            alt={payment.type}
+                            className="payment-icon"
+                          />
+                          <div className="payment-option-info">
+                            <strong>{payment.name}</strong>
+                            {payment.expiry && <span>Expires {payment.expiry}</span>}
+                            {payment.email && <span>{payment.email}</span>}
+                          </div>
+                        </div>
+                      </label>
+                      <button 
+                        className="btn-danger small"
+                        onClick={() => handleDeletePaymentMethod(payment.id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="dialog-actions">
+                <div className="action-buttons-left">
+                  <button 
+                    className="btn-outline"
+                    onClick={() => setShowAddPaymentForm(true)}
+                  >
+                    + Add New Payment Method
+                  </button>
+                </div>
+                <div className="action-buttons-right">
+                  {child?.paymentMethod && (
+                    <button 
+                      className="btn-danger"
+                      onClick={handleRemovePayment}
+                    >
+                      Remove Payment Method
+                    </button>
+                  )}
+                  <button 
+                    className="btn-secondary" 
+                    onClick={onClose}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    className="btn-primary"
+                    onClick={handleAssignPayment}
+                    disabled={!selectedPaymentMethod}
+                  >
+                    {child ? 'Assign Payment Method' : 'Save Changes'}
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <form onSubmit={handleAddPaymentMethod} className="add-payment-form">
+              <h4>Add New Payment Method</h4>
+              
+              <div className="form-group">
+                <label>Payment Type</label>
+                <select 
+                  value={newPaymentMethod.type}
+                  onChange={(e) => setNewPaymentMethod({...newPaymentMethod, type: e.target.value})}
+                >
+                  <option value="card">Credit/Debit Card</option>
+                  <option value="paypal">PayPal</option>
+                </select>
+              </div>
+
+              {newPaymentMethod.type === 'card' ? (
+                <>
+                  <div className="form-group">
+                    <label>Card Number</label>
+                    <input
+                      type="text"
+                      placeholder="1234 5678 9012 3456"
+                      value={newPaymentMethod.cardNumber}
+                      onChange={(e) => setNewPaymentMethod({...newPaymentMethod, cardNumber: e.target.value})}
+                    />
+                  </div>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Expiry Date</label>
+                      <input
+                        type="text"
+                        placeholder="MM/YY"
+                        value={newPaymentMethod.expiry}
+                        onChange={(e) => setNewPaymentMethod({...newPaymentMethod, expiry: e.target.value})}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>CVV</label>
+                      <input
+                        type="text"
+                        placeholder="123"
+                        value={newPaymentMethod.cvv}
+                        onChange={(e) => setNewPaymentMethod({...newPaymentMethod, cvv: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label>Name on Card</label>
+                    <input
+                      type="text"
+                      placeholder="John Doe"
+                      value={newPaymentMethod.name}
+                      onChange={(e) => setNewPaymentMethod({...newPaymentMethod, name: e.target.value})}
+                    />
+                  </div>
+                </>
+              ) : (
+                <div className="form-group">
+                  <label>PayPal Email</label>
+                  <input
+                    type="email"
+                    placeholder="your-email@example.com"
+                    value={newPaymentMethod.email}
+                    onChange={(e) => setNewPaymentMethod({...newPaymentMethod, email: e.target.value})}
+                  />
+                </div>
+              )}
+
+              <div className="form-actions">
+                <button 
+                  type="button" 
+                  className="btn-secondary"
+                  onClick={() => setShowAddPaymentForm(false)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="btn-primary">
+                  Add Payment Method
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

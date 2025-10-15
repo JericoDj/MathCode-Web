@@ -1,7 +1,8 @@
 .help-center {
-  max-width: 1000px;
+    max-width: 90vw;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 2rem;
+  width: 100%;
 }
 
 .help-center h2 {
@@ -11,10 +12,6 @@
   color: #0b1a45;
 }
 
-.help-center .intro {
-  color: #6b7280;
-  margin-bottom: 1.5rem;
-}
 
 /* Search box */
 .search-box {
