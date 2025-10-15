@@ -93,7 +93,7 @@ export function SessionProvider({ children, analytics = null, config = {} }) {
   setLoading(true);
   try {
     const sessions = await ctrl.getAllSessions();
-    console.log("Fetched sessions:", sessions);
+
     setAllSessions(sessions);
     setSessions(sessions); // optional: update dialog sessions too
   } finally {

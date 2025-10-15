@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from '../../context/UserContext.jsx';
+import BookingDialog from "../../components/Booking/BookingDialog.jsx";
 import "./SideDrawer.css";
 
 export default function SideDrawer({
@@ -14,6 +15,7 @@ export default function SideDrawer({
 }) {
   const { user, logout } = useContext(UserContext); // ✅ use logout directly
   const [accountOpen, setAccountOpen] = useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -78,6 +80,11 @@ export default function SideDrawer({
     } else scrollToSection();
   };
 
+    const handleDialogSubmit = (data) => {
+    console.log("Booking submitted:", data);
+    // TODO: call your submission controller here
+  };
+
   return (
     <>
       <div
@@ -97,10 +104,7 @@ export default function SideDrawer({
           <div className="drawer-cta">
             <button
               className="btn-cta"
-              onClick={() => {
-                handleCloseDrawer();
-                onFreeSession?.();
-              }}
+              onClick={() => setDialogOpen(true)}
             >
               Book a Free Session
             </button>
@@ -190,9 +194,16 @@ export default function SideDrawer({
             >
               Login / Join
             </button>
+            
+            
           </div>
         )}
       </div>
+      <BookingDialog
+              open={dialogOpen}
+              onClose={() => setDialogOpen(false)}
+              onSubmit={handleDialogSubmit}
+            />
     </>
   );
 }

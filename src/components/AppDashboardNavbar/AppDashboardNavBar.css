@@ -2,8 +2,8 @@
 :root {
   /* Brand Accents */
   --accent-yellow: #d8d51d; /* elegant mid-blue */
-  --accent-green: #198d44; /* balanced green */
-  --accent-gradient: linear-gradient(90deg, #d8c21d, #0f7635);
+  --accent-green: #22c55e; /* balanced green */
+  --accent-gradient: linear-gradient(90deg, #d8c21d, #22c55e);
 
   /* Neutrals */
   --bg-main: #f9fafb;        /* soft background */
@@ -42,9 +42,8 @@
 /* ===== Left Section ===== */
 .appdash-left {
   display: flex;
-  
-  align-items: center !important;
-  gap: 3rem;
+  align-items: center;
+  gap: 2rem;
 }
 
 /* Logo */

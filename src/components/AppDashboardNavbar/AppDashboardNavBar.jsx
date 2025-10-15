@@ -25,9 +25,7 @@ export default function AppDashboardNavBar() {
   return (
     <header className="appdash-navbar">
       <div className="appdash-left">
-        <Link to="/" className="appdash-logo">
-          <span className="logo-mark">MC</span> <span>MathCode</span>
-        </Link>
+        
 
         <nav className="appdash-nav">
           <Link to="/dashboard" className="appdash-link">Dashboard</Link>
@@ -42,34 +40,7 @@ export default function AppDashboardNavBar() {
           <FiBell />
         </button>
 
-        <div ref={menuRef} style={{ position: "relative" }}>
-          <img
-            src={userAvatar}
-            alt="User"
-            className="appdash-avatar"
-            onClick={() => setMenuOpen(!menuOpen)}
-          />
-
-          {menuOpen && (
-            <div className="appdash-menu">
-              <Link className="appdash-menu-item" to="/profile-settings" onClick={() => setMenuOpen(false)}>
-                <FiUser size={16} style={{ marginRight: 8 }} /> Profile Settings
-              </Link>
-              <Link className="appdash-menu-item" to="/manage-billing" onClick={() => setMenuOpen(false)}>
-                <FiBarChart2 size={16} style={{ marginRight: 8 }} /> Manage Billing
-              </Link>
-              <Link className="appdash-menu-item" to="/help-center" onClick={() => setMenuOpen(false)}>
-                <FiSettings size={16} style={{ marginRight: 8 }} /> Help Center
-              </Link>
-              <div className="appdash-menu-item danger" onClick={async () => {
-                await logout();
-                navigate("/");
-              }}>
-                <FiLogOut size={16} style={{ marginRight: 8 }} /> Logout
-              </div>
-            </div>
-          )}
-        </div>
+        
       </div>
     </header>
   );

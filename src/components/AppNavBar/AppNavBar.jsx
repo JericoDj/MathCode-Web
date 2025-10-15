@@ -1,16 +1,23 @@
 // AppNavBar.jsx
+
+import { HiMenu } from "react-icons/hi"; // hamburger icon
+
 import { useContext, useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { UserContext } from '../context/UserContext.jsx';
-import { SessionContext } from '../context/SessionContext.jsx';
-import SideDrawer from '../components/SideDrawer/SideDrawer.jsx';
-import BookingDialog from "../components/Booking/BookingDialog.jsx";
+import { UserContext } from '../../context/UserContext.jsx';
+import { SessionContext } from '../../context/SessionContext.jsx';
+import SideDrawer from '../SideDrawer/SideDrawer.jsx';
+import BookingDialog from "../Booking/BookingDialog.jsx";
+import MathCodeLogo from '../../assets/MathCodeNoBGcropped.png';
 import './AppNavBar.css';
 
+// ✅ Scroll spy hook
 function useScrollSpy(ids, { offset = 80, enabled = true } = {}) {
   const [activeId, setActiveId] = useState(ids[0] || '');
+  
   useEffect(() => {
     if (!enabled) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -19,10 +26,13 @@ function useScrollSpy(ids, { offset = 80, enabled = true } = {}) {
       },
       { rootMargin: `-${offset}px 0px -60% 0px`, threshold: 0.1 }
     );
+
     const elements = ids.map((id) => document.getElementById(id)).filter(Boolean);
     elements.forEach((el) => observer.observe(el));
+
     return () => observer.disconnect();
   }, [ids, offset, enabled]);
+
   return activeId;
 }
 
@@ -38,10 +48,15 @@ export default function AppNavBar() {
   const navigate = useNavigate();
   const { requestSession } = useContext(SessionContext);
 
+  // ✅ Fetch user once on mount
   useEffect(() => {
     const fetchUser = async () => {
       try {
         await getCurrentUser();
+        
+        // currentUser = JSON.parse(localStorage.getItem("auth"));
+        // console.log("user,",currentUser)
+        // setUser();
       } catch (error) {
         console.error('Error fetching user:', error);
         setUser(null);
@@ -52,6 +67,7 @@ export default function AppNavBar() {
     fetchUser();
   }, [setUser]);
 
+  // ✅ Close dropdown on click outside or ESC
   useEffect(() => {
     const onDocClick = (e) => {
       if (acctOpen && acctRef.current && !acctRef.current.contains(e.target)) {
@@ -69,6 +85,7 @@ export default function AppNavBar() {
     };
   }, [acctOpen]);
 
+  // ✅ Close dropdown and drawer on scroll
   useEffect(() => {
     const handleScroll = () => {
       if (acctOpen) setAcctOpen(false);
@@ -96,6 +113,7 @@ export default function AppNavBar() {
     e.preventDefault();
     setDrawerOpen(false);
     setAcctOpen(false);
+
     const scrollToSection = () => {
       if (id === 'faq') {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
@@ -104,6 +122,7 @@ export default function AppNavBar() {
         if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     };
+
     if (location.pathname !== '/' || location.hash !== `#${id}`) {
       navigate(`/#${id}`, { replace: false });
       setTimeout(scrollToSection, 50);
@@ -117,6 +136,8 @@ export default function AppNavBar() {
     setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
   };
 
+
+  // ✅ Logout handler
   const handleLogout = async () => {
     try {
       await logout();
@@ -132,6 +153,7 @@ export default function AppNavBar() {
 
   const handleDialogSubmit = (data) => {
     console.log("Booking submitted:", data);
+    // TODO: call your submission controller here
   };
 
   const userInitial = (user?.name || user?.email || 'U')[0]?.toUpperCase?.() || 'U';
@@ -139,13 +161,17 @@ export default function AppNavBar() {
   return (
     <>
       <nav className="navbar">
-        <div className="navbar-container container d-flex justify-content-between align-items-center px-3 px-md-4">
-          <Link className="navbar-logo d-flex align-items-center gap-2 me-4"
-            to="/" onClick={() => navigateAndScrollTop('/')}>
-            <span className="logo-mark">MC</span>
-            <span className="logo-word">MathCode</span>
+        <div className="navbar-container container d-flex justify-content-between align-items-center ">
+          {/* Logo */}
+          <Link
+            className="navbar-logo d-flex align-items-center "
+            to="/"
+            onClick={() => navigateAndScrollTop('/')}
+          >
+              <img src={MathCodeLogo} alt="MathCode Logo" />
           </Link>
 
+          {/* Menu */}
           <ul className="navbar-menu list-unstyled mb-0 d-none d-lg-flex">
             {navLinks.map(({ id, label }) => (
               <li key={id}>
@@ -161,22 +187,28 @@ export default function AppNavBar() {
             ))}
           </ul>
 
+          {/* Right Side */}
           <div className="navbar-cta d-flex align-items-center gap-2 ms-3">
-            <button type="button" className="btn-cta d-none d-lg-inline"
-              onClick={() => setDialogOpen(true)}>
+            {/* Book a Session button */}
+            <button
+              type="button"
+              className="btn-cta d-none d-lg-inline"
+              onClick={() => setDialogOpen(true)}
+            >
               Book a Session
             </button>
 
             {!isLoading && (
               <>
                 {user ? (
-                  <div className="acct-dropdown d-none d-lg-block"
+                  <div
+                    className="acct-dropdown d-none d-lg-block"
                     ref={acctRef}
                     onMouseEnter={() => setAcctOpen(true)}
                     onMouseLeave={() => setAcctOpen(false)}
-                    style={{ position: 'relative' }}>
-                    <button type="button"
-                      className="acct-trigger d-flex align-items-center justify-content-center">
+                    style={{ position: 'relative' }}
+                  >
+                    <button type="button" className="acct-trigger d-flex align-items-center justify-content-center">
                       <span className="acct-avatar">{userInitial}</span>
                       <span className="acct-label ms-1">Account</span>
                     </button>
@@ -184,57 +216,52 @@ export default function AppNavBar() {
                     {acctOpen && (
                       <div className="acct-menu" style={{ top: '100%', marginTop: 0, padding: '0.5rem' }}>
                         <div className="account-header">
-                          <img src={user.photoURL || `https://picsum.photos/seed/${user.firstName || 'u'}/60`}
-                            alt="Avatar" className="account-avatar" />
+                          <img
+                            src={user.photoURL || `https://picsum.photos/seed/${user.firstName || 'u'}/60`}
+                            alt="Avatar"
+                            className="account-avatar"
+                          />
                           <div className="account-info">
                             <div className="account-name">{user.firstName || 'User'} {user.lastName || ''}</div>
                             <div className="account-email">{user.email || ''}</div>
                           </div>
                         </div>
-                        <button className="acct-item acct-primary"
-                          onClick={() => navigateAndScrollTop('/dashboard')}>
-                          Dashboard
-                        </button>
-                        <button className="acct-item"
-                          onClick={() => navigateAndScrollTop('/profile-settings')}>
-                          Profile & Settings
-                        </button>
-                        <button className="acct-item"
-                          onClick={() => navigateAndScrollTop('/manage-billing')}>
-                          Manage Plan / Billing
-                        </button>
-                        <button className="acct-item"
-                          onClick={() => navigateAndScrollTop('/help-center')}>
-                          Help Center
-                        </button>
+
+                        <button className="acct-item acct-primary" onClick={() => navigateAndScrollTop('/dashboard')}>Dashboard</button>
+                        <button className="acct-item" onClick={() => navigateAndScrollTop('/profile-settings')}>Profile & Settings</button>
+                        <button className="acct-item" onClick={() => navigateAndScrollTop('/manage-billing')}>Manage Plan / Billing</button>
+                        <button className="acct-item" onClick={() => navigateAndScrollTop('/help-center')}>Help Center</button>
                         <div className="acct-sep" />
-                        <button className="acct-item danger"
-                          onClick={handleLogout}>Logout</button>
+                        <button className="acct-item danger" onClick={handleLogout}>Logout</button>
                       </div>
                     )}
                   </div>
                 ) : (
-                  <button className="btn-outline d-none d-lg-inline"
-                    onClick={() => navigateAndScrollTop('/login')}>
+                  <button className="btn-outline d-none d-lg-inline" onClick={() => navigateAndScrollTop('/login')}>
                     Login / Join
                   </button>
                 )}
               </>
             )}
 
+            {/* Burger menu */}
+            
             <button
-              className={`navbar-toggle d-lg-none ${drawerOpen ? 'is-open' : ''}`}
-              aria-label="Toggle menu"
-              aria-expanded={drawerOpen}
-              onClick={() => setDrawerOpen(prev => !prev)}
-            >
-              <span />
-              <span />
-              <span />
-            </button>
+  className="navbar-toggle d-lg-none border-0 bg-transparent ms-auto"
+  aria-label="Toggle menu"
+  aria-expanded={drawerOpen}
+  onClick={() => setDrawerOpen(prev => !prev)}
+>
+  <HiMenu 
+    className={`menu-button`} 
+    size={30} 
+  />
+</button>
+
           </div>
         </div>
 
+        {/* Drawer */}
         <SideDrawer
           isOpen={drawerOpen}
           onClose={() => setDrawerOpen(false)}
@@ -250,6 +277,7 @@ export default function AppNavBar() {
         />
       </nav>
 
+      {/* Booking Dialog */}
       <BookingDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}

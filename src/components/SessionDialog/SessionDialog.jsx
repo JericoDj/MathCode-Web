@@ -28,6 +28,8 @@ export default function SessionsDialog({ open: propOpen, onClose: propOnClose })
   const [activeTab, setActiveTab] = useState(statuses[0] || "");
 
   return (
+    <>
+
     <div className="dialog-backdrop">
       <div className="dialog-box wide">
         <header className="dialog-header">
@@ -70,6 +72,8 @@ export default function SessionsDialog({ open: propOpen, onClose: propOnClose })
         </footer>
       </div>
     </div>
+    </>
+    
   );
 }
 

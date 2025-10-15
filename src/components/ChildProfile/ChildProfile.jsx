@@ -5,84 +5,14 @@ import { StudentContext } from "../../context/StudentContext.jsx";
 import { PlanContext } from "../../context/PlanContext.jsx";
 
 export default function ChildProfile({ childName, programName, completedSessions }) {
-  const { openDialog,fetchAllSessions, allSessions} = useContext(SessionContext);
-    const { openProgressDialog } = useContext(StudentContext);
+  const { openDialog, fetchAllSessions, allSessions } = useContext(SessionContext);
+  const { openProgressDialog } = useContext(StudentContext);
   const { openPlanDialog } = useContext(PlanContext);
  
   useEffect(() => {
-  fetchAllSessions();
-}, []);
+    fetchAllSessions();
+  }, []);
 
-  // // Example session data (replace with backend data later)
-  // const sessionData = [
-  //   {
-  //     _id: "68e751cffa9ba51b9c3a9e7c",
-  //     requestedBy: "John Doe",
-  //     program: "Scratch Coding",
-  //     service: "One-on-One Tutoring",
-  //     mode: "Online",
-  //     tutor: "Ms. Smith",
-  //     notes: "Focused on loops and conditionals",
-  //     status: "pending",
-  //     dateRequested: "2025-10-09",
-  //     createdAt: "2025-10-09T06:10:23.313Z",
-  //     updatedAt: "2025-10-09T06:10:23.313Z",
-  //   },
-  //    {
-  //     _id: "68e75212fa9ba51b9c3a9e8d",
-  //     requestedBy: "John Doe",
-  //     program: "Singapore Math",
-  //     service: "Group Lesson",
-  //     mode: "Offline",
-  //     tutor: "Mr. Tan",
-  //     notes: "Covered word problems and logic puzzles",
-  //     status: "cancelled",
-  //     dateRequested: "2025-10-05",
-  //     createdAt: "2025-10-05T10:15:00.000Z",
-  //     updatedAt: "2025-10-06T12:30:00.000Z",
-  //   },
-  //   {
-  //     _id: "68e75212fa9ba51b9c3a9e8d",
-  //     requestedBy: "John Doe",
-  //     program: "Singapore Math",
-  //     service: "Group Lesson",
-  //     mode: "Offline",
-  //     tutor: "Mr. Tan",
-  //     notes: "Covered word problems and logic puzzles",
-  //     status: "approved",
-  //     dateRequested: "2025-10-05",
-  //     createdAt: "2025-10-05T10:15:00.000Z",
-  //     updatedAt: "2025-10-06T12:30:00.000Z",
-  //   },
-  //    {
-  //     _id: "68e75212fa9ba51b9c3a9e8d",
-  //     requestedBy: "John Doe",
-  //     program: "Singapore Math",
-  //     service: "Group Lesson",
-  //     mode: "Offline",
-  //     tutor: "Mr. Tan",
-  //     notes: "Covered word problems and logic puzzles",
-  //     status: "approved",
-  //     dateRequested: "2025-10-05",
-  //     createdAt: "2025-10-05T10:15:00.000Z",
-  //     updatedAt: "2025-10-06T12:30:00.000Z",
-  //   },
-  //    {
-  //     _id: "68e75212fa9ba51b9c3a9e8d",
-  //     requestedBy: "John Doe",
-  //     program: "Singapore Math",
-  //     service: "Group Lesson",
-  //     mode: "Offline",
-  //     tutor: "Mr. Tan",
-  //     notes: "Covered word problems and logic puzzles",
-  //     status: "approved",
-  //     dateRequested: "2025-10-05",
-  //     createdAt: "2025-10-05T10:15:00.000Z",
-  //     updatedAt: "2025-10-06T12:30:00.000Z",
-  //   },
-  // ];
-
-  // Example learning stats
   const codingStats = {
     Logic: 80,
     Creativity: 65,
@@ -96,12 +26,8 @@ export default function ChildProfile({ childName, programName, completedSessions
   };
 
   const handleViewSessions = () => {
-    // ✅ Fix: pass the actual array, not nested
-    // openDialog(sessionData);
-        openDialog(allSessions);
+    openDialog(allSessions);
   };
-
-
 
   const handleCheckProgress = () => {
     openProgressDialog({
@@ -118,84 +44,101 @@ export default function ChildProfile({ childName, programName, completedSessions
     });
   };
 
-
-const handleManagePlan = () => {
-  openPlanDialog({
-    name: `${childName} - ${programName} Plan`,
-    status: "Active", // or "Paused", "Cancelled"
-    nextBilling: "2025-11-01",
-    cardLast4: "4242", // example last 4 digits
-    totalSessions: 20,
-    remainingSessions: 17,
-    transactions: [
-      { date: "2025-10-01", amount: 49.99, status: "Paid" },
-      { date: "2025-09-01", amount: 49.99, status: "Failed" },
-      { date: "2025-08-01", amount: 49.99, status: "Pending" },
-      { date: "2025-07-01", amount: 49.99, status: "Paid" },
-      { date: "2025-06-01", amount: 49.99, status: "Paid" },
-      { date: "2025-05-01", amount: 49.99, status: "Failed" },
-      { date: "2025-04-01", amount: 49.99, status: "Paid" },
-      { date: "2025-03-01", amount: 49.99, status: "Pending" },
-      { date: "2025-02-01", amount: 49.99, status: "Paid" },
-      { date: "2025-01-01", amount: 49.99, status: "Paid" },
-      { date: "2024-12-01", amount: 49.99, status: "Paid" },
-      { date: "2024-11-01", amount: 49.99, status: "Failed" },
-    ],
-  });
-};
-
-
+  const handleManagePlan = () => {
+    openPlanDialog({
+      name: `${childName} - ${programName} Plan`,
+      status: "Active",
+      nextBilling: "2025-11-01",
+      cardLast4: "4242",
+      totalSessions: 20,
+      remainingSessions: 17,
+      transactions: [
+        { date: "2025-10-01", amount: 49.99, status: "Paid" },
+        { date: "2025-09-01", amount: 49.99, status: "Failed" },
+      ],
+    });
+  };
 
   return (
-    <section className="card child-profile">
-      <h3>My Child</h3>
-
-      <div className="child-grid half-half">
-        {/* Left Column */}
-        <div className="child-left">
-          <div className="child-info">
+    <section className="child-profile-card">
+      <div className="card-header">
+        <h3>My Child's Profile</h3>
+      </div>
+      
+      <div className="child-profile-content">
+        <div className="child-info-section">
+          <div className="child-avatar-container">
             <img
-              src="https://picsum.photos/seed/child/100/100"
+              src="https://picsum.photos/seed/child/120/120"
               alt={childName}
               className="child-avatar"
             />
-            <div className="child-details">
-              <p><strong>{childName}</strong> – Grade 3</p>
-              <p>Enrolled in: <strong>{programName}</strong></p>
-              <p>Progress: <strong>{completedSessions}/20 lessons</strong></p>
-              <div className="skill-tags">
-                <span className="tag">Loops</span>
-                <span className="tag">Conditionals</span>
-                <span className="tag">Scratch</span>
-              </div>
+            <div className="child-status">
+              <span className="status-dot"></span>
+              Active Learner
             </div>
           </div>
-
-          <div className="child-actions">
-            <button className="btn small" onClick={handleCheckProgress}>
-    📊 Check Progress
-  </button>
-            {/* ✅ Use openDialog from context */}
-            <button className="btn small" onClick={handleViewSessions}>
-              📅 View All Sessions
-            </button>
-           <button className="btn small" onClick={handleManagePlan}>
-  ⚙️ Manage Plan
-</button>
+          
+          <div className="child-details">
+            <h4>{childName}</h4>
+            <div className="detail-item">
+              <span className="label">Grade Level:</span>
+              <span className="value">Grade 3</span>
+            </div>
+            <div className="detail-item">
+              <span className="label">Current Program:</span>
+              <span className="value program">{programName}</span>
+            </div>
+            
+            
+            <div className="skill-tags">
+              <span className="skill-tag">Loops</span>
+              <span className="skill-tag">Conditionals</span>
+              <span className="skill-tag">Scratch</span>
+              <span className="skill-tag">Logic</span>
+            </div>
           </div>
         </div>
 
-        {/* Right Column: Stats */}
-        <div className="child-stats">
-          <div className="stat-card">
-            <h4>🔢 Singapore Math Stats</h4>
-            <BarChart stats={mathStats} />
-          </div>
+        <div className="child-stats-section">
+          <div className="stats-grid">
+            <div className="stat-card">
+              <div className="stat-header">
+            
+                <h5>Math Skills</h5>
+              </div>
+              <div className="spacer p-1 p-md-5 p-lg-0">
 
-          <div className="stat-card">
-            <h4>⚡ Coding Stats</h4>
-            <BarChart stats={codingStats} />
+              </div>
+              <BarChart stats={mathStats} />
+            </div>
+            
+            <div className="stat-card">
+              <div className="stat-header">
+            
+                <h5>Coding Skills</h5>
+                
+              </div>
+                   <div className="spacer p-1 p-md-5 p-lg-0"></div>
+        
+              <BarChart stats={codingStats} />
+            </div>
           </div>
+        </div>
+
+        <div className="child-actions-section">
+          <button className="action-btn progress-btn" onClick={handleCheckProgress}>
+            <span className="btn-icon">📊</span>
+            Check Progress
+          </button>
+          <button className="action-btn sessions-btn" onClick={handleViewSessions}>
+            <span className="btn-icon">📅</span>
+            View Sessions
+          </button>
+          <button className="action-btn plan-btn" onClick={handleManagePlan}>
+            <span className="btn-icon">⚙️</span>
+            Manage Plan
+          </button>
         </div>
       </div>
     </section>
@@ -209,9 +152,13 @@ function BarChart({ stats }) {
         <div key={label} className="bar-row">
           <span className="bar-label">{label}</span>
           <div className="bar-container">
-            <div className="bar-fill" style={{ width: `${value}%` }} />
+            <div 
+              className="bar-fill" 
+              style={{ width: `${value}%` }}
+              data-value={value}
+            ></div>
           </div>
-          <span className="bar-value">{value}%</span>
+          <span className="bar-value pe-3">{value}%</span>
         </div>
       ))}
     </div>
