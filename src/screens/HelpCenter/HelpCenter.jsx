@@ -4,8 +4,7 @@ export default function HelpCenter() {
   return (
     <>
       <br />
-      <br />
-      <br />
+    
 
       <div className="help-center">
         <h2>Help Center</h2>
@@ -14,12 +13,12 @@ export default function HelpCenter() {
         </p>
 
         {/* Search */}
-        <div className="search-box">
+        <div className="search-box col-sm-12 col-md-10 mx-auto">
           <input type="text" placeholder="Search for help topics..." />
           <button className="btn-primary">Search</button>
         </div>
 
-        <div className="help-grid">
+        <div className="help-grid col-sm-12 col-md-8 mx-auto">
           {/* Categories */}
           <section className="card">
             <h3>Account</h3>

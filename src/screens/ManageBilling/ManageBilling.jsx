@@ -54,27 +54,39 @@ export default function ManageBilling() {
       type: "visa",
       last4: "4242",
       expiry: "06/27",
-      name: "Visa ending in 4242"
+      name: "Visa ending in 4242",
+      gradient: "linear-gradient(135deg, #1a1f71 0%, #f7b600 100%)",
+      bank: "Chase Bank",
+      holder: "John Doe"
     },
     {
       id: "card_mc_8888",
       type: "mastercard",
       last4: "8888",
       expiry: "12/26",
-      name: "Mastercard ending in 8888"
+      name: "Mastercard ending in 8888",
+      gradient: "linear-gradient(135deg, #eb001b 0%, #f79e1b 50%, #ff5f00 100%)",
+      bank: "Bank of America",
+      holder: "John Doe"
     },
     {
       id: "paypal_1",
       type: "paypal",
       email: "parent@example.com",
-      name: "PayPal (parent@example.com)"
+      name: "PayPal (parent@example.com)",
+      gradient: "linear-gradient(135deg, #003087 0%, #009cde 50%, #012169 100%)",
+      bank: "PayPal Account",
+      holder: "parent@example.com"
     },
     {
       id: "card_amex_1234",
       type: "amex",
       last4: "1234",
       expiry: "09/28",
-      name: "American Express ending in 1234"
+      name: "American Express ending in 1234",
+      gradient: "linear-gradient(135deg, #2e77bb 0%, #4d4d4d 100%)",
+      bank: "American Express",
+      holder: "John Doe"
     }
   ];
 
@@ -99,11 +111,20 @@ export default function ManageBilling() {
     });
   };
 
+  const getCardLogo = (type) => {
+    const logos = {
+      visa: "💳",
+      mastercard: "💳", 
+      amex: "💳",
+      paypal: "🔵"
+    };
+    return logos[type] || "💳";
+  };
+
   return (
     <>
       <br />
-      <br />
-      <br />
+    
 
       <div className="billing-settings">
         <h2>Manage Payment Methods</h2>
@@ -111,8 +132,8 @@ export default function ManageBilling() {
           Set up and manage payment methods for each child's tutoring sessions.
         </p>
 
-        {/* Available Payment Methods Section - FULL WIDTH TOP */}
-        <section className="card payment-methods-section full-width">
+        {/* Available Payment Methods Section - WHITE BACKGROUND WITH REAL CARDS */}
+        <section className="card payment-methods-section full-width white-bg">
           <div className="section-header">
             <h3>Available Payment Methods</h3>
             <button 
@@ -125,24 +146,37 @@ export default function ManageBilling() {
           
           <div className="payment-methods-grid">
             {availablePaymentMethods.map(payment => (
-              <div key={payment.id} className="payment-method-card">
-                <div className="payment-method-header">
-                  <img
-                    src={`https://img.icons8.com/color/48/${payment.type}.png`}
-                    alt={payment.type}
-                    className="payment-icon"
-                  />
-                  <div className="payment-method-actions">
-                    <button className="btn-outline small">Edit</button>
-                    <button className="btn-danger small">Delete</button>
+              <div 
+                key={payment.id} 
+                className="payment-method-card real-card"
+                style={{ background: payment.gradient }}
+              >
+                <div className="card-chip"></div>
+                <div className="card-logo">{getCardLogo(payment.type)}</div>
+                
+                <div className="card-number">
+                  <span className="card-number-masked">•••• •••• •••• {payment.last4}</span>
+                </div>
+                
+                <div className="card-details">
+                  <div className="card-holder">
+                    <span className="card-label">Card Holder</span>
+                    <span className="card-value">{payment.holder}</span>
+                  </div>
+                  <div className="card-expiry">
+                    <span className="card-label">Expires</span>
+                    <span className="card-value">{payment.expiry}</span>
                   </div>
                 </div>
-                <div className="payment-method-info">
-                  <h4>{payment.name}</h4>
-                  {payment.expiry && <p className="payment-meta">Expires {payment.expiry}</p>}
-                  {payment.email && <p className="payment-meta">{payment.email}</p>}
+                
+                <div className="card-bank">{payment.bank}</div>
+                
+                <div className="payment-method-actions-overlay">
+                  <button className="btn-card-edit">Edit</button>
+                  <button className="btn-card-delete">Delete</button>
                 </div>
-                <div className="payment-method-footer">
+                
+                <div className="card-usage">
                   <span className="usage-badge">
                     Used by {children.filter(c => c.paymentMethod?.type === payment.type).length} child{children.filter(c => c.paymentMethod?.type === payment.type).length !== 1 ? 'ren' : ''}
                   </span>
@@ -204,21 +238,20 @@ export default function ManageBilling() {
                 <div className="payment-assignment">
                   <h5>Assigned Payment Method</h5>
                   {child.paymentMethod ? (
-                    <div className="current-payment-method">
-                      <img
-                        src={`https://img.icons8.com/color/48/${child.paymentMethod.type}.png`}
-                        alt={child.paymentMethod.type}
-                        className="payment-icon"
-                      />
-                      <div className="payment-info">
-                        <p className="payment-type">
-                          {child.paymentMethod.type.charAt(0).toUpperCase() + child.paymentMethod.type.slice(1)} 
-                          <span className="card-number">•••• {child.paymentMethod.last4}</span>
-                          {child.paymentMethod.isDefault && (
-                            <span className="default-badge">Default</span>
-                          )}
-                        </p>
-                        <p className="payment-expiry">Expires {child.paymentMethod.expiry}</p>
+                    <div className="current-payment-method real-card-preview">
+                      <div 
+                        className="card-preview"
+                        style={{ 
+                          background: availablePaymentMethods.find(p => p.type === child.paymentMethod.type)?.gradient || 'linear-gradient(135deg, #666 0%, #999 100%)'
+                        }}
+                      >
+                        <div className="card-chip-small"></div>
+                        <div className="card-type">{child.paymentMethod.type.toUpperCase()}</div>
+                        <div className="card-number-preview">•••• {child.paymentMethod.last4}</div>
+                        <div className="card-expiry-preview">Exp {child.paymentMethod.expiry}</div>
+                        {child.paymentMethod.isDefault && (
+                          <div className="default-badge-card">Default</div>
+                        )}
                       </div>
                     </div>
                   ) : (
@@ -393,6 +426,16 @@ function PaymentMethodDialog({ child, availablePaymentMethods, onClose }) {
     console.log('Deleting payment method:', paymentId);
   };
 
+  const getCardLogo = (type) => {
+    const logos = {
+      visa: "💳",
+      mastercard: "💳", 
+      amex: "💳",
+      paypal: "🔵"
+    };
+    return logos[type] || "💳";
+  };
+
   return (
     <div className="dialog-backdrop">
       <div className="dialog-box payment-method-dialog">
@@ -429,17 +472,14 @@ function PaymentMethodDialog({ child, availablePaymentMethods, onClose }) {
                           checked={selectedPaymentMethod === payment.id}
                           onChange={() => setSelectedPaymentMethod(payment.id)}
                         />
-                        <div className="payment-option-content">
-                          <img
-                            src={`https://img.icons8.com/color/48/${payment.type}.png`}
-                            alt={payment.type}
-                            className="payment-icon"
-                          />
-                          <div className="payment-option-info">
-                            <strong>{payment.name}</strong>
-                            {payment.expiry && <span>Expires {payment.expiry}</span>}
-                            {payment.email && <span>{payment.email}</span>}
-                          </div>
+                        <div 
+                          className="payment-option-card"
+                          style={{ background: payment.gradient }}
+                        >
+                          <div className="card-chip-small"></div>
+                          <div className="card-logo-small">{getCardLogo(payment.type)}</div>
+                          <div className="card-number-small">•••• {payment.last4}</div>
+                          <div className="card-expiry-small">Exp {payment.expiry}</div>
                         </div>
                       </label>
                       <button 
