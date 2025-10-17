@@ -1,9 +1,11 @@
 import { useContext, useState } from "react";
 import { UserContext } from "../../context/UserContext.jsx";
+import { StudentContext } from "../../context/StudentContext.jsx";
 import "./ProfileSettings.css";
 
 export default function ProfileSettings() {
     const { user } = useContext(UserContext);
+    const { students, loading, error, addStudent, updateStudent, deleteStudent } = useContext(StudentContext);
 
     const [formData, setFormData] = useState({
         firstName: user?.firstName || "",
@@ -14,34 +16,19 @@ export default function ProfileSettings() {
         confirmPassword: "",
     });
 
-    const [children, setChildren] = useState([
-        {
-            id: 1,
-            name: "Luna",
-            avatar: "https://picsum.photos/seed/luna/80",
-            school: "Sunshine Academy",
-            gradeLevel: "Grade 3",
-            address: "Manila, Philippines",
-            emergencyContact: "+63 912 345 6789",
-            parentGuardian: "Maria Santos",
-            parentEmail: "parent@email.com",
-            parentPhone: "+63 987 654 3210"
-        }
-    ]);
-
     const [showAddDialog, setShowAddDialog] = useState(false);
     const [showEditDialog, setShowEditDialog] = useState(false);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-    const [selectedChild, setSelectedChild] = useState(null);
-    const [childForm, setChildForm] = useState({
-        name: "",
-        school: "",
+    const [selectedStudent, setSelectedStudent] = useState(null);
+    const [studentForm, setStudentForm] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
         gradeLevel: "",
+        school: "",
         address: "",
-        emergencyContact: "",
-        parentGuardian: "",
-        parentEmail: "",
-        parentPhone: ""
+        // emergencyContact is removed since we'll use phone
     });
 
     const handleChange = (e) => {
@@ -52,10 +39,10 @@ export default function ProfileSettings() {
         });
     };
 
-    const handleChildChange = (e) => {
+    const handleStudentFormChange = (e) => {
         const { name, value } = e.target;
-        setChildForm({
-            ...childForm,
+        setStudentForm({
+            ...studentForm,
             [name]: value,
         });
     };
@@ -64,104 +51,109 @@ export default function ProfileSettings() {
         e.preventDefault();
         // TODO: Save updates to backend
         console.log("Updated profile:", formData);
-        alert("Profile updated successfully!");
+ 
     };
 
     const openAddDialog = () => {
-        setChildForm({
-            name: "",
-            school: "",
+        setStudentForm({
+            firstName: "",
+            lastName: "",
+            email: "",
+            phone: "",
             gradeLevel: "",
+            school: "",
             address: "",
-            emergencyContact: "",
-            parentGuardian: "",
-            parentEmail: "",
-            parentPhone: ""
+            // emergencyContact is removed
         });
         setShowAddDialog(true);
     };
 
-    const openEditDialog = (childId) => {
-        const child = children.find(c => c.id === childId);
-        if (child) {
-            setSelectedChild(childId);
-            setChildForm({
-                name: child.name,
-                school: child.school,
-                gradeLevel: child.gradeLevel,
-                address: child.address,
-                emergencyContact: child.emergencyContact,
-                parentGuardian: child.parentGuardian,
-                parentEmail: child.parentEmail,
-                parentPhone: child.parentPhone
+    const openEditDialog = (studentId) => {
+        const student = students.find(s => s.id === studentId);
+        if (student) {
+            setSelectedStudent(studentId);
+            setStudentForm({
+                firstName: student.firstName || "",
+                lastName: student.lastName || "",
+                email: student.email || "",
+                phone: student.phone || "",
+                gradeLevel: student.gradeLevel || "",
+                school: student.school || "",
+                address: student.address || "",
+                // emergencyContact is removed - using phone instead
             });
             setShowEditDialog(true);
         }
     };
 
-    const openDeleteDialog = (childId) => {
-        setSelectedChild(childId);
+    const openDeleteDialog = (studentId) => {
+        setSelectedStudent(studentId);
         setShowDeleteDialog(true);
     };
 
-    const handleAddChild = (e) => {
+    const handleAddStudent = async (e) => {
         e.preventDefault();
-        if (childForm.name.trim() === "") {
-            alert("Please enter child's name");
+        if (studentForm.firstName.trim() === "" || studentForm.lastName.trim() === "") {
+            alert("Please enter child's first and last name");
             return;
         }
 
-        const child = {
-            id: Date.now(),
-            ...childForm,
-            avatar: `https://picsum.photos/seed/${childForm.name.toLowerCase()}/80`
-        };
-
-        setChildren([...children, child]);
-        setShowAddDialog(false);
-        alert("Child profile added successfully!");
+        try {
+            await addStudent(studentForm);
+            setShowAddDialog(false);
+            alert("Child profile added successfully!");
+        } catch (error) {
+            alert(`Failed to add child: ${error.message}`);
+        }
     };
 
-    const handleUpdateChild = (e) => {
+    const handleUpdateStudent = async (e) => {
         e.preventDefault();
-        if (childForm.name.trim() === "") {
-            alert("Please enter child's name");
+        if (studentForm.firstName.trim() === "" || studentForm.lastName.trim() === "") {
+            alert("Please enter child's first and last name");
             return;
         }
 
-        setChildren(children.map(child => 
-            child.id === selectedChild 
-                ? { ...child, ...childForm }
-                : child
-        ));
-        
-        setShowEditDialog(false);
-        setSelectedChild(null);
-        alert("Child profile updated successfully!");
+        try {
+            await updateStudent(selectedStudent, studentForm);
+            setShowEditDialog(false);
+            setSelectedStudent(null);
+          
+        } catch (error) {
+            alert(`Failed to update child: ${error.message}`);
+        }
     };
 
-    const handleRemoveChild = () => {
-        setChildren(children.filter(child => child.id !== selectedChild));
-        setShowDeleteDialog(false);
-        setSelectedChild(null);
-        alert("Child profile removed successfully!");
+    const handleRemoveStudent = async () => {
+        try {
+            await deleteStudent(selectedStudent);
+            setShowDeleteDialog(false);
+            setSelectedStudent(null);
+            alert("Child profile removed successfully!");
+        } catch (error) {
+            alert(`Failed to remove child: ${error.message}`);
+        }
     };
 
     const closeDialogs = () => {
         setShowAddDialog(false);
         setShowEditDialog(false);
         setShowDeleteDialog(false);
-        setSelectedChild(null);
+        setSelectedStudent(null);
     };
 
     return (
         <>
-       
             <br />
-
             <div className="profile-settings">
                 <h2>Profile & Settings</h2>
                 <p className="me-auto justify-content-start">Manage your account details and child profiles</p>
+
+                {error && (
+                    <div className="error-banner">
+                        <strong>Error:</strong> {error}
+                    </div>
+                )}
 
                 <div className="settings-row">
                     {/* LEFT: Account Information */}
@@ -240,8 +232,8 @@ export default function ProfileSettings() {
                                     </div>
                                 </div>
 
-                                <button type="submit" className="btn-primary full">
-                                    Save Changes
+                                <button type="submit" className="btn-primary full" disabled={loading}>
+                                    {loading ? "Saving..." : "Save Changes"}
                                 </button>
                             </form>
                         </section>
@@ -252,61 +244,71 @@ export default function ProfileSettings() {
                         <section className="card">
                             <div className="card-header">
                                 <h3>Child Profiles</h3>
-                                <button 
+                                {/* <button 
                                     className="btn-primary small"
                                     onClick={openAddDialog}
+                                    disabled={loading}
                                 >
                                     + Add Child
-                                </button>
+                                </button> */}
                             </div>
                             <p className="muted">
                                 Manage your child's profiles and enrolled programs
                             </p>
 
                             <div className="child-list">
-                                {children.map((child) => (
-                                    <div key={child.id} className="child-item detailed">
+                                {students.map((student) => (
+                                    <div key={student.id} className="child-item detailed">
                                         <div className="child-header">
                                             <img
-                                                src={child.avatar}
-                                                alt={`${child.name} Avatar`}
+                                                src={student.avatar}
+                                                alt={`${student.fullName} Avatar`}
                                                 className="child-avatar large"
                                             />
                                             <div className="child-info">
-                                                <p className="child-name">{child.name}</p>
-                                                <span className="child-grade">{child.gradeLevel}</span>
+                                                <p className="child-name">{student.fullName}</p>
+                                                <div className="child-badges">
+                                                    {student.school && (
+                                                        <span className="child-badge school-badge">
+                                                            {student.school}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="child-details">
-                                            <p><strong>School:</strong> {child.school || "Not specified"}</p>
-                                            <p><strong>Address:</strong> {child.address || "Not specified"}</p>
-                                            <p><strong>Emergency Contact:</strong> {child.emergencyContact || "Not specified"}</p>
-                                            <p><strong>Parent/Guardian:</strong> {child.parentGuardian || "Not specified"}</p>
-                                            <p><strong>Contact:</strong> {child.parentPhone || "Not specified"}</p>
+                                            <p><strong>Grade Level:</strong> {student.gradeLevel || "Not specified"}</p>
+                                            <p><strong>School:</strong> {student.school || "Not specified"}</p>
+                                            <p><strong>Email:</strong> {student.email || "Not specified"}</p>
+                                            <p><strong>Phone/Emergency Contact:</strong> {student.phone || "Not specified"}</p>
+                                            <p><strong>Address:</strong> {student.address || "Not specified"}</p>
                                         </div>
                                         <div className="child-actions">
                                             <button 
                                                 className="btn-outline small"
-                                                onClick={() => openEditDialog(child.id)}
+                                                onClick={() => openEditDialog(student.id)}
+                                                disabled={loading}
                                             >
                                                 Edit
                                             </button>
-                                            <button 
+                                            {/* <button 
                                                 className="btn-danger small"
-                                                onClick={() => openDeleteDialog(child.id)}
+                                                onClick={() => openDeleteDialog(student.id)}
+                                                disabled={loading}
                                             >
                                                 Remove
-                                            </button>
+                                            </button> */}
                                         </div>
                                     </div>
                                 ))}
                                 
-                                {children.length === 0 && (
+                                {students.length === 0 && (
                                     <div className="empty-state">
                                         <p>No child profiles added yet.</p>
                                         <button 
                                             className="btn-primary"
                                             onClick={openAddDialog}
+                                            disabled={loading}
                                         >
                                             Add Your First Child
                                         </button>
@@ -325,37 +327,73 @@ export default function ProfileSettings() {
                                 <h3>Add New Child</h3>
                                 <button className="btn-close" onClick={closeDialogs}>✕</button>
                             </div>
-                            <form onSubmit={handleAddChild} className="dialog-form">
-                                <div className="form-group">
-                                    <label>Child's Name *</label>
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        value={childForm.name}
-                                        onChange={handleChildChange}
-                                        placeholder="Enter child's full name"
-                                        required
-                                    />
-                                </div>
+                            <form onSubmit={handleAddStudent} className="dialog-form">
                                 <div className="form-row">
                                     <div className="form-group">
-                                        <label>School</label>
+                                        <label>First Name *</label>
                                         <input
                                             type="text"
-                                            name="school"
-                                            value={childForm.school}
-                                            onChange={handleChildChange}
-                                            placeholder="School name"
+                                            name="firstName"
+                                            value={studentForm.firstName}
+                                            onChange={handleStudentFormChange}
+                                            placeholder="Child's first name"
+                                            required
                                         />
                                     </div>
+                                    <div className="form-group">
+                                        <label>Last Name *</label>
+                                        <input
+                                            type="text"
+                                            name="lastName"
+                                            value={studentForm.lastName}
+                                            onChange={handleStudentFormChange}
+                                            placeholder="Child's last name"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <div className="form-row">
                                     <div className="form-group">
                                         <label>Grade Level</label>
                                         <input
                                             type="text"
                                             name="gradeLevel"
-                                            value={childForm.gradeLevel}
-                                            onChange={handleChildChange}
+                                            value={studentForm.gradeLevel}
+                                            onChange={handleStudentFormChange}
                                             placeholder="Grade 3"
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>School</label>
+                                        <input
+                                            type="text"
+                                            name="school"
+                                            value={studentForm.school}
+                                            onChange={handleStudentFormChange}
+                                            placeholder="School name"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label>Email</label>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            value={studentForm.email}
+                                            onChange={handleStudentFormChange}
+                                            placeholder="child@email.com"
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Phone/Emergency Contact *</label>
+                                        <input
+                                            type="tel"
+                                            name="phone"
+                                            value={studentForm.phone}
+                                            onChange={handleStudentFormChange}
+                                            placeholder="+63 912 345 6789"
+                                            required
                                         />
                                     </div>
                                 </div>
@@ -364,59 +402,20 @@ export default function ProfileSettings() {
                                     <input
                                         type="text"
                                         name="address"
-                                        value={childForm.address}
-                                        onChange={handleChildChange}
+                                        value={studentForm.address}
+                                        onChange={handleStudentFormChange}
                                         placeholder="Full address"
                                     />
                                 </div>
-                                <div className="form-group">
-                                    <label>Emergency Contact</label>
-                                    <input
-                                        type="tel"
-                                        name="emergencyContact"
-                                        value={childForm.emergencyContact}
-                                        onChange={handleChildChange}
-                                        placeholder="+63 912 345 6789"
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Parent/Guardian</label>
-                                    <input
-                                        type="text"
-                                        name="parentGuardian"
-                                        value={childForm.parentGuardian}
-                                        onChange={handleChildChange}
-                                        placeholder="Guardian's full name"
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Parent Email</label>
-                                    <input
-                                        type="email"
-                                        name="parentEmail"
-                                        value={childForm.parentEmail}
-                                        onChange={handleChildChange}
-                                        placeholder="parent@email.com"
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Parent Phone</label>
-                                    <input
-                                        type="tel"
-                                        name="parentPhone"
-                                        value={childForm.parentPhone}
-                                        onChange={handleChildChange}
-                                        placeholder="+63 987 654 3210"
-                                    />
-                                </div>
                                 <div className="dialog-actions">
-                                    <button type="submit" className="btn-primary">
-                                        Add Child
+                                    <button type="submit" className="btn-primary" disabled={loading}>
+                                        {loading ? "Adding..." : "Add Child"}
                                     </button>
                                     <button 
                                         type="button" 
                                         className="btn-outline"
                                         onClick={closeDialogs}
+                                        disabled={loading}
                                     >
                                         Cancel
                                     </button>
@@ -434,37 +433,73 @@ export default function ProfileSettings() {
                                 <h3>Edit Child Profile</h3>
                                 <button className="btn-close" onClick={closeDialogs}>✕</button>
                             </div>
-                            <form onSubmit={handleUpdateChild} className="dialog-form">
-                                <div className="form-group">
-                                    <label>Child's Name *</label>
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        value={childForm.name}
-                                        onChange={handleChildChange}
-                                        placeholder="Enter child's full name"
-                                        required
-                                    />
-                                </div>
+                            <form onSubmit={handleUpdateStudent} className="dialog-form">
                                 <div className="form-row">
                                     <div className="form-group">
-                                        <label>School</label>
+                                        <label>First Name *</label>
                                         <input
                                             type="text"
-                                            name="school"
-                                            value={childForm.school}
-                                            onChange={handleChildChange}
-                                            placeholder="School name"
+                                            name="firstName"
+                                            value={studentForm.firstName}
+                                            onChange={handleStudentFormChange}
+                                            placeholder="Child's first name"
+                                            required
                                         />
                                     </div>
+                                    <div className="form-group">
+                                        <label>Last Name *</label>
+                                        <input
+                                            type="text"
+                                            name="lastName"
+                                            value={studentForm.lastName}
+                                            onChange={handleStudentFormChange}
+                                            placeholder="Child's last name"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <div className="form-row">
                                     <div className="form-group">
                                         <label>Grade Level</label>
                                         <input
                                             type="text"
                                             name="gradeLevel"
-                                            value={childForm.gradeLevel}
-                                            onChange={handleChildChange}
+                                            value={studentForm.gradeLevel}
+                                            onChange={handleStudentFormChange}
                                             placeholder="Grade 3"
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>School</label>
+                                        <input
+                                            type="text"
+                                            name="school"
+                                            value={studentForm.school}
+                                            onChange={handleStudentFormChange}
+                                            placeholder="School name"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label>Email</label>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            value={studentForm.email}
+                                            onChange={handleStudentFormChange}
+                                            placeholder="child@email.com"
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Phone/Emergency Contact *</label>
+                                        <input
+                                            type="tel"
+                                            name="phone"
+                                            value={studentForm.phone}
+                                            onChange={handleStudentFormChange}
+                                            placeholder="+63 912 345 6789"
+                                            required
                                         />
                                     </div>
                                 </div>
@@ -473,59 +508,20 @@ export default function ProfileSettings() {
                                     <input
                                         type="text"
                                         name="address"
-                                        value={childForm.address}
-                                        onChange={handleChildChange}
+                                        value={studentForm.address}
+                                        onChange={handleStudentFormChange}
                                         placeholder="Full address"
                                     />
                                 </div>
-                                <div className="form-group">
-                                    <label>Emergency Contact</label>
-                                    <input
-                                        type="tel"
-                                        name="emergencyContact"
-                                        value={childForm.emergencyContact}
-                                        onChange={handleChildChange}
-                                        placeholder="+63 912 345 6789"
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Parent/Guardian</label>
-                                    <input
-                                        type="text"
-                                        name="parentGuardian"
-                                        value={childForm.parentGuardian}
-                                        onChange={handleChildChange}
-                                        placeholder="Guardian's full name"
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Parent Email</label>
-                                    <input
-                                        type="email"
-                                        name="parentEmail"
-                                        value={childForm.parentEmail}
-                                        onChange={handleChildChange}
-                                        placeholder="parent@email.com"
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Parent Phone</label>
-                                    <input
-                                        type="tel"
-                                        name="parentPhone"
-                                        value={childForm.parentPhone}
-                                        onChange={handleChildChange}
-                                        placeholder="+63 987 654 3210"
-                                    />
-                                </div>
                                 <div className="dialog-actions">
-                                    <button type="submit" className="btn-primary">
-                                        Update Child
+                                    <button type="submit" className="btn-primary" disabled={loading}>
+                                        {loading ? "Updating..." : "Update Child"}
                                     </button>
                                     <button 
                                         type="button" 
                                         className="btn-outline"
                                         onClick={closeDialogs}
+                                        disabled={loading}
                                     >
                                         Cancel
                                     </button>
@@ -551,13 +547,15 @@ export default function ProfileSettings() {
                             <div className="dialog-actions">
                                 <button 
                                     className="btn-danger"
-                                    onClick={handleRemoveChild}
+                                    onClick={handleRemoveStudent}
+                                    disabled={loading}
                                 >
-                                    Yes, Remove
+                                    {loading ? "Removing..." : "Yes, Remove"}
                                 </button>
                                 <button 
                                     className="btn-outline"
                                     onClick={closeDialogs}
+                                    disabled={loading}
                                 >
                                     Cancel
                                 </button>

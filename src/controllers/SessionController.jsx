@@ -157,15 +157,35 @@ export default class SessionController {
       throw err;
     }
   }
-
-  /** Fetch all sessions for the current user */
+/** Fetch all sessions for the current user */
 async getAllSessions() {
   try {
-    const token = localStorage.getItem("token");
-    console.log(token);
+    // Get token from localStorage - handle both string and object formats
+    let token = localStorage.getItem("token");
+    console.log("Raw token from localStorage:", token);
 
+    // Handle case where token might be stored as a JSON string
+    if (token) {
+      try {
+        // Try to parse if it's a JSON string
+        const parsed = JSON.parse(token);
+        token = typeof parsed === 'string' ? parsed : parsed.token || parsed.accessToken || token;
+      } catch (e) {
+        // If parsing fails, it's already a string token
+        console.log("Token is already a string, using as-is");
+      }
+    }
 
-    if (!token) throw new Error("No token found");
+    // Clean up token - remove any quotes if present
+    if (token && typeof token === 'string') {
+      token = token.replace(/^"(.*)"$/, '$1'); // Remove surrounding quotes if any
+    }
+
+    console.log("Processed token:", token);
+
+    if (!token || token === 'null' || token === 'undefined') {
+      throw new Error("No valid token found");
+    }
 
     const res = await fetch(`http://localhost:4000/api/sessions/`, {
       method: "GET",
@@ -175,20 +195,52 @@ async getAllSessions() {
       },
     });
 
+    console.log("Response status:", res.status);
+
     if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      throw new Error(data?.message || "Failed to fetch sessions");
+      if (res.status === 401) {
+        // Token is invalid/expired - clear it
+        localStorage.removeItem("token");
+        throw new Error("Invalid or expired token. Please login again.");
+      }
+      
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData?.message || `Failed to fetch sessions: ${res.status}`);
     }
     
     const data = await res.json();
-    console.log(data.items);
-    return data.items;
+    console.log("Sessions data:", data);
+    return data.items || data;
   } catch (err) {
     console.error("getAllSessions failed:", err);
+    
+    // If it's an auth error, you might want to redirect to login
+    if (err.message.includes('token') || err.message.includes('401')) {
+      // Optionally trigger a logout or redirect
+      this.handleAuthError();
+    }
+    
     return [];
   }
 }
 
+/** Handle authentication errors */
+handleAuthError() {
+  console.warn("Authentication error detected");
+  
+  // Clear invalid token
+  localStorage.removeItem("token");
+  
+  // You can optionally redirect to login page
+  // window.location.href = '/login';
+  
+  // Or dispatch an event that your app can listen to
+  try {
+    window.dispatchEvent(new CustomEvent('auth:token-expired'));
+  } catch (e) {
+    console.warn("Could not dispatch auth error event:", e);
+  }
+}
 
   /** Example: Cancel a session */
   async cancelSession(sessionId) {

@@ -19,7 +19,7 @@ export function UserProvider({ children }) {
         setUser(null);
         return;
       }
-// http://localhost:4000/
+
 
       const res = await fetch("http://localhost:4000/api/users/me", {
       // const res = await fetch("https://mathcode-backend.onrender.com/api/users/me", {

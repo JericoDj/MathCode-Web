@@ -4,7 +4,6 @@ import { useLocation } from "react-router-dom";
 import { UserContext } from "./UserContext.jsx";
 import SessionController from "../controllers/SessionController.jsx";
 import FreeSessionDialog from "../components/FreeSession/FreeSessionDialog.jsx";
-import SessionsDialog from "../components/SessionDialog/SessionDialog.jsx";
 import { SessionContext } from "./SessionContext.jsx";
 
 export function SessionProvider({ children, analytics = null, config = {} }) {
@@ -24,12 +23,6 @@ export function SessionProvider({ children, analytics = null, config = {} }) {
   useEffect(() => {
     ctrl.setContext?.({ user, location });
   }, [user, location, ctrl]);
-
-  // --- Dialog State ---
-  const [dialogState, setDialogState] = useState({
-    open: false,
-    
-  });
 
   // --- Core Actions ---
   const requestSession = async (opts = {}) => {
@@ -52,54 +45,15 @@ export function SessionProvider({ children, analytics = null, config = {} }) {
     }
   };
 
-  // --- Helpers for Dialog ---
-  const openDialog = (sessionDataArray = []) => {
-    if (!Array.isArray(sessionDataArray)) {
-      console.warn("openDialog expects an array of session objects.");
-      return;
-    }
-
-    const validSessions = sessionDataArray.map((s, i) => ({
-      _id: s._id || `temp_id_${i}`,
-      status: s.status || "unknown",
-      requestedBy: s.requestedBy || "Unknown",
-      program: s.program || "N/A",
-      service: s.service || "N/A",
-      mode: s.mode || "N/A",
-      tutor: s.tutor || "N/A",
-      notes: s.notes || "",
-      dateRequested: s.dateRequested || new Date().toISOString(),
-      createdAt: s.createdAt || new Date().toISOString(),
-      updatedAt: s.updatedAt || new Date().toISOString(),
-    }));
-
-    setDialogState({ open: true, sessions: validSessions });
-  };
-
-  const closeDialog = () =>
-    setDialogState((prev) => ({ ...prev, open: false }));
-
-  // --- 🧩 New: Manual Setter Function ---
-  const setSessions = (newSessions = []) => {
-    if (!Array.isArray(newSessions)) {
-      console.warn("setSessions expects an array of session objects.");
-      return;
-    }
-    setDialogState((prev) => ({ ...prev, sessions: newSessions }));
-  };
-
-
   const fetchAllSessions = async () => {
-  setLoading(true);
-  try {
-    const sessions = await ctrl.getAllSessions();
-
-    setAllSessions(sessions);
-    setSessions(sessions); // optional: update dialog sessions too
-  } finally {
-    setLoading(false);
-  }
-};
+    setLoading(true);
+    try {
+      const sessions = await ctrl.getAllSessions();
+      setAllSessions(sessions);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SessionContext.Provider
@@ -108,24 +62,15 @@ export function SessionProvider({ children, analytics = null, config = {} }) {
         controller: ctrl,
         requestSession,
         cancelSession,
-        openDialog,
-        closeDialog,
-        setSessions,
         fetchAllSessions,
         allSessions,
-        sessions: dialogState.sessions,
-        dialogOpen: dialogState.open,
+        sessions: allSessions, // Provide sessions data
       }}
     >
       {children}
 
-      {/* Global Dialogs */}
+      {/* Only keep FreeSessionDialog if needed, remove SessionsDialog */}
       <FreeSessionDialog />
-      <SessionsDialog
-        open={dialogState.open}
-        onClose={closeDialog}
-        
-      />
     </SessionContext.Provider>
   );
 }

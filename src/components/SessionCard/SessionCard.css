@@ -1,0 +1,169 @@
+.session-card {
+  background: white;
+
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
+}
+
+.session-card.scheduled { border-left-color: #4caf50; }
+.session-card.approved { border-left-color: #2196f3; }
+.session-card.pending { border-left-color: #ffc107; }
+.session-card.completed { border-left-color: #9c27b0; }
+.session-card.cancelled { border-left-color: #f44336; }
+.session-card.declined { border-left-color: #795548; }
+.session-card.no-show { border-left-color: #607d8b; }
+
+.session-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.session-card-header {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  gap: 1rem;
+}
+
+.session-main-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.session-index {
+  background: #1976d2;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.session-details h4 {
+  margin: 0 0 0.5rem 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.session-meta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.session-meta span {
+  padding: 0.25rem 0.75rem;
+  background: #f8f9fa;
+  border-radius: 15px;
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.session-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-join-sm {
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-join-sm:hover {
+  background: #45a049;
+  transform: translateY(-1px);
+}
+
+.status-tag {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-tag.scheduled { background: #e8f5e8; color: #2e7d32; }
+.status-tag.approved { background: #e3f2fd; color: #1565c0; }
+.status-tag.pending { background: #fff3cd; color: #856404; }
+.status-tag.completed { background: #f3e5f5; color: #7b1fa2; }
+.status-tag.cancelled { background: #f8d7da; color: #721c24; }
+.status-tag.declined { background: #e0e0e0; color: #424242; }
+.status-tag.no-show { background: #eceff1; color: #37474f; }
+
+.expand-btn {
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: #1976d2;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.expand-btn:hover {
+  background: #f8f9fa;
+}
+
+/* Additional styles for new fields */
+.session-meta .parent {
+  color: #6b7280;
+  font-size: 0.875rem;
+  background: #f3f4f6;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+}
+
+.session-meta .child-id {
+  color: #8b5cf6;
+  font-size: 0.875rem;
+  background: #faf5ff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #e9d5ff;
+  font-family: monospace;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .session-card-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .session-main-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .session-actions {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .session-meta {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
