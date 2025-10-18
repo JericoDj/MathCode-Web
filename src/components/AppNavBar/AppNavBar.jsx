@@ -1,13 +1,12 @@
-// AppNavBar.jsx
-
+// src/components/AppNavBar/AppNavBar.jsx
 import { HiMenu } from "react-icons/hi"; // hamburger icon
-
 import { useContext, useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext.jsx';
 import { SessionContext } from '../../context/SessionContext.jsx';
 import SideDrawer from '../SideDrawer/SideDrawer.jsx';
 import BookingDialog from "../Booking/BookingDialog.jsx";
+import FreeAssessmentDialog from "../FreeAssessmentDialog/FreeaAssessmentDialog.jsx"; // fixed casing
 import MathCodeLogo from '../../assets/MathCodeNoBGcropped.png';
 import './AppNavBar.css';
 
@@ -41,6 +40,7 @@ export default function AppNavBar() {
   const [isLoading, setIsLoading] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [assessmentDialogOpen, setAssessmentDialogOpen] = useState(false);
   const [acctOpen, setAcctOpen] = useState(false);
   const acctRef = useRef(null);
 
@@ -53,10 +53,6 @@ export default function AppNavBar() {
     const fetchUser = async () => {
       try {
         await getCurrentUser();
-        
-        // currentUser = JSON.parse(localStorage.getItem("auth"));
-        // console.log("user,",currentUser)
-        // setUser();
       } catch (error) {
         console.error('Error fetching user:', error);
         setUser(null);
@@ -136,7 +132,6 @@ export default function AppNavBar() {
     setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
   };
 
-
   // ✅ Logout handler
   const handleLogout = async () => {
     try {
@@ -168,7 +163,7 @@ export default function AppNavBar() {
             to="/"
             onClick={() => navigateAndScrollTop('/')}
           >
-              <img src={MathCodeLogo} alt="MathCode Logo" />
+            <img src={MathCodeLogo} alt="MathCode Logo" />
           </Link>
 
           {/* Menu */}
@@ -189,14 +184,26 @@ export default function AppNavBar() {
 
           {/* Right Side */}
           <div className="navbar-cta d-flex align-items-center gap-2 ms-3">
-            {/* Book a Session button */}
+            {/* Book Free Assessment button */}
             <button
+              type="button"
+              className="btn-cta d-none d-lg-inline"
+              onClick={() => 
+                setAssessmentDialogOpen(true)
+                
+              }
+            >
+              Book Free Assessment
+            </button>
+
+            {/* Book a Session button */}
+            {/* <button
               type="button"
               className="btn-cta d-none d-lg-inline"
               onClick={() => setDialogOpen(true)}
             >
               Book a Session
-            </button>
+            </button> */}
 
             {!isLoading && (
               <>
@@ -245,19 +252,14 @@ export default function AppNavBar() {
             )}
 
             {/* Burger menu */}
-            
             <button
-  className="navbar-toggle d-lg-none border-0 bg-transparent ms-auto"
-  aria-label="Toggle menu"
-  aria-expanded={drawerOpen}
-  onClick={() => setDrawerOpen(prev => !prev)}
->
-  <HiMenu 
-    className={`menu-button`} 
-    size={30} 
-  />
-</button>
-
+              className="navbar-toggle d-lg-none border-0 bg-transparent ms-auto"
+              aria-label="Toggle menu"
+              aria-expanded={drawerOpen}
+              onClick={() => setDrawerOpen(prev => !prev)}
+            >
+              <HiMenu className={`menu-button`} size={30} />
+            </button>
           </div>
         </div>
 
@@ -277,6 +279,13 @@ export default function AppNavBar() {
         />
       </nav>
 
+      {/* Free Assessment Dialog */}
+      <FreeAssessmentDialog
+        open={assessmentDialogOpen}
+        onClose={() => setAssessmentDialogOpen(false)}
+        onSubmit={(data) => console.log("Assessment booked:", data)}
+      />
+
       {/* Booking Dialog */}
       <BookingDialog
         open={dialogOpen}
@@ -286,6 +295,7 @@ export default function AppNavBar() {
     </>
   );
 }
+
 
 
 // // ✅ Fixed functions

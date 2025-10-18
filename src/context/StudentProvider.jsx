@@ -40,7 +40,7 @@ export function StudentProvider({ children }) {
       }
 
       const data = await res.json();
-      console.log(data);
+
       const guardianOf = data.guardianOf || [];
 
       // ✅ Format students list from guardianOf
@@ -74,7 +74,7 @@ export function StudentProvider({ children }) {
         createdAt: child.createdAt || new Date().toISOString(),
       }));
 
-      console.log(formattedStudents);
+  
 
       setStudents(formattedStudents);
     } catch (err) {
