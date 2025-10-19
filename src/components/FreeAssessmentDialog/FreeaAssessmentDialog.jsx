@@ -10,6 +10,7 @@ export default function FreeAssessmentDialog({ open, onClose }) {
   const [loading, setLoading] = useState(true);
   const [childSelection, setChildSelection] = useState("existing"); // "existing" | "new"
   const [selectedChildIndex, setSelectedChildIndex] = useState(0);
+  const [timezone, setTimezone] = useState("");
   const [newChild, setNewChild] = useState({
     firstName: "",
     lastName: "",
@@ -25,6 +26,25 @@ export default function FreeAssessmentDialog({ open, onClose }) {
     notes: "",
   });
   const [submitting, setSubmitting] = useState(false);
+
+  // 🕓 Generate half-hour time options
+  function generateTimeOptions() {
+    const times = [];
+    const start = 8; // 8 AM
+    const end = 20; // 8 PM
+
+    for (let hour = start; hour < end; hour++) {
+      for (let min of [0, 30]) {
+        const h = hour % 12 === 0 ? 12 : hour % 12;
+        const period = hour < 12 ? "AM" : "PM";
+        const formatted = `${h.toString().padStart(2, "0")}:${min
+          .toString()
+          .padStart(2, "0")} ${period}`;
+        times.push(formatted);
+      }
+    }
+    return times;
+  }
 
   // ✅ Fetch user info from API
   useEffect(() => {
@@ -45,11 +65,16 @@ export default function FreeAssessmentDialog({ open, onClose }) {
         });
         const data = await res.json();
         setUser(data);
+        console.log(data.guardianOf[0]._id);
 
         // Default to "new student" if none found
         if (!data.guardianOf || data.guardianOf.length === 0) {
           setChildSelection("new");
         }
+
+        // 🌎 Detect timezone
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        setTimezone(tz);
 
         setLoading(false);
         setTimeout(() => firstRef.current?.focus(), 100);
@@ -75,31 +100,50 @@ export default function FreeAssessmentDialog({ open, onClose }) {
   };
 
   const handleSubmit = async (e) => {
+  
     e.preventDefault();
     setSubmitting(true);
 
     const childToSubmit =
-      childSelection === "existing"
-        ? user.guardianOf[selectedChildIndex]
-        : newChild;
+  childSelection === "existing"
+    ? {
+        _id: user.guardianOf[selectedChildIndex]._id,
+        firstName: user.guardianOf[selectedChildIndex].firstName,
+        lastName: user.guardianOf[selectedChildIndex].lastName,
+        gradeLevel: user.guardianOf[selectedChildIndex].gradeLevel,
+        school: user.guardianOf[selectedChildIndex].school,
+        email: user.guardianOf[selectedChildIndex].email,
+        phone: user.guardianOf[selectedChildIndex].phone,
+        age: user.guardianOf[selectedChildIndex].age,
+      }
+    : newChild;
 
-    try {
+    console.log(childToSubmit);
+
+      
+
+      try {
+        console.log(childToSubmit);
+      
       const res = await fetch(`${localDev}/api/sessions/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${JSON.parse(token)}`,
         },
         body: JSON.stringify({
+          requestedBy:  user.id,
           child: childToSubmit,
           preferredDate: sessionData.preferredDate,
           preferredTime: sessionData.preferredTime,
+          timezone: timezone, 
+          status: "requested_assessment",
           notes: sessionData.notes,
         }),
       });
 
       if (!res.ok) throw new Error("Failed to submit session request.");
-      alert("✅ Assessment booked successfully!");
+ 
       onClose();
     } catch (err) {
       console.error(err);
@@ -125,7 +169,7 @@ export default function FreeAssessmentDialog({ open, onClose }) {
         {loading ? (
           <p>Loading user info...</p>
         ) : (
-          <form onSubmit={handleSubmit} className="fad-form">
+          <form id="assessmentForm" onSubmit={handleSubmit} className="fad-form">
             {/* Existing Students */}
             {user?.guardianOf?.length > 0 && (
               <fieldset className="fad-fieldset">
@@ -250,7 +294,7 @@ export default function FreeAssessmentDialog({ open, onClose }) {
 
             {/* Session Info */}
             <fieldset className="fad-fieldset">
-              <legend>Session Details</legend>
+              <legend>Assessment Date</legend>
               <div className="form-group">
                 <label>Preferred Date *</label>
                 <input
@@ -264,14 +308,28 @@ export default function FreeAssessmentDialog({ open, onClose }) {
               </div>
               <div className="form-group">
                 <label>Preferred Time *</label>
-                <input
-                  type="time"
+                <select
                   name="preferredTime"
                   value={sessionData.preferredTime}
                   onChange={handleSessionChange}
                   required
-                />
+                >
+                  <option value="">Select a time</option>
+                  {generateTimeOptions().map((time) => (
+                    <option key={time} value={time}>
+                      {time}
+                    </option>
+                  ))}
+                </select>
               </div>
+
+              {/* 🌍 Display detected timezone */}
+              {timezone && (
+                <p className="timezone-display">
+                  Your local timezone: <strong>{timezone}</strong>
+                </p>
+              )}
+
               <div className="form-group">
                 <label>Notes</label>
                 <textarea
@@ -287,14 +345,12 @@ export default function FreeAssessmentDialog({ open, onClose }) {
             {/* Actions */}
             
           </form>
-          
         )}
-
-        {/* Footer */}
-<div className="fad-footer">
+        <div className="fad-footer">
   <div className="fad-actions">
     <button
       type="submit"
+      form="assessmentForm"  // ✅ connects to form above
       className="btn-primary"
       disabled={submitting}
     >
@@ -309,7 +365,6 @@ export default function FreeAssessmentDialog({ open, onClose }) {
     </button>
   </div>
 </div>
-
       </section>
     </div>
   );

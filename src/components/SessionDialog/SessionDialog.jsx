@@ -3,7 +3,7 @@ import "./SessionDialog.css";
 
 export default function SessionDialog({ session, onClose }) {
   const [paymentProof, setPaymentProof] = useState(null);
-  const [paymentStatus, setPaymentStatus] = useState('pending');
+  const [paymentStatus, setPaymentStatus] = useState('pending_payment');
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
 
@@ -91,8 +91,8 @@ export default function SessionDialog({ session, onClose }) {
   const sessionStatus = safeSession.status?.toLowerCase() || 'unknown';
   
   const canJoin = sessionStatus === 'scheduled' && safeSession.meetingLink;
-  const canUploadPayment = sessionStatus === 'approved';
-  const canChat = sessionStatus === 'approved' || sessionStatus === 'scheduled';
+  const canUploadPayment = sessionStatus == 'pending_payment';
+  const canChat = sessionStatus === 'pending_payment' || sessionStatus === 'scheduled'|| sessionStatus === 'requested_assessment';
   const canReschedule = sessionStatus === 'scheduled';
 
   // Handle backdrop click to close dialog
@@ -324,7 +324,7 @@ export default function SessionDialog({ session, onClose }) {
                 📅 Reschedule
               </button>
             )}
-            {(sessionStatus === 'pending' || sessionStatus === 'approved') && (
+            {(sessionStatus === 'pending_payment' || sessionStatus === 'requested_assessment') && (
               <button className="btn-danger">Cancel Request</button>
             )}
             <button className="btn-secondary ms-auto" onClick={onClose}>

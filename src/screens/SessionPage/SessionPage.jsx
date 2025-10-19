@@ -17,8 +17,12 @@ export default function SessionsPage() {
     : Object.values(allSessions || {});
 
   // Filter sessions by status
+    const requestAssessmentSessions = sessionArray.filter(
+    session => session.status?.toLowerCase() === "requested_assessment"
+  );
+
   const pendingSessions = sessionArray.filter(
-    session => session.status?.toLowerCase() === "pending"
+    session => session.status?.toLowerCase() === "pending_payment"
   );
 
   const approvedSessions = sessionArray.filter(
@@ -45,13 +49,14 @@ export default function SessionsPage() {
   const getSessionsByTab = () => {
     switch (activeTab) {
       case "all": return sessionArray;
+      case "requested": return requestAssessmentSessions;
       case "pending": return pendingSessions;
       case "approved": return approvedSessions;
       case "scheduled": return scheduledSessions;
       case "completed": return completedSessions;
       case "no-show": return noShowSessions;
       case "cancelled": return cancelledSessions;
-      default: return pendingSessions;
+      default: return requestAssessmentSessions;
     }
   };
 
@@ -118,8 +123,15 @@ export default function SessionsPage() {
           <div className="stat-card">
             <div className="stat-icon pending">⏳</div>
             <div className="stat-info">
+              <h3>{requestAssessmentSessions.length}</h3>
+              <p>Requested Assessment</p>
+            </div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-icon pending">⏳</div>
+            <div className="stat-info">
               <h3>{pendingSessions.length}</h3>
-              <p>Pending</p>
+              <p>Pending Payment</p>
             </div>
           </div>
           <div className="stat-card">
