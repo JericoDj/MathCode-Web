@@ -57,7 +57,7 @@ export function StudentProvider({ children }) {
         avatar: `https://picsum.photos/seed/${child.firstName?.toLowerCase() || "student"}/80`,
         progress: {
           overallScore: Math.floor(Math.random() * 30) + 70,
-          completedSessions: Math.floor(Math.random() * 20) + 5,
+          completedPackages: Math.floor(Math.random() * 20) + 5,
           attendanceRate: Math.floor(Math.random() * 30) + 70,
           skills: [
             { name: "Mathematics", level: Math.floor(Math.random() * 5) + 1 },

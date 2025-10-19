@@ -542,7 +542,7 @@ export default function ProfileSettings() {
                             <div className="dialog-content">
                                 <div className="warning-icon">⚠️</div>
                                 <p>Are you sure you want to remove this child profile? This action cannot be undone.</p>
-                                <p className="warning-text">All session history and progress data for this child will be permanently deleted.</p>
+                                <p className="warning-text">All package history and progress data for this child will be permanently deleted.</p>
                             </div>
                             <div className="dialog-actions">
                                 <button 

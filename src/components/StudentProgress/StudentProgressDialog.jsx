@@ -29,7 +29,7 @@
                 <div>
                 <p><strong>{student.name}</strong></p>
                 <p>Program: <strong>{student.program}</strong></p>
-                <p>Completed: {student.completedSessions}/20 lessons</p>
+                <p>Completed: {student.completedPackages}/20 lessons</p>
                 </div>
             </div>
 

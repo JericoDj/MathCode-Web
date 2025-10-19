@@ -413,11 +413,11 @@ color: #E5E7EB;
     display: inline-block;
   }
 
-  /* Hide desktop CTA buttons on mobile */
+  /* Hide desktop CTA buttons, Book Free Assessment, and account dropdown on mobile */
   .btn-cta,
   .btn-outline,
   .acct-dropdown {
-   
+    display: none !important; /* Force hide on mobile */
   }
 
   /* Mobile drawer styles */
@@ -425,7 +425,7 @@ color: #E5E7EB;
     display: flex;
     position: fixed;
     top: 0;
-    left: -320px;
+    left: -420px;
     width: 300px;
     height: 100vh;
     background: white;
@@ -483,18 +483,20 @@ color: #E5E7EB;
     visibility: visible;
   }
 
-  /* Adjust logo size for mobile */
-  .navbar-logo img {
-   
-  }
+
 }
 
 /* ================= Desktop-only adjustments ================= */
 @media (min-width: 993px) {
   .navbar-toggle {
-
-    
     display: none;
+  }
+  
+  /* Ensure desktop elements are visible */
+  .btn-cta,
+  .btn-outline,
+  .acct-dropdown {
+    display: inline-flex !important; /* Force show on desktop */
   }
 }
 
@@ -513,8 +515,6 @@ color: #E5E7EB;
   }
   
   .navbar-logo img {
-    
-
     height: 80px;
     padding-top: 5px;
     padding-bottom: 5px;

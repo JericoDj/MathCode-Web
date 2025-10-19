@@ -18,7 +18,7 @@ export default function Dashboard() {
         "Built first interactive game",
     ];
     
-    const upcomingSessions = [
+    const upcomingPackages = [
         {
             id: 1,
             date: "Sept 20",
@@ -27,7 +27,9 @@ export default function Dashboard() {
             instructor: "Ms. Baldevarona",
             img: "https://picsum.photos/seed/jane/80/80",
             link: "#",
-            status: "scheduled"
+            status: "scheduled",
+            packageType: "1-1 Private",
+            remainingSessions: 5
         },
         {
             id: 2,
@@ -37,7 +39,9 @@ export default function Dashboard() {
             instructor: "Mr. De Jesus",
             img: "https://picsum.photos/seed/paul/80/80",
             link: "#",
-            status: "approved"
+            status: "approved",
+            packageType: "1-2 Small Group",
+            remainingSessions: 8
         },
     ];
 
@@ -63,8 +67,8 @@ export default function Dashboard() {
     ];
 
     const quickStats = [
-        { label: "Sessions Completed", value: completedSessions, icon: "✅", color: "#4caf50" },
-        { label: "Current Streak", value: "3 weeks", icon: "🔥", color: "#ff9800" },
+        { label: "Packages Completed", value: "3", icon: "📦", color: "#4caf50" },
+        { label: "Active Packages", value: "2", icon: "⚡", color: "#ff9800" },
         { label: "Program Progress", value: `${Math.round(progress)}%`, icon: "📈", color: "#2196f3" },
         { label: "Next Session", value: "Tomorrow", icon: "⏰", color: "#9c27b0" },
     ];
@@ -79,7 +83,7 @@ export default function Dashboard() {
                 </div>
                 <div className="header-actions">
                     <button className="btn-primary">
-                        📚 Book New Session
+                        📦 Book New Package
                     </button>
                 </div>
             </div>
@@ -143,34 +147,38 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                {/* Middle Column - Sessions & Profile */}
+                {/* Middle Column - Packages & Profile */}
                 <div className="col-middle">
-                    {/* Upcoming Sessions */}
-                    <div className="card sessions-card">
+                    {/* Upcoming Packages */}
+                    <div className="card packages-card">
                         <div className="card-header">
-                            <h3>Upcoming Sessions</h3>
+                            <h3>Active Packages</h3>
                             <button className="btn-text">View All</button>
                         </div>
-                        <div className="sessions-list">
-                            {upcomingSessions.map((session) => (
-                                <div key={session.id} className="session-item">
+                        <div className="packages-list">
+                            {upcomingPackages.map((pkg) => (
+                                <div key={pkg.id} className="package-item">
                                     <img 
-                                        src={session.img} 
-                                        alt={session.instructor}
+                                        src={pkg.img} 
+                                        alt={pkg.instructor}
                                         className="instructor-avatar"
                                     />
-                                    <div className="session-details">
-                                        <h4>{session.topic}</h4>
-                                        <div className="session-meta">
-                                            <span className="instructor">{session.instructor}</span>
+                                    <div className="package-details">
+                                        <h4>{pkg.topic}</h4>
+                                        <div className="package-meta">
+                                            <span className="instructor">{pkg.instructor}</span>
+                                            <span className="package-type">{pkg.packageType}</span>
                                             <span className="datetime">
-                                                {session.date} • {session.time}
+                                                {pkg.date} • {pkg.time}
+                                            </span>
+                                            <span className="sessions-left">
+                                                {pkg.remainingSessions} sessions left
                                             </span>
                                         </div>
                                     </div>
-                                    <div className="session-actions">
-                                        <span className={`status-tag ${session.status}`}>
-                                            {session.status === 'scheduled' ? '🎯 Ready' : '✅ Confirmed'}
+                                    <div className="package-actions">
+                                        <span className={`status-tag ${pkg.status}`}>
+                                            {pkg.status === 'scheduled' ? '🎯 Ready' : '✅ Confirmed'}
                                         </span>
                                         <button className="btn-join">
                                             Join
@@ -207,7 +215,7 @@ export default function Dashboard() {
                             ))}
                         </div>
                     </div>
-                           <br />
+                    <br />
 
                     {/* Quick Actions */}
                     <div className="card actions-card">
@@ -216,12 +224,12 @@ export default function Dashboard() {
                         </div>
                         <div className="actions-grid">
                             <button className="action-btn primary">
-                                <span className="action-icon">📚</span>
-                                <span>Book Math</span>
+                                <span className="action-icon">📦</span>
+                                <span>View Packages</span>
                             </button>
                             <button className="action-btn secondary">
-                                <span className="action-icon">💻</span>
-                                <span>Book Coding</span>
+                                <span className="action-icon">📚</span>
+                                <span>Book New</span>
                             </button>
                             <button className="action-btn outline">
                                 <span className="action-icon">📋</span>
@@ -233,14 +241,15 @@ export default function Dashboard() {
                             </button>
                         </div>
                     </div>
-                           <br />
+                    <br />
+                    
                     {/* Promotions */}
                     <div className="card promo-card">
                         <div className="promo-content">
                             <div className="promo-icon"></div>
                             <div className="promo-text mx-auto">
                                 <h4>Special Offer</h4>
-                                <p>Get 20% off when booking 5 sessions!</p>
+                                <p>Get 20% off when booking quarterly packages!</p>
                             </div>
                         </div>
                         <button className="btn-outline promo-btn">

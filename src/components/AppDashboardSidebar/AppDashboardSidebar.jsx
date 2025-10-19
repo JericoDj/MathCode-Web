@@ -12,6 +12,7 @@ import {
   FiHome,
   FiCreditCard,
   FiHelpCircle,
+  FiPackage,
 } from "react-icons/fi";
 import "./AppDashboardSidebar.css";
 
@@ -37,9 +38,8 @@ export default function AppDashboardSidebar({ sidebarOpen, setSidebarOpen }) {
 
   const navItems = [
     { to: "/dashboard", label: "Dashboard", icon: <FiHome /> },
-    { to: "/sessions", label: "Sessions", icon: <FiBarChart2 /> },
+    { to: "/packages", label: "Packages", icon: <FiPackage /> },
     { to: "/profile-settings", label: "Profile", icon: <FiUser /> },
-    
     { to: "/manage-billing", label: "Billing", icon: <FiCreditCard /> },
     { to: "/help-center", label: "Help", icon: <FiHelpCircle /> },
   ];

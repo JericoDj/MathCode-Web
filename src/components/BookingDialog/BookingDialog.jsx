@@ -9,13 +9,15 @@ export default function BookingDialog({ onClose }) {
     preferredDate: '',
     preferredTime: '',
     duration: '60',
+    packageType: '1-1',
+    sessionsPerWeek: '2',
     notes: ''
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle booking logic here
-    console.log('Booking session:', formData);
+    console.log('Booking package:', formData);
     onClose();
   };
 
@@ -30,7 +32,7 @@ export default function BookingDialog({ onClose }) {
     <div className="dialog-backdrop">
       <div className="dialog-box booking-dialog">
         <div className="dialog-header">
-          <h2>📚 Book New Session</h2>
+          <h2>📦 Book New Package</h2>
           <button className="btn-close" onClick={onClose}>✕</button>
         </div>
         
@@ -45,6 +47,34 @@ export default function BookingDialog({ onClose }) {
               placeholder="Enter student's name"
               required
             />
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>Package Type *</label>
+              <select 
+                name="packageType" 
+                value={formData.packageType} 
+                onChange={handleChange}
+                required
+              >
+                <option value="1-1">1:1 Private Tutoring</option>
+                <option value="1-2">1:2 Small Group</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Sessions Per Week *</label>
+              <select 
+                name="sessionsPerWeek" 
+                value={formData.sessionsPerWeek} 
+                onChange={handleChange}
+                required
+              >
+                <option value="2">2 sessions/week</option>
+                <option value="3">3 sessions/week</option>
+                <option value="5">5 sessions/week</option>
+              </select>
+            </div>
           </div>
 
           <div className="form-row">
@@ -80,7 +110,7 @@ export default function BookingDialog({ onClose }) {
 
           <div className="form-row">
             <div className="form-group">
-              <label>Preferred Date *</label>
+              <label>Start Date *</label>
               <input
                 type="date"
                 name="preferredDate"
@@ -103,7 +133,7 @@ export default function BookingDialog({ onClose }) {
           </div>
 
           <div className="form-group">
-            <label>Duration</label>
+            <label>Session Duration</label>
             <select 
               name="duration" 
               value={formData.duration} 
@@ -132,7 +162,7 @@ export default function BookingDialog({ onClose }) {
               Cancel
             </button>
             <button type="submit" className="btn-primary">
-              Book Session
+              Book Package
             </button>
           </div>
         </form>

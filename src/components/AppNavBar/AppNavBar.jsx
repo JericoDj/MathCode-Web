@@ -3,7 +3,7 @@ import { HiMenu } from "react-icons/hi"; // hamburger icon
 import { useContext, useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext.jsx';
-import { SessionContext } from '../../context/SessionContext.jsx';
+import { PackageContext } from '../../context/PackageContext.jsx';
 import SideDrawer from '../SideDrawer/SideDrawer.jsx';
 import BookingDialog from "../Booking/BookingDialog.jsx";
 import FreeAssessmentDialog from "../FreeAssessmentDialog/FreeaAssessmentDialog.jsx"; // fixed casing
@@ -46,7 +46,7 @@ export default function AppNavBar() {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { requestSession } = useContext(SessionContext);
+  const { requestPackage } = useContext(PackageContext);
 
   // ✅ Fetch user once on mount
   useEffect(() => {
@@ -196,15 +196,6 @@ export default function AppNavBar() {
               Book Free Assessment
             </button>
 
-            {/* Book a Session button */}
-            {/* <button
-              type="button"
-              className="btn-cta d-none d-lg-inline"
-              onClick={() => setDialogOpen(true)}
-            >
-              Book a Session
-            </button> */}
-
             {!isLoading && (
               <>
                 {user ? (
@@ -235,6 +226,7 @@ export default function AppNavBar() {
                         </div>
 
                         <button className="acct-item acct-primary" onClick={() => navigateAndScrollTop('/dashboard')}>Dashboard</button>
+                        <button className="acct-item" onClick={() => navigateAndScrollTop('/packages')}>My Packages</button>
                         <button className="acct-item" onClick={() => navigateAndScrollTop('/profile-settings')}>Profile & Settings</button>
                         <button className="acct-item" onClick={() => navigateAndScrollTop('/manage-billing')}>Manage Plan / Billing</button>
                         <button className="acct-item" onClick={() => navigateAndScrollTop('/help-center')}>Help Center</button>
@@ -267,7 +259,7 @@ export default function AppNavBar() {
         <SideDrawer
           isOpen={drawerOpen}
           onClose={() => setDrawerOpen(false)}
-          onSession={() => setDialogOpen(true)}
+          onPackage={() => setDialogOpen(true)}
           onDashboard={() => navigateAndScrollTop('/dashboard')}
           onProfileSettings={() => navigateAndScrollTop('/profile-settings')}
           onBilling={() => navigateAndScrollTop('/manage-billing')}
@@ -295,32 +287,3 @@ export default function AppNavBar() {
     </>
   );
 }
-
-
-
-// // ✅ Fixed functions
-// const steal = function () {
-//   console.log('stealing an item');
-//   return 'steal';
-// };
-
-// const hack = function () {
-//   console.log('hacking the system');
-//   return 'hack';
-// };
-
-// // ✅ Don’t call them during object creation
-// const cardog = {
-//   skill1: steal,
-//   skill2: hack,
-//   skill3: () => 'bark',
-//   skill4: () => 'fetch',
-//   skill5: () => 'bite',
-// };
-
-// // ✅ Example usage
-// console.log(cardog.skill1()); // executes and logs stealing
-// console.log(cardog.skill2());
-// console.log(cardog.skill3());
-// console.log(cardog.skill4());
-// console.log(cardog.skill5());

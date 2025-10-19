@@ -10,13 +10,13 @@ import DashboardNavIcons from "./components/DashboardNavIcons/DashboardNavIcons.
 import MathCodeLogo from '../src/assets/MathCodeNoBGcropped.png';
 
 import { UserProvider } from "./context/UserProvider.jsx";
-import { SessionProvider } from "./context/SessionProvider.jsx";
+import { PackageProvider } from "./context/PackageProvider.jsx";
 import { StudentProvider } from "./context/StudentProvider.jsx";
 import { PlanProvider } from "./context/PlanProvider.jsx";
 
 // Screens
 import HomePage from "./screens/Home/HomePage.jsx";
-import SessionPage from "./screens/SessionPage/SessionPage.jsx";
+import PackagePage from "./screens/PackagePage/PackagePage.jsx";
 import AboutPage from "./screens/About/AboutPage.jsx";
 import AuthPage from "./screens/Auth/AuthPage.jsx";
 import LogoutPage from "./screens/Auth/LogoutPage.jsx";
@@ -55,7 +55,7 @@ function LayoutWrapper() {
     location.pathname.startsWith("/dashboard") ||
     location.pathname.startsWith("/profile-settings") ||
     location.pathname.startsWith("/manage-billing") ||
-    location.pathname.startsWith("/sessions") ||
+    location.pathname.startsWith("/packages") ||
     location.pathname.startsWith("/help-center");
   
 
@@ -130,7 +130,7 @@ function LayoutWrapper() {
                 <Route path="/profile-settings" element={<ProfileSettings />} />
                 <Route path="/manage-billing" element={<ManageBilling />} />
                 <Route path="/help-center" element={<HelpCenter />} />
-                <Route path="/sessions" element={<SessionPage />} />
+                <Route path="/packages" element={<PackagePage />} />
               
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
@@ -168,13 +168,13 @@ export default function App() {
   return (
     <UserProvider>
       <Router>
-        <SessionProvider>
+        <PackageProvider>
           <StudentProvider>
             <PlanProvider>
               <LayoutWrapper />
             </PlanProvider>
           </StudentProvider>
-        </SessionProvider>
+        </PackageProvider>
       </Router>
     </UserProvider>
   );

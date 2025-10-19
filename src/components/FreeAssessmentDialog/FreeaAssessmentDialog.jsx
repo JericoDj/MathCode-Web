@@ -20,7 +20,7 @@ export default function FreeAssessmentDialog({ open, onClose }) {
     phone: "",
     age: "",
   });
-  const [sessionData, setSessionData] = useState({
+  const [packageData, setPackageData] = useState({
     preferredDate: "",
     preferredTime: "",
     notes: "",
@@ -65,7 +65,6 @@ export default function FreeAssessmentDialog({ open, onClose }) {
         });
         const data = await res.json();
         setUser(data);
-        console.log(data.guardianOf[0]._id);
 
         // Default to "new student" if none found
         if (!data.guardianOf || data.guardianOf.length === 0) {
@@ -94,56 +93,50 @@ export default function FreeAssessmentDialog({ open, onClose }) {
     setNewChild((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSessionChange = (e) => {
+  const handlePackageChange = (e) => {
     const { name, value } = e.target;
-    setSessionData((prev) => ({ ...prev, [name]: value }));
+    setPackageData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
-  
     e.preventDefault();
     setSubmitting(true);
 
-    const childToSubmit =
-  childSelection === "existing"
-    ? {
-        _id: user.guardianOf[selectedChildIndex]._id,
-        firstName: user.guardianOf[selectedChildIndex].firstName,
-        lastName: user.guardianOf[selectedChildIndex].lastName,
-        gradeLevel: user.guardianOf[selectedChildIndex].gradeLevel,
-        school: user.guardianOf[selectedChildIndex].school,
-        email: user.guardianOf[selectedChildIndex].email,
-        phone: user.guardianOf[selectedChildIndex].phone,
-        age: user.guardianOf[selectedChildIndex].age,
-      }
-    : newChild;
+    const childToSubmit = childSelection === "existing"
+      ? {
+          _id: user.guardianOf[selectedChildIndex]._id,
+          firstName: user.guardianOf[selectedChildIndex].firstName,
+          lastName: user.guardianOf[selectedChildIndex].lastName,
+          gradeLevel: user.guardianOf[selectedChildIndex].gradeLevel,
+          school: user.guardianOf[selectedChildIndex].school,
+          email: user.guardianOf[selectedChildIndex].email,
+          phone: user.guardianOf[selectedChildIndex].phone,
+          age: user.guardianOf[selectedChildIndex].age,
+        }
+      : newChild;
 
-    console.log(childToSubmit);
-
-      
-
-      try {
-        console.log(childToSubmit);
-      
-      const res = await fetch(`${localDev}/api/sessions/`, {
+    try {
+      const res = await fetch(`${localDev}/api/packages/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${JSON.parse(token)}`,
         },
         body: JSON.stringify({
-          requestedBy:  user.id,
+          requestedBy: user.id,
           child: childToSubmit,
-          preferredDate: sessionData.preferredDate,
-          preferredTime: sessionData.preferredTime,
+          preferredDate: packageData.preferredDate,
+          preferredTime: packageData.preferredTime,
           timezone: timezone, 
           status: "requested_assessment",
-          notes: sessionData.notes,
+          notes: packageData.notes,
         }),
       });
 
-      if (!res.ok) throw new Error("Failed to submit session request.");
- 
+      console.log(res);
+
+      if (!res.ok) throw new Error("Failed to submit package request.");
+
       onClose();
     } catch (err) {
       console.error(err);
@@ -292,7 +285,7 @@ export default function FreeAssessmentDialog({ open, onClose }) {
               </fieldset>
             )}
 
-            {/* Session Info */}
+            {/* Package Info */}
             <fieldset className="fad-fieldset">
               <legend>Assessment Date</legend>
               <div className="form-group">
@@ -300,8 +293,8 @@ export default function FreeAssessmentDialog({ open, onClose }) {
                 <input
                   type="date"
                   name="preferredDate"
-                  value={sessionData.preferredDate}
-                  onChange={handleSessionChange}
+                  value={packageData.preferredDate}
+                  onChange={handlePackageChange}
                   min={new Date().toISOString().split("T")[0]}
                   required
                 />
@@ -310,8 +303,8 @@ export default function FreeAssessmentDialog({ open, onClose }) {
                 <label>Preferred Time *</label>
                 <select
                   name="preferredTime"
-                  value={sessionData.preferredTime}
-                  onChange={handleSessionChange}
+                  value={packageData.preferredTime}
+                  onChange={handlePackageChange}
                   required
                 >
                   <option value="">Select a time</option>
@@ -335,36 +328,33 @@ export default function FreeAssessmentDialog({ open, onClose }) {
                 <textarea
                   rows={3}
                   name="notes"
-                  value={sessionData.notes}
-                  onChange={handleSessionChange}
+                  value={packageData.notes}
+                  onChange={handlePackageChange}
                   placeholder="Any learning goals, concerns, or topics to focus on..."
                 />
               </div>
             </fieldset>
-
-            {/* Actions */}
-            
           </form>
         )}
         <div className="fad-footer">
-  <div className="fad-actions">
-    <button
-      type="submit"
-      form="assessmentForm"  // ✅ connects to form above
-      className="btn-primary"
-      disabled={submitting}
-    >
-      {submitting ? "Booking..." : "Book Assessment"}
-    </button>
-    <button
-      type="button"
-      className="btn-secondary"
-      onClick={onClose}
-    >
-      Cancel
-    </button>
-  </div>
-</div>
+          <div className="fad-actions">
+            <button
+              type="submit"
+              form="assessmentForm"
+              className="btn-primary"
+              disabled={submitting}
+            >
+              {submitting ? "Booking..." : "Book Assessment"}
+            </button>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
       </section>
     </div>
   );

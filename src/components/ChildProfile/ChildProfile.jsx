@@ -1,16 +1,16 @@
 import React, { useContext, useEffect } from "react";
 import "./ChildProfile.css";
-import { SessionContext } from "../../context/SessionContext.jsx";
+import { PackageContext } from "../../context/PackageContext.jsx";
 import { StudentContext } from "../../context/StudentContext.jsx";
 import { PlanContext } from "../../context/PlanContext.jsx";
 
 export default function ChildProfile({ childName, programName, completedSessions }) {
-  const { openDialog, fetchAllSessions, allSessions } = useContext(SessionContext);
+  const { openDialog, fetchAllPackages, allPackages } = useContext(PackageContext);
   const { openProgressDialog } = useContext(StudentContext);
   const { openPlanDialog } = useContext(PlanContext);
  
   useEffect(() => {
-    fetchAllSessions();
+    fetchAllPackages();
   }, []);
 
   const codingStats = {
@@ -25,8 +25,8 @@ export default function ChildProfile({ childName, programName, completedSessions
     Logic: 85,
   };
 
-  const handleViewSessions = () => {
-    openDialog(allSessions);
+  const handleViewPackages = () => {
+    openDialog(allPackages);
   };
 
   const handleCheckProgress = () => {
@@ -104,23 +104,17 @@ export default function ChildProfile({ childName, programName, completedSessions
           <div className="stats-grid">
             <div className="stat-card">
               <div className="stat-header">
-            
                 <h5>Math Skills</h5>
               </div>
-              <div className="spacer p-1 p-md-5 p-lg-0">
-
-              </div>
+              <div className="spacer p-1 p-md-5 p-lg-0"></div>
               <BarChart stats={mathStats} />
             </div>
             
             <div className="stat-card">
               <div className="stat-header">
-            
                 <h5>Coding Skills</h5>
-                
               </div>
-                   <div className="spacer p-1 p-md-5 p-lg-0"></div>
-        
+              <div className="spacer p-1 p-md-5 p-lg-0"></div>
               <BarChart stats={codingStats} />
             </div>
           </div>
@@ -131,9 +125,9 @@ export default function ChildProfile({ childName, programName, completedSessions
             <span className="btn-icon">📊</span>
             Check Progress
           </button>
-          <button className="action-btn sessions-btn" onClick={handleViewSessions}>
-            <span className="btn-icon">📅</span>
-            View Sessions
+          <button className="action-btn packages-btn" onClick={handleViewPackages}>
+            <span className="btn-icon">📦</span>
+            View Packages
           </button>
           <button className="action-btn plan-btn" onClick={handleManagePlan}>
             <span className="btn-icon">⚙️</span>

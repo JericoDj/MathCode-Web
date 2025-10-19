@@ -1,10 +1,10 @@
-// controllers/FreeSessionSubmitController.jsx
-import FreeSessionController from "./SessionController.jsx"; // reuse userUsed/markUserUsed + tracking if you like
+// controllers/FreePackageSubmitController.jsx
+import FreePackageController from "./PackageController.jsx"; // reuse userUsed/markUserUsed + tracking if you like
 
-export default class FreeSessionSubmitController {
+export default class FreePackageSubmitController {
   constructor({ analytics = null } = {}) {
     this.analytics = analytics;
-    this.base = new FreeSessionController({ analytics }); // reuse helpers
+    this.base = new FreePackageController({ analytics }); // reuse helpers
   }
 
   _track(event, payload) {
@@ -32,15 +32,15 @@ export default class FreeSessionSubmitController {
       path: location?.pathname || (typeof window !== "undefined" ? window.location.pathname : ""),
       userId: user?.id || user?._id || null,
     };
-    this._track("free_session_submit_attempt", payload);
+    this._track("free_package_submit_attempt", payload);
 
     // 1) No user -> stash + navigate to register
     if (!user) {
       try {
         localStorage.setItem("mc:pending_free_request", JSON.stringify(payload));
       } catch {}
-      this._track("free_session_submit_guest_redirect", payload);
-      return { action: "redirect_register", url: `/register?intent=free_session&from=${encodeURIComponent(payload.path)}` };
+      this._track("free_package_submit_guest_redirect", payload);
+      return { action: "redirect_register", url: `/register?intent=free_package&from=${encodeURIComponent(payload.path)}` };
     }
 
     // 2) Logged-in but already used -> open upsell
@@ -48,7 +48,7 @@ export default class FreeSessionSubmitController {
       try {
         window.dispatchEvent(new CustomEvent("mc:open-upsell-dialog", { detail: payload }));
       } catch {}
-      this._track("free_session_submit_used_upsell", payload);
+      this._track("free_package_submit_used_upsell", payload);
       return { action: "open_upsell" };
     }
 
@@ -58,7 +58,7 @@ export default class FreeSessionSubmitController {
       // await fetch('/api/free-session', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
 
       this.base.markUserUsed(user);
-      this._track("free_session_submit_success", payload);
+      this._track("free_package_submit_success", payload);
 
       const params = new URLSearchParams({
         plan: "free",
@@ -70,8 +70,8 @@ export default class FreeSessionSubmitController {
       }).toString();
       return { action: "goto_packages", url: `/packages?${params}` };
     } catch (err) {
-      console.warn("Free session submit failed:", err);
-      this._track("free_session_submit_error", { ...payload, error: String(err) });
+      console.warn("Free package submit failed:", err);
+      this._track("free_package_submit_error", { ...payload, error: String(err) });
       return { action: "error", error: err };
     }
   }

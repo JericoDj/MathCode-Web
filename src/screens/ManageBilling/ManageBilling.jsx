@@ -100,8 +100,8 @@ export default function ManageBilling() {
       name: "Pro Plan",
       status: "Active",
       nextBilling: "2025-11-01",
-      totalSessions: 10,
-      remainingSessions: 7,
+      totalPackages: 10,
+      remainingPackages: 7,
       transactions: [
         { date: "2025-10-01", amount: 29.99, status: "Paid" },
         { date: "2025-09-01", amount: 29.99, status: "Paid" },
@@ -129,7 +129,7 @@ export default function ManageBilling() {
       <div className="billing-settings">
         <h2>Manage Payment Methods</h2>
         <p className="me-auto">
-          Set up and manage payment methods for each child's tutoring sessions.
+          Set up and manage payment methods for each child's tutoring packages.
         </p>
 
         {/* Available Payment Methods Section - WHITE BACKGROUND WITH REAL CARDS */}

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from '../../context/UserContext.jsx';
-import BookingDialog from "../../components/Booking/BookingDialog.jsx";
+
+import FreeAssessmentDialog from "../../components/FreeAssessmentDialog/FreeaAssessmentDialog.jsx";
 import "./SideDrawer.css";
 
 export default function SideDrawer({
@@ -15,7 +16,8 @@ export default function SideDrawer({
 }) {
   const { user, logout } = useContext(UserContext); // ✅ use logout directly
   const [accountOpen, setAccountOpen] = useState(false);
-    const [dialogOpen, setDialogOpen] = useState(false);
+   
+      const [assessmentDialogOpen, setAssessmentDialogOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -102,11 +104,12 @@ export default function SideDrawer({
             ))}
           </ul>
           <div className="drawer-cta">
+            
             <button
               className="btn-cta"
-              onClick={() => setDialogOpen(true)}
+              onClick={() => setAssessmentDialogOpen(true)}
             >
-              Book a Free Session
+              Book Free Assesment
             </button>
           </div>
         </div>
@@ -199,11 +202,12 @@ export default function SideDrawer({
           </div>
         )}
       </div>
-      <BookingDialog
-              open={dialogOpen}
-              onClose={() => setDialogOpen(false)}
-              onSubmit={handleDialogSubmit}
-            />
+     
+                   <FreeAssessmentDialog
+                     open={assessmentDialogOpen}
+                     onClose={() => setAssessmentDialogOpen(false)}
+                     onSubmit={(data) => console.log("Assessment booked:", data)}
+                   />
     </>
   );
 }

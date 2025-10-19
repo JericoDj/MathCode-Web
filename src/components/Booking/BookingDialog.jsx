@@ -1,6 +1,6 @@
 // components/Booking/BookingDialog.jsx
 import { useState, useRef, useEffect } from "react";
-import { SessionContext } from "../../context/SessionContext.jsx"; // import session context
+import { PackageContext } from "../../context/PackageContext.jsx";
 import { useContext } from "react";
 
 const CONCERNS = [
@@ -18,7 +18,7 @@ export default function BookingDialog({ open, onClose }) {
   const [timePref, setTimePref] = useState("");
   const firstRef = useRef(null);
 
-  const { requestSession, isSubmitting } = useContext(SessionContext); 
+  const { requestPackage, isSubmitting } = useContext(PackageContext); 
 
   useEffect(() => {
     if (open) {
@@ -33,26 +33,26 @@ export default function BookingDialog({ open, onClose }) {
   const canSubmit = concerns.length > 0 && !!age && !isSubmitting;
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!canSubmit) return;
+    e.preventDefault();
+    if (!canSubmit) return;
 
-  // Grab the current user ID (or whatever is stored) from localStorage
-  const auth = localStorage.getItem("auth");
+    // Grab the current user ID (or whatever is stored) from localStorage
+    const auth = localStorage.getItem("auth");
 
-  const result = await requestSession({
-    concerns,
-    age,
-    notes,
-    timePref,
-    requestedBy: JSON.parse(auth).id, // <-- add this line
-  });
+    const result = await requestPackage({
+      concerns,
+      age,
+      notes,
+      timePref,
+      requestedBy: JSON.parse(auth).id,
+    });
 
-  if (result) {
-    onClose?.();
-  } else {
-    alert(result.message || "Failed to submit session request.");
-  }
-};
+    if (result) {
+      onClose?.();
+    } else {
+      alert(result.message || "Failed to submit package request.");
+    }
+  };
 
   const toggleConcern = (id) => {
     setConcerns((prev) =>
@@ -74,7 +74,7 @@ export default function BookingDialog({ open, onClose }) {
         aria-labelledby="fsdlg-title"
       >
         <header className="fsdlg-header">
-          <h3 id="fsdlg-title">Book a Session</h3>
+          <h3 id="fsdlg-title">Book a Package</h3>
           <p>Quick diagnostic + parent consult. Tell us your goals and preferred time.</p>
         </header>
 
@@ -104,7 +104,7 @@ export default function BookingDialog({ open, onClose }) {
           </fieldset>
 
           <fieldset className="fsdlg-fieldset">
-            <legend>Child’s level</legend>
+            <legend>Child's level</legend>
             <div className="fsdlg-radiogrid">
               {["5-7", "8-10", "11-12"].map((id) => (
                 <label key={id} className={`radio ${age === id ? "is-active" : ""}`}>
@@ -148,7 +148,7 @@ export default function BookingDialog({ open, onClose }) {
               disabled={!canSubmit}
               title={!canSubmit ? "Select at least one goal and a level" : undefined}
             >
-              {isSubmitting ? "Submitting…" : "Request Session"}
+              {isSubmitting ? "Submitting…" : "Request Package"}
             </button>
             <button type="button" className="btn btn-link" onClick={onClose}>
               Cancel

@@ -1,4 +1,4 @@
-.sessions-page {
+.packages-page {
   padding: 2rem;
   max-width: 90vw;
   margin: 0 auto;
@@ -35,7 +35,7 @@
 }
 
 /* Header */
-.sessions-header {
+.packages-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -55,7 +55,7 @@
   margin: 0;
 }
 
-.book-session-btn {
+.book-package-btn {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border: none;
   padding: 0.75rem 1.5rem;
@@ -67,7 +67,7 @@
   white-space: nowrap;
 }
 
-.book-session-btn:hover {
+.book-package-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
@@ -125,10 +125,10 @@
 }
 
 /* Tabs */
-.sessions-tabs {
+.packages-tabs {
   display: flex;
-     max-width: 1200px;
-     margin: auto;
+  max-width: 1200px;
+  margin: auto;
   background: rgb(203, 209, 204);
   border-radius: 12px;
   padding: 0.5rem;
@@ -142,13 +142,22 @@
   flex: 1;
   padding: 0.75rem 1rem;
   border: none;
-    background: #ababab;
+  background: #ababab;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
   transition: all 0.2s;
   white-space: nowrap;
   min-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab h5 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .tab.active {
@@ -157,12 +166,12 @@
 }
 
 .tab:hover:not(.active) {
-    background: #0e9f30;
-
+  background: #0e9f30;
+  color: white;
 }
 
-/* Sessions List */
-.sessions-list {
+/* Packages List */
+.packages-list {
   display: flex;
   flex-direction: column;
   margin: auto;
@@ -219,11 +228,14 @@
   gap: 1rem;
   margin-top: 2rem;
   padding: 1rem;
+  flex-wrap: wrap;
 }
 
 .pagination-numbers {
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .pagination-btn {
@@ -233,6 +245,10 @@
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pagination-btn:hover:not(:disabled) {
@@ -253,7 +269,7 @@
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
-  .sessions-page {
+  .packages-page {
     padding: 1rem;
   }
 
@@ -265,9 +281,10 @@
     grid-template-columns: 1fr;
   }
 
-  .sessions-header {
+  .packages-header {
     flex-direction: column;
     align-items: stretch;
+    text-align: center;
   }
 
   .header-content {
@@ -276,21 +293,51 @@
 
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
-  
+    gap: 1rem;
   }
 
-  .sessions-tabs {
+  .stat-card {
+    padding: 1rem;
+  }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .stat-info h3 {
+    font-size: 1.5rem;
+  }
+
+  .packages-tabs {
     flex-direction: column;
- 
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .tab {
+    min-width: auto;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .tab h5 {
+    font-size: 0.85rem;
   }
 
   .pagination {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
   }
 
   .pagination-numbers {
     order: -1;
+  }
+
+  .pagination-btn {
+    padding: 0.75rem 1rem;
+    min-width: 50px;
   }
 }
 
@@ -298,4 +345,81 @@
   .stats-grid {
     grid-template-columns: 1fr;
   }
+
+  .packages-tabs {
+    padding: 0.5rem;
+  }
+
+  .tab {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .tab h5 {
+    font-size: 0.8rem;
+  }
+
+  .quick-join-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .header-content h1 {
+    font-size: 1.5rem;
+  }
+
+  .book-package-btn {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .empty-state {
+    padding: 2rem 1rem;
+  }
+
+  .empty-icon {
+    font-size: 3rem;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 360px) {
+  .packages-page {
+    padding: 0.5rem;
+  }
+
+  .stat-card {
+    padding: 0.75rem;
+  }
+
+  .stat-info h3 {
+    font-size: 1.3rem;
+  }
+
+  .stat-info p {
+    font-size: 0.8rem;
+  }
+
+  .pagination-btn {
+    padding: 0.6rem 0.8rem;
+    min-width: 40px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Improved scrollbar for tabs on mobile */
+.packages-tabs::-webkit-scrollbar {
+  height: 6px;
+}
+
+.packages-tabs::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.packages-tabs::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.packages-tabs::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
