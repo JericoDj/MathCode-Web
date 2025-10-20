@@ -239,7 +239,7 @@ export default function FreeAssessmentDialog({ open, onClose }) {
                 </div>
 
                 <div className="form-group">
-                  <label>Emergency Contact *</label>
+                  <label>Emergency Contact Number *</label>
                   <input
                     type="text"
                     name="phone"
