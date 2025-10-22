@@ -8,7 +8,7 @@ export default function SessionsPage() {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filter, setFilter] = useState('all'); // 'all', 'upcoming', 'completed', 'cancelled'
+  const [filter, setFilter] = useState('all'); // 'all', 'scheduled', 'completed', 'cancelled'
 
   useEffect(() => {
     fetchUserSessions();
@@ -17,36 +17,42 @@ export default function SessionsPage() {
   const fetchUserSessions = async () => {
     try {
       setLoading(true);
-      const token = JSON.parse(localStorage.getItem('token'));
+      setError(null);
       
+      const token = JSON.parse(localStorage.getItem('token'));
       const authDetails = JSON.parse(localStorage.getItem('auth'));
-        const userId = authDetails.id
-    console.log(userId);
+      const userId = authDetails?.id;
 
       if (!token || !userId) {
         throw new Error('Authentication required');
       }
 
-      const response = await fetch(`http://localhost:4000/api/sessions/${userId}`, {
+      // Use the user/:userId endpoint
+      const response = await fetch(`http://localhost:4000/api/sessions/user/${userId}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
-      
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch sessions: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Failed to fetch sessions: ${response.status}`);
       }
 
       const data = await response.json();
+      console.log('Sessions data:', data);
       
-      setSessions(data.sessions || data);
+      // Handle the response format from /api/sessions/user/:userId
+      if (data.sessions && Array.isArray(data.sessions)) {
+        setSessions(data.sessions);
+      } else {
+        setSessions([]);
+      }
     } catch (err) {
       console.error('Error fetching sessions:', err);
       setError(err.message);
-      // For demo purposes, using mock data
-      setSessions(getMockSessions());
+      setSessions([]);
     } finally {
       setLoading(false);
     }
@@ -77,6 +83,7 @@ export default function SessionsPage() {
   };
 
   const formatTime = (timeString) => {
+    if (!timeString) return 'TBD';
     const [hours, minutes] = timeString.split(':').map(Number);
     const period = hours >= 12 ? 'PM' : 'AM';
     const displayHours = hours % 12 || 12;
@@ -87,6 +94,96 @@ export default function SessionsPage() {
     if (filter === 'all') return true;
     return session.status === filter;
   });
+
+  // Sort sessions by date (most recent first)
+  const sortedSessions = [...filteredSessions].sort((a, b) => {
+    return new Date(b.date) - new Date(a.date);
+  });
+
+  const getSessionStudentName = (session) => {
+    // If session has populated studentId with name, use that
+    if (session.studentId && typeof session.studentId === 'object') {
+      return `${session.studentId.firstName} ${session.studentId.lastName}`;
+    }
+    // Otherwise use the studentName field
+    return session.studentName || 'Student';
+  };
+
+  const getSessionParentName = (session) => {
+    // If session has populated parentId with name, use that
+    if (session.parentId && typeof session.parentId === 'object') {
+      return `${session.parentId.firstName} ${session.parentId.lastName}`;
+    }
+    // Otherwise use the parentName field
+    return session.parentName || 'Parent';
+  };
+
+  const getStudentGradeLevel = (session) => {
+    // If session has populated studentId with gradeLevel, use that
+    if (session.studentId && typeof session.studentId === 'object' && session.studentId.gradeLevel) {
+      return `Grade ${session.studentId.gradeLevel}`;
+    }
+    return 'Grade not specified';
+  };
+
+  const canJoinSession = (session) => {
+    if (!session.meetingLink || session.status !== 'scheduled') {
+      return false;
+    }
+
+    const now = new Date();
+    const sessionDateTime = new Date(session.date);
+    const [hours, minutes] = session.time.split(':').map(Number);
+    sessionDateTime.setHours(hours, minutes, 0, 0);
+    
+    // Allow joining 15 minutes before and up to 2 hours after scheduled time
+    const fifteenMinutesBefore = new Date(sessionDateTime.getTime() - 15 * 60000);
+    const twoHoursAfter = new Date(sessionDateTime.getTime() + 2 * 60 * 60000);
+    
+    return now >= fifteenMinutesBefore && now <= twoHoursAfter;
+  };
+
+  const getJoinButtonText = (session) => {
+    if (!session.meetingLink) return 'No Meeting Link';
+    
+    const now = new Date();
+    const sessionDateTime = new Date(session.date);
+    const [hours, minutes] = session.time.split(':').map(Number);
+    sessionDateTime.setHours(hours, minutes, 0, 0);
+    
+    const fifteenMinutesBefore = new Date(sessionDateTime.getTime() - 15 * 60000);
+    
+    if (now < fifteenMinutesBefore) {
+      const timeUntil = Math.ceil((fifteenMinutesBefore - now) / (1000 * 60)); // minutes until available
+      if (timeUntil > 60) {
+        const hoursUntil = Math.floor(timeUntil / 60);
+        return `Join Meeting`;
+      }
+      return `Join Meeting`;
+    }
+    
+    return 'Join Meeting';
+  };
+
+  const handleJoinSession = (session) => {
+    if (session.meetingLink && session.status === 'scheduled') {
+      window.open(session.meetingLink, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const copyMeetingLink = (session) => {
+    if (session.meetingLink) {
+      navigator.clipboard.writeText(session.meetingLink);
+      // You could add a toast notification here
+      alert('Meeting link copied to clipboard!');
+    }
+  };
+
+  // Get session count for filter tabs
+  const getSessionCount = (status) => {
+    if (status === 'all') return sessions.length;
+    return sessions.filter(session => session.status === status).length;
+  };
 
   if (loading) {
     return (
@@ -102,7 +199,7 @@ export default function SessionsPage() {
     );
   }
 
-  if (error) {
+  if (error && sessions.length === 0) {
     return (
       <div className="sessions-page">
         <div className="sessions-header">
@@ -124,6 +221,34 @@ export default function SessionsPage() {
       <div className="sessions-header">
         <h1>My Sessions</h1>
         <p>Manage and view all your tutoring sessions</p>
+        {error && (
+          <div className="warning-banner">
+            <span>⚠️ {error}</span>
+            <button onClick={fetchUserSessions} className="btn btn-text btn-sm">
+              Retry
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Session Stats */}
+      <div className="session-stats">
+        <div className="stat-card">
+          <span className="stat-number">{getSessionCount('scheduled')}</span>
+          <span className="stat-label">Scheduled</span>
+        </div>
+        <div className="stat-card">
+          <span className="stat-number">{getSessionCount('completed')}</span>
+          <span className="stat-label">Completed</span>
+        </div>
+        <div className="stat-card">
+          <span className="stat-number">{getSessionCount('cancelled') + getSessionCount('no-show')}</span>
+          <span className="stat-label">Cancelled/No Show</span>
+        </div>
+        <div className="stat-card">
+          <span className="stat-number">{sessions.length}</span>
+          <span className="stat-label">Total</span>
+        </div>
       </div>
 
       {/* Filter Controls */}
@@ -136,19 +261,25 @@ export default function SessionsPage() {
               onClick={() => setFilter(tab)}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              {tab !== 'all' && (
-                <span className="tab-count">
-                  {sessions.filter(s => tab === 'all' || s.status === tab).length}
-                </span>
-              )}
+              <span className="tab-count">
+                {getSessionCount(tab)}
+              </span>
             </button>
           ))}
         </div>
+        
+        <button 
+          onClick={fetchUserSessions}
+          className="btn btn-secondary btn-sm"
+          disabled={loading}
+        >
+          {loading ? 'Refreshing...' : 'Refresh'}
+        </button>
       </div>
 
       {/* Sessions List */}
       <div className="sessions-list">
-        {filteredSessions.length === 0 ? (
+        {sortedSessions.length === 0 ? (
           <div className="empty-state">
             <h3>No sessions found</h3>
             <p>
@@ -166,7 +297,7 @@ export default function SessionsPage() {
             )}
           </div>
         ) : (
-          filteredSessions.map(session => (
+          sortedSessions.map(session => (
             <div key={session._id} className="session-card">
               <div className="session-header">
                 <div className="session-title">
@@ -179,58 +310,102 @@ export default function SessionsPage() {
                   </span>
                 </div>
                 <div className="session-credits">
-                  {session.creditsUsed} credit{session.creditsUsed !== 1 ? 's' : ''}
+                  {session.creditsUsed || 0} credit{(session.creditsUsed || 0) !== 1 ? 's' : ''}
                 </div>
               </div>
 
               <div className="session-info">
+                {/* Always show student name and grade level */}
+                <div className="info-row">
+                  <span className="info-label">Student:</span>
+                  <span className="info-value">
+                    {getSessionStudentName(session)} • {getStudentGradeLevel(session)}
+                  </span>
+                </div>
+                
                 <div className="info-row">
                   <span className="info-label">Tutor:</span>
                   <span className="info-value">{session.tutorName}</span>
                 </div>
-                <div className="info-row">
-                  <span className="info-label">Student:</span>
-                  <span className="info-value">{session.studentName}</span>
-                </div>
+                
+                {/* Show parent name for students */}
+                {user?.role === 'student' && (
+                  <div className="info-row">
+                    <span className="info-label">Parent:</span>
+                    <span className="info-value">{getSessionParentName(session)}</span>
+                  </div>
+                )}
+                
                 <div className="info-row">
                   <span className="info-label">Date & Time:</span>
                   <span className="info-value">
                     {formatDate(session.date)} at {formatTime(session.time)}
                   </span>
                 </div>
+                
                 <div className="info-row">
                   <span className="info-label">Duration:</span>
                   <span className="info-value">{session.duration} minutes</span>
                 </div>
+                
                 <div className="info-row">
                   <span className="info-label">Package:</span>
                   <span className="info-value">{session.packageType}</span>
                 </div>
+
+                {/* Show meeting link if available */}
+                {session.meetingLink && (
+                  <div className="info-row">
+                    <span className="info-label">Meeting Link:</span>
+                    <span className="info-value meeting-link">
+                      <a 
+                        href={session.meetingLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="meeting-url"
+                      >
+                        {session.meetingLink}
+                      </a>
+                      <button 
+                        onClick={() => copyMeetingLink(session)}
+                        className="btn-copy-link"
+                        title="Copy meeting link"
+                      >
+                        📋
+                      </button>
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Session Actions */}
               <div className="session-actions">
-                {session.meetingLink && session.status === 'scheduled' && (
-                  <a
-                    href={session.meetingLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-primary btn-sm"
-                  >
-                    Join Session
-                  </a>
-                )}
-                
                 {session.status === 'scheduled' && (
-                  <button className="btn btn-secondary btn-sm">
-                    Reschedule
-                  </button>
-                )}
+                  <>
+                    {session.meetingLink ? (
+                      <button
+                        onClick={() => handleJoinSession(session)}
+                        className={`join-meeting-btn ${canJoinSession(session) ? 'active' : 'upcoming'}`}
+                      >
                 
-                {session.status === 'scheduled' && (
-                  <button className="btn btn-danger btn-sm">
-                    Cancel
-                  </button>
+                        {getJoinButtonText(session)}
+                      </button>
+                    ) : (
+                      <div className="no-meeting-link">
+                        <span className="no-link-icon">🔗</span>
+                        Meeting link not available
+                      </div>
+                    )}
+                    
+                    {/* <div className="action-buttons">
+                      <button className="btn btn-secondary btn-sm">
+                        Reschedule
+                      </button>
+                      <button className="btn btn-danger btn-sm">
+                        Cancel
+                      </button>
+                    </div> */}
+                  </>
                 )}
 
                 {session.status === 'completed' && session.rating && (
@@ -243,75 +418,46 @@ export default function SessionsPage() {
                 )}
               </div>
 
-              {/* Session Notes */}
-              {session.notes && (
-                <div className="session-notes">
-                  <strong>Notes:</strong> {session.notes}
-                </div>
-              )}
+              {/* Session Details */}
+              <div className="session-details">
+                {session.notes && (
+                  <div className="session-notes">
+                    <strong>Notes:</strong> {session.notes}
+                  </div>
+                )}
 
-              {session.sessionNotes && (
-                <div className="session-notes">
-                  <strong>Tutor Notes:</strong> {session.sessionNotes}
-                </div>
-              )}
+                {session.sessionNotes && (
+                  <div className="session-notes">
+                    <strong>Tutor Notes:</strong> {session.sessionNotes}
+                  </div>
+                )}
+
+                {session.feedback && (
+                  <div className="session-notes">
+                    <strong>Feedback:</strong> {session.feedback}
+                  </div>
+                )}
+
+                {/* Show actual times if available */}
+                {(session.actualStartTime || session.actualEndTime) && (
+                  <div className="session-timing">
+                    {session.actualStartTime && (
+                      <div className="timing-info">
+                        <strong>Started:</strong> {new Date(session.actualStartTime).toLocaleString()}
+                      </div>
+                    )}
+                    {session.actualEndTime && (
+                      <div className="timing-info">
+                        <strong>Ended:</strong> {new Date(session.actualEndTime).toLocaleString()}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           ))
         )}
       </div>
     </div>
   );
-}
-
-// Mock data for demo purposes
-function getMockSessions() {
-  return [
-    {
-      _id: '1',
-      studentName: 'Cardo De Jesus',
-      tutorName: 'Teacher Viv',
-      subject: 'Singapore Math',
-      date: '2025-10-30T00:00:00.000Z',
-      time: '08:30',
-      duration: 90,
-      status: 'scheduled',
-      packageType: '1:1 Private Tutoring',
-      creditsUsed: 1.5,
-      notes: 'Please come prepared with homework',
-      meetingLink: 'https://meet.google.com/abc-def-ghi',
-      rating: null
-    },
-    {
-      _id: '2',
-      studentName: 'Luna De Jesus',
-      tutorName: 'Teacher Viv',
-      subject: 'Singapore Math',
-      date: '2025-10-29T00:00:00.000Z',
-      time: '09:30',
-      duration: 90,
-      status: 'completed',
-      packageType: '1:1 Private Tutoring',
-      creditsUsed: 1.5,
-      notes: 'Great progress today!',
-      meetingLink: 'https://meet.google.com/ztz-iyef-rtv',
-      rating: 5,
-      sessionNotes: 'Student showed excellent understanding of fractions'
-    },
-    {
-      _id: '3',
-      studentName: 'Cardo De Jesus',
-      tutorName: 'Dr. Johnson',
-      subject: 'Advanced Mathematics',
-      date: '2024-12-25T00:00:00.000Z',
-      time: '15:00',
-      duration: 90,
-      status: 'completed',
-      packageType: '1:1 Private Tutoring',
-      creditsUsed: 1.5,
-      notes: 'Focus on calculus',
-      meetingLink: 'https://meet.google.com/abc-def-ghi',
-      rating: 4,
-      feedback: 'Excellent session!'
-    }
-  ];
 }
