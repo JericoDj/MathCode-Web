@@ -18,6 +18,7 @@ import { PlanProvider } from "./context/PlanProvider.jsx";
 import HomePage from "./screens/Home/HomePage.jsx";
 import PackagePage from "./screens/PackagePage/PackagePage.jsx";
 import AboutPage from "./screens/About/AboutPage.jsx";
+import SessionsPage from "./screens/Sessions/SessionsPage.jsx";
 import AuthPage from "./screens/Auth/AuthPage.jsx";
 import LogoutPage from "./screens/Auth/LogoutPage.jsx";
 import NotFoundPage from "./screens/NotFound/NotFoundPage.jsx";
@@ -54,6 +55,7 @@ function LayoutWrapper() {
   const isDashboardRoute =
     location.pathname.startsWith("/dashboard") ||
     location.pathname.startsWith("/profile-settings") ||
+      location.pathname.startsWith("/sessions") ||
     location.pathname.startsWith("/manage-billing") ||
     location.pathname.startsWith("/packages") ||
     location.pathname.startsWith("/help-center");
@@ -131,6 +133,7 @@ function LayoutWrapper() {
                 <Route path="/manage-billing" element={<ManageBilling />} />
                 <Route path="/help-center" element={<HelpCenter />} />
                 <Route path="/packages" element={<PackagePage />} />
+                  <Route path="/sessions" element={<SessionsPage />} />
               
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
