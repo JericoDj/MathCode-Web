@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from '../../context/UserContext.jsx';
-
 import FreeAssessmentDialog from "../../components/FreeAssessmentDialog/FreeaAssessmentDialog.jsx";
+import AuthModal from "../../components/AuthModal/AuthModal.jsx";
 import "./SideDrawer.css";
 
 export default function SideDrawer({
@@ -14,10 +14,9 @@ export default function SideDrawer({
   onBilling,
   onHelpCenter,
 }) {
-  const { user, logout } = useContext(UserContext); // ✅ use logout directly
+  const { user, logout, openAuthModal } = useContext(UserContext);
   const [accountOpen, setAccountOpen] = useState(false);
-   
-      const [assessmentDialogOpen, setAssessmentDialogOpen] = useState(false);
+  const [assessmentDialogOpen, setAssessmentDialogOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -82,42 +81,46 @@ export default function SideDrawer({
     } else scrollToSection();
   };
 
-    const handleDialogSubmit = (data) => {
+  const handleDialogSubmit = (data) => {
     console.log("Booking submitted:", data);
-    // TODO: call your submission controller here
+  };
+
+  // Handle login/join button click
+  const handleLoginJoinClick = () => {
+    handleCloseDrawer();
+    openAuthModal('login');
   };
 
   return (
     <>
       <div
-        className={`drawer-backdrop ${isOpen ? "show" : ""}`}
+        className={`sidedrawer-backdrop ${isOpen ? "show" : ""}`}
         onClick={handleCloseAccountNavigationDrawer}
       />
-      <div className={`side-drawer ${isOpen ? "open" : ""}`}>
-        <div className="drawer-section">
-          <div className="drawer-section-title">Navigation</div>
-          <ul className="drawer-links">
+      <div className={`sidedrawer ${isOpen ? "open" : ""}`}>
+        <div className="sidedrawer-section">
+          <div className="sidedrawer-section-title">Navigation</div>
+          <ul className="sidedrawer-links">
             {navLinks.map(({ id, label }) => (
               <li key={id} onClick={() => handleNavLinkClick(id)}>
                 {label}
               </li>
             ))}
           </ul>
-          <div className="drawer-cta">
-            
+          <div className="sidedrawer-cta">
             <button
-              className="btn-cta"
+              className="sidedrawer-btn-cta"
               onClick={() => setAssessmentDialogOpen(true)}
             >
-              Book Free Assesment
+              Book Free Assessment
             </button>
           </div>
         </div>
 
         {user ? (
-          <div className="drawer-account-group">
+          <div className="sidedrawer-account-group">
             <button
-              className="btn-dashboard"
+              className="sidedrawer-btn-dashboard"
               onClick={() => {
                 handleCloseDrawer();
                 onDashboard?.();
@@ -127,27 +130,27 @@ export default function SideDrawer({
             </button>
 
             <div
-              className="drawer-account"
+              className="sidedrawer-account"
               onClick={() => setAccountOpen((prev) => !prev)}
             >
-              <div className="account-header">
+              <div className="sidedrawer-account-header">
                 <img
                   src={
                     user.photoURL ||
                     `https://picsum.photos/seed/${user.firstName || "u"}/60`
                   }
                   alt="Avatar"
-                  className="account-avatar"
+                  className="sidedrawer-account-avatar"
                 />
-                <div id="account-infos" className="account-info">
-                  <div className="account-names">
+                <div className="sidedrawer-account-info">
+                  <div className="sidedrawer-account-names">
                     {user.firstName || "User"} {user.lastName || ""}
                   </div>
-                  <div className="account-emails">{user.email || ""}</div>
+                  <div className="sidedrawer-account-emails">{user.email || ""}</div>
                 </div>
               </div>
 
-              <div className={`account-links ${accountOpen ? "open" : ""}`}>
+              <div className={`sidedrawer-account-links ${accountOpen ? "open" : ""}`}>
                 <button
                   onClick={() => {
                     handleCloseAccount(500);
@@ -176,7 +179,7 @@ export default function SideDrawer({
                   className="danger"
                   onClick={() => {
                     handleCloseAccount(500);
-                    logout(); // ✅ use context logout
+                    logout();
                   }}
                 >
                   Logout
@@ -185,29 +188,24 @@ export default function SideDrawer({
             </div>
           </div>
         ) : (
-          <div className="drawer-login-join">
+          <div className="sidedrawer-login-join">
             <button
-              className="btn-outline"
-              onClick={() => {
-               
-                navigate("/login");
-                scrollToTop();
-              
-              }}
+              className="sidedrawer-btn-outlined"
+              onClick={handleLoginJoinClick}
             >
               Login / Join
             </button>
-            
-            
           </div>
         )}
       </div>
-     
-                   <FreeAssessmentDialog
-                     open={assessmentDialogOpen}
-                     onClose={() => setAssessmentDialogOpen(false)}
-                     onSubmit={(data) => console.log("Assessment booked:", data)}
-                   />
+
+      <FreeAssessmentDialog
+        open={assessmentDialogOpen}
+        onClose={() => setAssessmentDialogOpen(false)}
+        onSubmit={(data) => console.log("Assessment booked:", data)}
+      />
+      
+      <AuthModal />
     </>
   );
 }

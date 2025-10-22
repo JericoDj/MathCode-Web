@@ -1,30 +1,16 @@
 import { useState, useRef, useEffect, useContext } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../../context/UserContext.jsx";
-import MathCodeLogo from '../../assets/MathCodeNoBGcropped.png';
-
-import {
-  FiBell,
-  FiLogOut,
-  FiUser,
-  FiSettings,
-  FiBarChart2,
-  FiHome,
-  FiCreditCard,
-  FiHelpCircle,
-  FiPackage,
-} from "react-icons/fi";
+import { FiBell, FiLogOut, FiUser, FiSettings, FiBarChart2 } from "react-icons/fi";
 import "./AppDashboardSidebar.css";
 
-export default function AppDashboardSidebar({ sidebarOpen, setSidebarOpen }) {
+export default function AppDashboardNavBar() {
   const { user, logout } = useContext(UserContext);
   const navigate = useNavigate();
-  const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
-  const userAvatar =
-    user?.photoURL || `https://picsum.photos/seed/${user?.firstName || "u"}/60`;
+  const userAvatar = user?.photoURL || `https://picsum.photos/seed/${user?.firstName || 'u'}/60`;
 
   useEffect(() => {
     const onClickOutside = (e) => {
@@ -36,57 +22,69 @@ export default function AppDashboardSidebar({ sidebarOpen, setSidebarOpen }) {
     return () => document.removeEventListener("mousedown", onClickOutside);
   }, [menuOpen]);
 
-  const navItems = [
-    { to: "/dashboard", label: "Dashboard", icon: <FiHome /> },
-    { to: "/packages", label: "Packages", icon: <FiPackage /> },
-      { to: "/sessions", label: "Sessions", icon: <FiBarChart2 /> },
-    
-    { to: "/profile-settings", label: "Profile", icon: <FiUser /> },
-    { to: "/manage-billing", label: "Billing", icon: <FiCreditCard /> },
-    { to: "/help-center", label: "Help", icon: <FiHelpCircle /> },
-  ];
-
-  const handleLogout = async () => {
-    await logout();
-    navigate("/");
-  };
-
   return (
-    <>
-      <aside className={`appdash-sidebar ${sidebarOpen ? "active" : ""}`}>
-        <div className="sidebar-top">
-          <Link to="/" className="sidebar-logo">
-            <img src={MathCodeLogo} alt="MathCode Logo" />
-          </Link>
+    <header className="appdash-navbar">
+      <div className="appdash-left">
+        <nav className="appdash-nav">
+          <Link to="/dashboard" className="appdash-link">Dashboard</Link>
+          <Link to="/packages" className="appdash-link">Packages</Link>
+          <Link to="/profile-settings" className="appdash-link">Profile</Link>
+          <Link to="/manage-billing" className="appdash-link">Billing</Link>
+          <Link to="/help-center" className="appdash-link">Help</Link>
+        </nav>
+      </div>
 
-          <nav className="sidebar-nav">
-            {navItems.map(({ to, label, icon }) => (
-              <Link
-                key={to}
-                to={to}
-                className={`sidebar-link ${
-                  location.pathname === to ? "active" : ""
-                }`}
-                onClick={() => setSidebarOpen(false)} // close on mobile
-              >
-                {icon}
-                <span>{label}</span>
-              </Link>
-            ))}
-          </nav>
-        </div>
+      <div className="appdash-right">
+        <button className="appdash-icon-btn">
+          <FiBell />
+        </button>
 
-        {/* Logout Button Section */}
-        <div className="sidebar-bottom">
+        <div className="appdash-user-menu" ref={menuRef}>
           <button 
-            className="sidebar-logout-btn"
-            onClick={handleLogout}
+            className="appdash-user-btn"
+            onClick={() => setMenuOpen(!menuOpen)}
           >
-            <FiLogOut size={20} />
-            <span>Logout</span>
+            <img src={userAvatar} alt="User avatar" className="appdash-avatar" />
+            <span className="appdash-user-name">
+              {user?.firstName || 'User'}
+            </span>
           </button>
+
+          {menuOpen && (
+            <div className="appdash-dropdown">
+              <button 
+                className="appdash-dropdown-item"
+                onClick={() => navigate('/profile-settings')}
+              >
+                <FiUser />
+                Profile & Settings
+              </button>
+              <button 
+                className="appdash-dropdown-item"
+                onClick={() => navigate('/packages')}
+              >
+                <FiBarChart2 />
+                My Packages
+              </button>
+              <button 
+                className="appdash-dropdown-item"
+                onClick={() => navigate('/manage-billing')}
+              >
+                <FiSettings />
+                Billing
+              </button>
+              <div className="appdash-dropdown-divider"></div>
+              <button 
+                className="appdash-dropdown-item appdash-logout"
+                onClick={logout}
+              >
+                <FiLogOut />
+                Logout
+              </button>
+            </div>
+          )}
         </div>
-      </aside>
-    </>
+      </div>
+    </header>
   );
 }

@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { UserContext } from '../../context/UserContext.jsx';
 import "./FreeAssessmentDialog.css";
 
 const localDev = "http://localhost:4000";
 
 export default function FreeAssessmentDialog({ open, onClose }) {
+  const { openAuthModal } = useContext(UserContext); // ✅ Get openAuthModal from context
   const firstRef = useRef(null);
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
@@ -26,6 +28,7 @@ export default function FreeAssessmentDialog({ open, onClose }) {
     notes: "",
   });
   const [submitting, setSubmitting] = useState(false);
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false); // ✅ New state for auth prompt
 
   // 🕓 Generate half-hour time options
   function generateTimeOptions() {
@@ -46,13 +49,15 @@ export default function FreeAssessmentDialog({ open, onClose }) {
     return times;
   }
 
-  // ✅ Fetch user info from API
+  // ✅ Fetch user info from API - UPDATED to use AuthModal
   useEffect(() => {
     if (!open) return;
 
     const storedToken = localStorage.getItem("token");
     if (!storedToken) {
-      window.location.href = "/login";
+      console.log("No token found, showing auth prompt");
+      setShowAuthPrompt(true);
+      setLoading(false);
       return;
     }
 
@@ -63,6 +68,11 @@ export default function FreeAssessmentDialog({ open, onClose }) {
         const res = await fetch(`${localDev}/api/users/me`, {
           headers: { Authorization: `Bearer ${JSON.parse(storedToken)}` },
         });
+        
+        if (!res.ok) {
+          throw new Error("Failed to fetch user");
+        }
+        
         const data = await res.json();
         setUser(data);
 
@@ -78,15 +88,70 @@ export default function FreeAssessmentDialog({ open, onClose }) {
         setLoading(false);
         setTimeout(() => firstRef.current?.focus(), 100);
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching user:", err);
         setLoading(false);
+        setShowAuthPrompt(true); // Show auth prompt on error
       }
     };
 
     fetchUser();
   }, [open]);
 
+  // ✅ Handle login button click
+  const handleLoginClick = () => {
+    onClose(); // Close assessment dialog
+    openAuthModal('login'); // Open auth modal
+  };
+
+  // ✅ Handle signup button click
+  const handleSignupClick = () => {
+    onClose(); // Close assessment dialog
+    openAuthModal('register'); // Open auth modal in register mode
+  };
+
   if (!open) return null;
+
+  // ✅ Show authentication prompt if no user is logged in
+  if (showAuthPrompt) {
+    return (
+      <div
+        className="fad-overlay"
+        onMouseDown={(e) => e.target === e.currentTarget && onClose()}
+      >
+        <section className="fad-dialog" role="dialog" aria-modal="true">
+          <header className="fad-header">
+            <h2>🎯 Book a Free Assessment</h2>
+            <button className="btn-close" onClick={onClose}>✕</button>
+          </header>
+
+          <div className="fad-auth-prompt">
+            <div className="auth-prompt-icon">🔐</div>
+            <h3>Authentication Required</h3>
+            <p>Please log in or create an account to book a free assessment session.</p>
+            
+            <div className="auth-prompt-buttons">
+              <button 
+                className="btn-primary" 
+                onClick={handleLoginClick}
+              >
+                Login
+              </button>
+              <button 
+                className="btn-outline" 
+                onClick={handleSignupClick}
+              >
+                Create Account
+              </button>
+            </div>
+            
+            <p className="auth-prompt-note">
+              You'll be able to book your assessment right after signing in!
+            </p>
+          </div>
+        </section>
+      </div>
+    );
+  }
 
   const handleChildChange = (e) => {
     const { name, value } = e.target;

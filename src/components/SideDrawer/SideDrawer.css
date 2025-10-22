@@ -1,21 +1,21 @@
-/* ================= VARIABLES ================= */
+/* ================= SIDEDRAWER VARIABLES ================= */
 :root {
-  --drawer-bg: #ffffff;
-  --drawer-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
-  --border-color: #E5E7EB;
-  --hover-bg: #F9FAFB;
-  --text-primary: #374151;
-  --text-muted: #6B7280;
-  --brand-green: #60b64d;
-  --brand-green-hover: #55a344;
-  --brand-navy: #122054;
-  --brand-navy-hover: #1a2f7a;
-  --danger-color: #DC2626;
-  --danger-hover: #FEF2F2;
+  --sidedrawer-bg: #ffffff;
+  --sidedrawer-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+  --sidedrawer-border-color: #E5E7EB;
+  --sidedrawer-hover-bg: #F9FAFB;
+  --sidedrawer-text-primary: #374151;
+  --sidedrawer-text-muted: #6B7280;
+  --sidedrawer-brand-green: #60b64d;
+  --sidedrawer-brand-green-hover: #55a344;
+  --sidedrawer-brand-navy: #122054;
+  --sidedrawer-brand-navy-hover: #1a2f7a;
+  --sidedrawer-danger-color: #DC2626;
+  --sidedrawer-danger-hover: #FEF2F2;
 }
 
-/* ================= BACKDROP ================= */
-.drawer-backdrop {
+/* ================= SIDEDRAWER BACKDROP ================= */
+.sidedrawer-backdrop {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
@@ -25,21 +25,21 @@
   z-index: 1000;
 }
 
-.drawer-backdrop.show {
+.sidedrawer-backdrop.show {
   opacity: 1;
   visibility: visible;
 }
 
-/* ================= DRAWER PANEL ================= */
-.side-drawer {
+/* ================= SIDEDRAWER PANEL ================= */
+.sidedrawer {
   position: fixed;
   top: 0;
   left: -360px;
   width: 300px;
   margin-top: 15vh;
   height: 85vh;
-  background: var(--drawer-bg);
-  box-shadow: var(--drawer-shadow);
+  background: var(--sidedrawer-bg);
+  box-shadow: var(--sidedrawer-shadow);
   border-radius: 12px;
   display: flex;
   flex-direction: column;
@@ -49,53 +49,58 @@
   overflow-y: auto;
 }
 
-.side-drawer.open {
+.sidedrawer.open {
   left: 0;
 }
 
-/* ================= DRAWER SECTIONS ================= */
-.drawer-section-title {
-  color: var(--text-muted);
+/* ================= SIDEDRAWER CONTENT ================= */
+.sidedrawer-section {
+  flex-shrink: 0;
+}
+
+/* ================= SIDEDRAWER SECTIONS ================= */
+.sidedrawer-section-title {
+  color: var(--sidedrawer-text-muted);
   font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--sidedrawer-border-color);
 }
 
-/* ================= NAVIGATION LINKS ================= */
-.drawer-links {
+/* ================= SIDEDRAWER NAVIGATION LINKS ================= */
+.sidedrawer-links {
   margin-bottom: 2rem;
 }
 
-.drawer-links li {
+.sidedrawer-links li {
   list-style: none;
   padding: 0.75rem 0.5rem;
-  color: var(--text-primary);
+  color: var(--sidedrawer-text-primary);
   cursor: pointer;
   transition: all 0.2s ease;
   font-weight: 500;
   border-radius: 6px;
 }
 
-.drawer-links li:hover {
-  color: var(--brand-green);
-  background: var(--hover-bg);
+.sidedrawer-links li:hover {
+  color: var(--sidedrawer-brand-green);
+  background: var(--sidedrawer-hover-bg);
   transform: translateX(4px);
 }
 
-/* ================= BUTTONS ================= */
-.drawer-cta {
+/* ================= SIDEDRAWER BUTTONS ================= */
+.sidedrawer-cta {
   margin: 1.5rem 0;
 }
 
 /* Primary CTA Button */
-.btn-cta {
+.sidedrawer-btn-cta {
   width: 100%;
   padding: 0.85rem 1rem;
-  background: var(--brand-green);
+  background: var(--sidedrawer-brand-green);
   color: white;
   font-weight: 700;
   border: none;
@@ -106,17 +111,17 @@
   box-shadow: 0 4px 12px rgba(96, 182, 77, 0.25);
 }
 
-.btn-cta:hover {
-  background: var(--brand-green-hover);
+.sidedrawer-btn-cta:hover {
+  background: var(--sidedrawer-brand-green-hover);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(96, 182, 77, 0.35);
 }
 
 /* Dashboard Button */
-.btn-dashboard {
+.sidedrawer-btn-dashboard {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: var(--brand-navy);
+  background: var(--sidedrawer-brand-navy);
   color: white;
   border: none;
   border-radius: 10px;
@@ -127,19 +132,20 @@
   box-shadow: 0 2px 8px rgba(18, 32, 84, 0.2);
 }
 
-.btn-dashboard:hover {
-  background: var(--brand-navy-hover);
+.sidedrawer-btn-dashboard:hover {
+  background: var(--sidedrawer-brand-navy-hover);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(18, 32, 84, 0.3);
 }
 
 /* Outline Button */
-.btn-outline {
+.sidedrawer-btn-outlined {
   width: 100%;
+  margin-bottom: 5vh;
   padding: 0.75rem 1rem;
   background: transparent;
-  color: var(--brand-navy);
-  border: 2px solid var(--brand-navy);
+  color: var(--sidedrawer-brand-navy);
+  border: 2px solid var(--sidedrawer-brand-navy);
   border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
@@ -147,29 +153,37 @@
   font-size: 0.95rem;
 }
 
-.btn-outline:hover {
-  border-color: var(--brand-green);
-  color: var(--brand-green);
+.sidedrawer-btn-outlined:hover {
+  border-color: var(--sidedrawer-brand-green);
+  color: var(--sidedrawer-brand-green);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* ================= ACCOUNT SECTION ================= */
-.drawer-account-group {
+/* ================= SIDEDRAWER LOGIN/JOIN SECTION ================= */
+.sidedrawer-login-join {
+  margin-top: auto;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--sidedrawer-border-color);
+  flex-shrink: 0;
+}
+
+/* ================= SIDEDRAWER ACCOUNT SECTION ================= */
+.sidedrawer-account-group {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   margin-top: auto;
-  margin-bottom: 9vh;
-}
-
-.drawer-account {
-  border-top: 1px solid var(--border-color);
   padding-top: 1.5rem;
-  margin-top: 1rem;
+  border-top: 1px solid var(--sidedrawer-border-color);
+  flex-shrink: 0;
 }
 
-.account-header {
+.sidedrawer-account {
+  width: 100%;
+}
+
+.sidedrawer-account-header {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -177,28 +191,29 @@
   padding: 0.75rem;
   border-radius: 10px;
   transition: background 0.2s ease;
+  width: 100%;
 }
 
-.account-header:hover {
-  background: var(--hover-bg);
+.sidedrawer-account-header:hover {
+  background: var(--sidedrawer-hover-bg);
 }
 
-.account-avatar {
+.sidedrawer-account-avatar {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 2px solid var(--brand-green);
+  border: 2px solid var(--sidedrawer-brand-green);
   box-shadow: 0 2px 8px rgba(96, 182, 77, 0.3);
 }
 
-.account-info {
+.sidedrawer-account-info {
   flex: 1;
   min-width: 0;
 }
 
-.account-names {
+.sidedrawer-account-names {
   font-weight: 700;
-  color: var(--brand-navy);
+  color: var(--sidedrawer-brand-navy);
   font-size: 1rem;
   margin-bottom: 0.25rem;
   white-space: nowrap;
@@ -206,17 +221,17 @@
   text-overflow: ellipsis;
 }
 
-.account-emails {
+.sidedrawer-account-emails {
   font-size: 0.85rem;
-  color: var(--text-muted);
+  color: var(--sidedrawer-text-muted);
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* ================= ACCOUNT DROPDOWN LINKS ================= */
-.account-links {
+/* ================= SIDEDRAWER ACCOUNT DROPDOWN LINKS ================= */
+.sidedrawer-account-links {
   max-height: 0;
   opacity: 0;
   overflow: hidden;
@@ -224,20 +239,21 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  margin-top: 0.5rem;
 }
 
-.account-links.open {
+.sidedrawer-account-links.open {
   max-height: 500px;
   opacity: 1;
 }
 
-.account-links button {
+.sidedrawer-account-links button {
   display: block;
   width: 100%;
   background: transparent;
   border: none;
   padding: 0.75rem 1rem;
-  color: var(--text-primary);
+  color: var(--sidedrawer-text-primary);
   text-align: left;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -246,52 +262,45 @@
   font-size: 0.9rem;
 }
 
-.account-links button:hover {
-  background: var(--hover-bg);
-  color: var(--brand-green);
+.sidedrawer-account-links button:hover {
+  background: var(--sidedrawer-hover-bg);
+  color: var(--sidedrawer-brand-green);
   transform: translateX(4px);
 }
 
-.account-links .danger {
-  color: var(--danger-color);
+.sidedrawer-account-links .danger {
+  color: var(--sidedrawer-danger-color);
   margin-top: 0.5rem;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--sidedrawer-border-color);
   padding-top: 0.75rem;
 }
 
-.account-links .danger:hover {
-  background: var(--danger-hover);
-  color: var(--danger-color);
+.sidedrawer-account-links .danger:hover {
+  background: var(--sidedrawer-danger-hover);
+  color: var(--sidedrawer-danger-color);
 }
 
-/* ================= LOGIN/JOIN SECTION ================= */
-.drawer-login-join {
-  margin-top: auto;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--border-color);
-}
-
-/* ================= SCROLLBAR STYLING ================= */
-.side-drawer::-webkit-scrollbar {
+/* ================= SIDEDRAWER SCROLLBAR STYLING ================= */
+.sidedrawer::-webkit-scrollbar {
   width: 6px;
 }
 
-.side-drawer::-webkit-scrollbar-track {
+.sidedrawer::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
 
-.side-drawer::-webkit-scrollbar-thumb {
+.sidedrawer::-webkit-scrollbar-thumb {
   background: #c1c1c1;
   border-radius: 3px;
 }
 
-.side-drawer::-webkit-scrollbar-thumb:hover {
+.sidedrawer::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
 
-/* ================= MOBILE RESPONSIVE ================= */
+/* ================= SIDEDRAWER MOBILE RESPONSIVE ================= */
 @media (max-width: 768px) {
-  .side-drawer {
+  .sidedrawer {
     width: 90vw;
     max-width: 300px;
     margin-top: 0;
@@ -300,36 +309,37 @@
     padding: 1.5rem 1.25rem;
   }
   
-  .drawer-section-title {
+  .sidedrawer-section-title {
     font-size: 0.75rem;
   }
   
-  .drawer-links li {
+  .sidedrawer-links li {
     padding: 0.85rem 0.5rem;
     font-size: 1.05rem;
   }
   
-  .btn-cta,
-  .btn-dashboard,
-  .btn-outline {
+  .sidedrawer-btn-cta,
+  .sidedrawer-btn-dashboard,
+  .sidedrawer-btn-outlined {
     padding: 0.9rem 1rem;
+  
     font-size: 1rem;
   }
   
-  .account-header {
+  .sidedrawer-account-header {
     padding: 1rem;
   }
   
-  .account-avatar {
+  .sidedrawer-account-avatar {
     width: 48px;
     height: 48px;
   }
   
-  .account-names {
+  .sidedrawer-account-names {
     font-size: 1.1rem;
   }
   
-  .account-emails {
+  .sidedrawer-account-emails {
     font-size: 0.9rem;
   }
 }

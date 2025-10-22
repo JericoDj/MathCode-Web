@@ -191,3 +191,46 @@
     justify-content: center;
   }
 }
+
+/* Add to your FreeAssessmentDialog.css */
+
+.fad-auth-prompt {
+  text-align: center;
+  padding: 2rem;
+}
+
+.auth-prompt-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.fad-auth-prompt h3 {
+  color: #333;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.fad-auth-prompt p {
+  color: #666;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+.auth-prompt-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.auth-prompt-buttons .btn-primary,
+.auth-prompt-buttons .btn-outline {
+  min-width: 120px;
+  padding: 0.75rem 1.5rem;
+}
+
+.auth-prompt-note {
+  font-size: 0.9rem;
+  color: #888;
+  font-style: italic;
+}

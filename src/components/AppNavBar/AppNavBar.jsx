@@ -6,7 +6,8 @@ import { UserContext } from '../../context/UserContext.jsx';
 import { PackageContext } from '../../context/PackageContext.jsx';
 import SideDrawer from '../SideDrawer/SideDrawer.jsx';
 import BookingDialog from "../Booking/BookingDialog.jsx";
-import FreeAssessmentDialog from "../FreeAssessmentDialog/FreeaAssessmentDialog.jsx"; // fixed casing
+import FreeAssessmentDialog from "../FreeAssessmentDialog/FreeaAssessmentDialog.jsx";
+import AuthModal from "../AuthModal/AuthModal.jsx"; // Import AuthModal
 import MathCodeLogo from '../../assets/MathCodeNoBGcropped.png';
 import './AppNavBar.css';
 
@@ -36,7 +37,7 @@ function useScrollSpy(ids, { offset = 80, enabled = true } = {}) {
 }
 
 export default function AppNavBar() {
-  const { user, setUser, getCurrentUser, logout } = useContext(UserContext);
+  const { user, setUser, getCurrentUser, logout, openAuthModal } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -47,6 +48,11 @@ export default function AppNavBar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { requestPackage } = useContext(PackageContext);
+
+  // ✅ Debug dialog states
+  useEffect(() => {
+    console.log('🔍 DIALOG STATES - Assessment:', assessmentDialogOpen, 'Booking:', dialogOpen, 'Drawer:', drawerOpen);
+  }, [assessmentDialogOpen, dialogOpen, drawerOpen]);
 
   // ✅ Fetch user once on mount
   useEffect(() => {
@@ -151,15 +157,28 @@ export default function AppNavBar() {
     // TODO: call your submission controller here
   };
 
+  // ✅ Handle assessment button click
+  const handleAssessmentClick = () => {
+    console.log('🎯 Book Free Assessment button clicked');
+    setAssessmentDialogOpen(true);
+  };
+
+  // ✅ Handle login/join button click
+  const handleLoginJoinClick = () => {
+    console.log('🔐 Login/Join button clicked');
+    setAcctOpen(false);
+    openAuthModal('login');
+  };
+
   const userInitial = (user?.name || user?.email || 'U')[0]?.toUpperCase?.() || 'U';
 
   return (
     <>
       <nav className="navbar">
-        <div className="navbar-container container d-flex justify-content-between align-items-center ">
+        <div className="navbar-container container d-flex justify-content-between align-items-center">
           {/* Logo */}
           <Link
-            className="navbar-logo d-flex align-items-center "
+            className="navbar-logo d-flex align-items-center"
             to="/"
             onClick={() => navigateAndScrollTop('/')}
           >
@@ -188,10 +207,7 @@ export default function AppNavBar() {
             <button
               type="button"
               className="btn-cta d-none d-lg-inline"
-              onClick={() => 
-                setAssessmentDialogOpen(true)
-                
-              }
+              onClick={handleAssessmentClick}
             >
               Book Free Assessment
             </button>
@@ -236,7 +252,10 @@ export default function AppNavBar() {
                     )}
                   </div>
                 ) : (
-                  <button className="btn-outline d-none d-lg-inline" onClick={() => navigateAndScrollTop('/login')}>
+                  <button 
+                    className="btn-outline d-none d-lg-inline" 
+                    onClick={handleLoginJoinClick}
+                  >
                     Login / Join
                   </button>
                 )}
@@ -248,7 +267,10 @@ export default function AppNavBar() {
               className="navbar-toggle d-lg-none border-0 bg-transparent ms-auto"
               aria-label="Toggle menu"
               aria-expanded={drawerOpen}
-              onClick={() => setDrawerOpen(prev => !prev)}
+              onClick={() => {
+                console.log('🍔 Burger menu clicked');
+                setDrawerOpen(prev => !prev);
+              }}
             >
               <HiMenu className={`menu-button`} size={30} />
             </button>
@@ -274,16 +296,34 @@ export default function AppNavBar() {
       {/* Free Assessment Dialog */}
       <FreeAssessmentDialog
         open={assessmentDialogOpen}
-        onClose={() => setAssessmentDialogOpen(false)}
-        onSubmit={(data) => console.log("Assessment booked:", data)}
+        onClose={() => {
+          console.log('Closing assessment dialog');
+          setAssessmentDialogOpen(false);
+        }}
+        onSubmit={(data) => {
+          console.log("Assessment booked:", data);
+          setAssessmentDialogOpen(false);
+        }}
       />
 
       {/* Booking Dialog */}
       <BookingDialog
         open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        onSubmit={handleDialogSubmit}
+        onClose={() => {
+          console.log('Closing booking dialog');
+          setDialogOpen(false);
+        }}
+        onSubmit={(data) => {
+          console.log("Booking submitted:", data);
+          setDialogOpen(false);
+        }}
       />
+
+      {/* Auth Modal */}
+      <AuthModal />
+
+      {/* Debug overlay to show dialog state */}
+      \
     </>
   );
 }
