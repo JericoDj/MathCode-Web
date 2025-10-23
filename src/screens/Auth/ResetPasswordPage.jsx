@@ -35,7 +35,7 @@ export default function ResetPasswordPage() {
     try {
       await completePasswordReset(token, pass);
       setDone(true);
-      setTimeout(() => navigate('/login'), 1200);
+      setTimeout(() => navigate('/'), 1200);
     } catch (ex) {
       setErr(ex?.message || 'Could not reset password.');
     } finally {
@@ -97,7 +97,7 @@ export default function ResetPasswordPage() {
             <button className="btn-primary" disabled={!valid || busy}>
               {busy ? 'Saving…' : 'Save new password'}
             </button>
-            <Link to="/login" className="btn-outline">Back to sign in</Link>
+            <Link to="/" className="btn-outline">Back to sign in</Link>
           </div>
         </form>
 

@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext.jsx';
 import './AuthModal.css';
 
+
+
 // Validators
 const emailOk = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 const passOk = (v) => (v?.length || 0) >= 8;
@@ -12,177 +14,119 @@ const passOk = (v) => (v?.length || 0) >= 8;
 
 // Get Google Client ID from environment variable
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
-// Working Frontend Google OAuth Component
+// Fixed Google OAuth Component - Prevents multiple mounts
 const GoogleOAuth = () => {
   const { setUser, closeAuthModal } = useContext(UserContext);
   const googleButtonRef = useRef(null);
+  const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    const initializeGoogleSignIn = () => {
-      // Check if client ID is available
-      if (!GOOGLE_CLIENT_ID) {
-        console.error('Google Client ID is missing. Please check your environment variables.');
-        return;
-      }
+    // Only load script once
+    if (scriptLoaded || !GOOGLE_CLIENT_ID) return;
 
-      // Load Google Identity Services
-      const script = document.createElement('script');
-      script.src = 'https://accounts.google.com/gsi/client';
-      script.async = true;
-      script.defer = true;
-      
-      script.onload = () => {
-        if (window.google) {
-          window.google.accounts.id.initialize({
-            client_id: GOOGLE_CLIENT_ID,
-            callback: handleCredentialResponse,
-            auto_select: false,
-            cancel_on_tap_outside: true,
-          });
 
-          // Render the button
-          if (googleButtonRef.current) {
-            window.google.accounts.id.renderButton(googleButtonRef.current, {
-              theme: 'outline',
-              size: 'large',
-              width: 400,
-              text: 'signin_with',
-              logo_alignment: 'left',
-            });
-          }
-        }
-      };
 
-      script.onerror = () => {
-        console.error('Failed to load Google Sign-In script');
-      };
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    
+    script.onload = () => {
 
-      document.head.appendChild(script);
-
-      return () => {
-        if (document.head.contains(script)) {
-          document.head.removeChild(script);
-        }
-      };
+      setScriptLoaded(true);
     };
 
-    initializeGoogleSignIn();
-  }, []);
+    script.onerror = () => {
+      console.error('❌ Failed to load Google Sign-In script');
+    };
+
+    document.head.appendChild(script);
+
+    return () => {
+      // Don't remove the script - keep it loaded for the app lifetime
+    };
+  }, [scriptLoaded]);
+
+  useEffect(() => {
+    // Only initialize once when script is loaded
+    if (scriptLoaded && window.google && !initialized && googleButtonRef.current) {
+     
+      
+      try {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleCredentialResponse,
+          auto_select: false,
+          cancel_on_tap_outside: true,
+        });
+
+        // Render the button
+        window.google.accounts.id.renderButton(googleButtonRef.current, {
+          theme: 'outline',
+          size: 'large',
+          width: 400,
+          text: 'signin_with',
+          logo_alignment: 'left',
+        });
+
+        setInitialized(true);
+       
+      } catch (error) {
+        console.error('❌ Google Sign-In initialization failed:', error);
+      }
+    }
+  }, [scriptLoaded, initialized]);
 
   const handleCredentialResponse = async (response) => {
-  try {
-    console.log('Google sign-in successful, sending token to backend...');
-    
-    // Send the Google credential to your backend
-    const result = await fetch(`${API_BASE_URL}/api/users/auth/google`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        token: response.credential,
-      }),
-    });
+    try {
+     
+      
+      const result = await fetch(`${API_BASE_URL}/api/users/auth/google`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: response.credential,
+        }),
+      });
 
-    if (result.ok) {
-      const data = await result.json();
-      console.log(data);
-      
-      // Store token and update user state
-      localStorage.setItem('token', JSON.stringify(data.token));
-         localStorage.setItem('auth', JSON.stringify(data.user));
-      setUser(data.user);
-      closeAuthModal();
-      
-      console.log('Google authentication completed successfully!');
-    } else {
-      // If backend fails, simulate login with test users
+      if (result.ok) {
+        const data = await result.json();
+        console.log('✅ Google auth success:', data);
+        
+        localStorage.setItem('token', JSON.stringify(data.token));
+        localStorage.setItem('auth', JSON.stringify(data.user));
+        setUser(data.user);
+        closeAuthModal();
+      } else {
+        const errorData = await result.json();
+        console.error('❌ Backend authentication failed:', errorData);
+        throw new Error(errorData.message || 'Backend authentication failed');
+      }
+    } catch (error) {
+      console.error('❌ Google authentication failed:', error);
     }
-  } catch (error) {
-    console.error('Google authentication failed:', error);
-    // If there's an error, simulate login with test users
-    await simulateLogin(response);
-  }
-};
+  };
 
+  if (!GOOGLE_CLIENT_ID) {
+    return (
+      <div className="google-config-error">
+        Google Sign-In is not configured. Please check your environment variables.
+      </div>
+    );
+  }
 
   return (
     <div>
-      {GOOGLE_CLIENT_ID ? (
-        <div ref={googleButtonRef}></div>
-      ) : (
-        <div style={{ 
-          padding: '10px', 
-          background: '#ffebee', 
-          border: '1px solid #f44336',
-          borderRadius: '4px',
-          textAlign: 'center',
-          color: '#c62828'
-        }}>
-          Google Sign-In is not configured. Please check your environment variables.
-        </div>
-      )}
+      <div ref={googleButtonRef}></div>
+      {!scriptLoaded && <div>Loading Google Sign-In...</div>}
     </div>
   );
 };
-
-
-export default function AuthModal() {
-  const { 
-    authModalOpen, 
-    authModalMode, 
-    closeAuthModal,
-    openAuthModal,
-    googleSignupData
-  } = useContext(UserContext);
-
-  if (!authModalOpen) return null;
-
-  // If we have Google signup data, show password setup form
-  if (authModalMode === 'google-signup' && googleSignupData) {
-    return <GoogleSignupForm onClose={closeAuthModal} />;
-  }
-
-  return (
-    <div className="auth-modal-overlay" onClick={closeAuthModal}>
-      <div className="auth-modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="auth-modal-close" onClick={closeAuthModal}>
-          ×
-        </button>
-        
-        <header className="auth-modal-header">
-          <h2>{authModalMode === 'login' ? 'Welcome back' : 'Create your account'}</h2>
-          <p className="auth-modal-subtitle">
-            {authModalMode === 'login'
-              ? 'Sign in to track progress, sessions, and rewards.'
-              : 'Join to access practice, coaching sessions, and progress tracking.'}
-          </p>
-        </header>
-
-        {authModalMode === 'login' ? (
-          <LoginForm onClose={closeAuthModal} switchToRegister={() => openAuthModal('register')} />
-        ) : (
-          <RegisterForm onClose={closeAuthModal} switchToLogin={() => openAuthModal('login')} />
-        )}
-
-        {/* Google Sign In Button */}
-        <div className="google-section">
-          <div className="divider">
-            <span>or</span>
-          </div>
-          <div className="google-box">
-               < GoogleOAuth />
-
-          </div>
-       
-        </div>
-      </div>
-    </div>
-  );
-}
 
 // --- Google Signup Form (for setting password after Google OAuth) ---
 function GoogleSignupForm({ onClose }) {
@@ -465,5 +409,58 @@ function RegisterForm({ onClose, switchToLogin }) {
         </div>
       </div>
     </form>
+  );
+}
+
+// ✅ SINGLE AuthModal export default - REMOVED THE DUPLICATE
+export default function AuthModal() {
+  const { 
+    authModalOpen, 
+    authModalMode, 
+    closeAuthModal,
+    openAuthModal,
+    googleSignupData
+  } = useContext(UserContext);
+
+  if (!authModalOpen) return null;
+
+  // If we have Google signup data, show password setup form
+  if (authModalMode === 'google-signup' && googleSignupData) {
+    return <GoogleSignupForm onClose={closeAuthModal} />;
+  }
+
+  return (
+    <div className="auth-modal-overlay" onClick={closeAuthModal}>
+      <div className="auth-modal-content" onClick={(e) => e.stopPropagation()}>
+        <button className="auth-modal-close" onClick={closeAuthModal}>
+          ×
+        </button>
+        
+        <header className="auth-modal-header">
+          <h2>{authModalMode === 'login' ? 'Welcome back' : 'Create your account'}</h2>
+          <p className="auth-modal-subtitle">
+            {authModalMode === 'login'
+              ? 'Sign in to track progress, sessions, and rewards.'
+              : 'Join to access practice, coaching sessions, and progress tracking.'}
+          </p>
+        </header>
+
+        {authModalMode === 'login' ? (
+          <LoginForm onClose={closeAuthModal} switchToRegister={() => openAuthModal('register')} />
+        ) : (
+          <RegisterForm onClose={closeAuthModal} switchToLogin={() => openAuthModal('login')} />
+        )}
+
+        {/* Google Sign In Button */}
+        <div className="google-section">
+          <div className="divider">
+            <span>or</span>
+          </div>
+          <div className="google-box">
+            <GoogleOAuth />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

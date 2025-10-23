@@ -6,7 +6,7 @@ function daysFrom(ts) {
 }
 
 export default class PackageController {
-  constructor({ analytics = null, baseUrl = "math-code-backend.vercel.app/api/request-packages" } = {}) {
+   constructor({ analytics = null, baseUrl =  import.meta.env.VITE_API_URL || "http://localhost:4000" } = {}) {
     this.analytics = analytics;
     this.baseUrl = baseUrl;
   }
@@ -127,7 +127,7 @@ export default class PackageController {
       const token = JSON.parse(authDetails);
       console.log(token);
 
-      const res = await fetch("http://localhost:4000/api/packages/", {
+      const res = await fetch(`${this.baseUrl}/api/packages/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -137,20 +137,17 @@ export default class PackageController {
         body: JSON.stringify(formData),
       });
 
-      console.log(res);
+
       
       if (!res.ok) {
-        console.log("res is not okay");
+   
         const data = await res.json().catch(() => ({}));
         throw new Error(data?.message || "Failed to submit package request");
       }
 
         
       const data = await res.json();
-       console.log("res is okay"); 
-      console.log(data);
-       console.log("res is okay"); 
- 
+
       return data;
     } catch (err) {
       console.error("package submission failed:", err);
@@ -163,7 +160,6 @@ export default class PackageController {
     try {
       // Get token from localStorage - handle both string and object formats
       let token = localStorage.getItem("token");
-      console.log("Raw token from localStorage:", token);
 
       // Handle case where token might be stored as a JSON string
       if (token) {
@@ -182,13 +178,13 @@ export default class PackageController {
         token = token.replace(/^"(.*)"$/, '$1'); // Remove surrounding quotes if any
       }
 
-      console.log("Processed token:", token);
+
 
       if (!token || token === 'null' || token === 'undefined') {
         throw new Error("No valid token found");
       }
 
-      const res = await fetch(`http://localhost:4000/api/packages/`, {
+      const res = await fetch(`${this.baseUrl}/api/packages/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -196,7 +192,7 @@ export default class PackageController {
         },
       });
 
-      console.log("Response status:", res.status);
+
 
       if (!res.ok) {
         if (res.status === 401) {
@@ -210,7 +206,7 @@ export default class PackageController {
       }
       
       const data = await res.json();
-      console.log("Packages data:", data);
+
       return data.items || data;
     } catch (err) {
       console.error("getAllPackages failed:", err);

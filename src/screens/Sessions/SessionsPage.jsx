@@ -42,7 +42,7 @@ export default function SessionsPage() {
       }
 
       const data = await response.json();
-      console.log('Sessions data:', data);
+
       
       // Handle the response format from /api/sessions/user/:userId
       if (data.sessions && Array.isArray(data.sessions)) {

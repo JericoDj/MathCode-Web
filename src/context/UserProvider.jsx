@@ -8,7 +8,7 @@ export function UserProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState('login');
-  const [googleSignupData, setGoogleSignupData] = useState(null); // Store Google user data for password setup
+  const [googleSignupData, setGoogleSignupData] = useState(null);
   const ctrl = new AuthController();
 
   const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
@@ -74,39 +74,100 @@ export function UserProvider({ children }) {
     setUser(null);
   };
 
-  // Google OAuth methods
-  // context/UserProvider.jsx - Fix the googleLogin function
-const googleLogin = async (credential) => {
-  try {
-    console.log("SIGNING GOOGLE WITH CREDENTIAL:", credential);
-    
-    // Send Google token to your backend - FIXED URL
-    const response = await fetch('http://localhost:4000/api/users/auth/google', { // Changed from /api/auth/google
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        token: credential, // Send the raw credential, not decoded
-      }),
-    });
+  // Password Reset Functions
+  const requestPasswordReset = async (email) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/users/forgot-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email.trim(),
+        }),
+      });
 
-    if (response.ok) {
-      const userData = await response.json();
-      setUser(userData.user);
-      // Store the token
-      localStorage.setItem('token', JSON.stringify(userData.token));
-      setAuthModalOpen(false);
-      return userData;
-    } else {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Google authentication failed');
+      if (response.ok) {
+        return await response.json();
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to send reset email');
+      }
+    } catch (error) {
+      console.error('Password reset request failed:', error);
+      throw error;
     }
-  } catch (error) {
-    console.error('Google login failed:', error);
-    throw error;
-  }
-};
+  };
+
+  const verifyOTP = async (email, otp, purpose = 'password-reset') => {
+    try {
+      // For password reset, we'll verify during the reset process
+      // This function can be used for general OTP verification if needed
+      // For now, we'll just return success if we reach this point
+      return { success: true, message: 'OTP verified successfully' };
+    } catch (error) {
+      console.error('OTP verification failed:', error);
+      throw error;
+    }
+  };
+
+  const resetPasswordWithOTP = async (email, otp, newPassword) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/users/reset-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email.trim(),
+          otp: otp,
+          newPassword: newPassword,
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        return result;
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Password reset failed');
+      }
+    } catch (error) {
+      console.error('Password reset failed:', error);
+      throw error;
+    }
+  };
+
+  // Google OAuth methods
+  const googleLogin = async (credential) => {
+    try {
+      console.log("SIGNING GOOGLE WITH CREDENTIAL:", credential);
+      
+      const response = await fetch(`${API_BASE_URL}/api/users/auth/google`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: credential,
+        }),
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData.user);
+        localStorage.setItem('token', JSON.stringify(userData.token));
+        setAuthModalOpen(false);
+        return userData;
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Google authentication failed');
+      }
+    } catch (error) {
+      console.error('Google login failed:', error);
+      throw error;
+    }
+  };
 
   const completeGoogleSignup = async (password, phone = '') => {
     if (!googleSignupData) throw new Error('No Google signup data found');
@@ -151,6 +212,10 @@ const googleLogin = async (credential) => {
         googleLogin,
         completeGoogleSignup,
         googleSignupData,
+        // Password reset functions
+        requestPasswordReset,
+        verifyOTP,
+        resetPasswordWithOTP,
       }}
     >
       {children}

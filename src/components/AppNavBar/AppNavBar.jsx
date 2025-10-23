@@ -49,10 +49,7 @@ export default function AppNavBar() {
   const navigate = useNavigate();
   const { requestPackage } = useContext(PackageContext);
 
-  // ✅ Debug dialog states
-  useEffect(() => {
-    console.log('🔍 DIALOG STATES - Assessment:', assessmentDialogOpen, 'Booking:', dialogOpen, 'Drawer:', drawerOpen);
-  }, [assessmentDialogOpen, dialogOpen, drawerOpen]);
+
 
   // ✅ Fetch user once on mount
   useEffect(() => {
@@ -268,7 +265,7 @@ export default function AppNavBar() {
               aria-label="Toggle menu"
               aria-expanded={drawerOpen}
               onClick={() => {
-                console.log('🍔 Burger menu clicked');
+              
                 setDrawerOpen(prev => !prev);
               }}
             >

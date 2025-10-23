@@ -1,5 +1,5 @@
 import { useContext, useMemo, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext.jsx';
 import './ForgotReset.css';
 
@@ -16,6 +16,7 @@ function useNextRedirect() {
 export default function ForgotPasswordPage() {
   const { requestPasswordReset } = useContext(UserContext);
   const nextUrl = useNextRedirect();
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
   const [busy, setBusy] = useState(false);
@@ -35,6 +36,15 @@ export default function ForgotPasswordPage() {
       await requestPasswordReset(email.trim());
       setSent(true);
       setLastSentAt(Date.now());
+      // Redirect to OTP screen after successful request
+      setTimeout(() => {
+        navigate('/verify-otp', { 
+          state: { 
+            email: email.trim(),
+            purpose: 'password-reset'
+          } 
+        });
+      }, 2000);
     } catch (ex) {
       setErr(ex?.message || 'Could not send reset email.');
     } finally {
@@ -49,6 +59,13 @@ export default function ForgotPasswordPage() {
     try {
       await requestPasswordReset(email.trim());
       setLastSentAt(Date.now());
+      // Redirect to OTP screen on resend as well
+      navigate('/verify-otp', { 
+        state: { 
+          email: email.trim(),
+          purpose: 'password-reset'
+        } 
+      });
     } catch (ex) {
       setErr(ex?.message || 'Could not resend email.');
     } finally {
@@ -61,7 +78,7 @@ export default function ForgotPasswordPage() {
       <section className="auth-card" aria-labelledby="fp-title">
         <header className="auth-header">
           <h1 id="fp-title">Forgot your password?</h1>
-          <p className="auth-subtitle">Enter your email and we’ll send you a reset link.</p>
+          <p className="auth-subtitle">Enter your email and we'll send you a verification code.</p>
         </header>
 
         <form className="auth-form" onSubmit={onSubmit} noValidate>
@@ -84,7 +101,7 @@ export default function ForgotPasswordPage() {
 
           <div className="form-actions">
             <button className="btn-primary" disabled={!valid || busy}>
-              {busy ? 'Sending…' : 'Send reset link'}
+              {busy ? 'Sending…' : 'Send verification code'}
             </button>
             <Link to={`/login?next=${encodeURIComponent('/')}`} className="btn-outline">Back to sign in</Link>
           </div>
@@ -92,12 +109,8 @@ export default function ForgotPasswordPage() {
 
         {sent && (
           <div className="notice success" role="status">
-            <strong>Check your email.</strong> We’ve sent a link to <em>{email}</em>.  
-            {canResend ? (
-              <> Didn’t get it? <button className="linklike small" onClick={resend}>Resend</button>.</>
-            ) : (
-              <> You can resend in a few seconds…</>
-            )}
+            <strong>Check your email.</strong> We've sent a verification code to <em>{email}</em>.  
+            Redirecting to verification screen...
           </div>
         )}
 
@@ -112,8 +125,8 @@ export default function ForgotPasswordPage() {
         <div className="aside-inner">
           <h2>Tip</h2>
           <ul>
-            <li>Look in <strong>Spam</strong> or <strong>Promotions</strong> if you don’t see it.</li>
-            <li>Links expire for security—use it soon.</li>
+            <li>Look in <strong>Spam</strong> or <strong>Promotions</strong> if you don't see it.</li>
+            <li>Verification codes expire for security—use it soon.</li>
           </ul>
           <div className="aside-cta">
             <Link to="/#program" className="btn-light">Explore program</Link>

@@ -33,6 +33,7 @@ import ProfileSettings from "./screens/ProfileSettings/ProfileSettings.jsx";
 import ManageBilling from "./screens/ManageBilling/ManageBilling.jsx";
 import HelpCenter from "./screens/HelpCenter/HelpCenter.jsx";
 import ContactPage from "./screens/Contact/ContactPage.jsx";
+import VerifyOTPPage from "./screens/Auth/OTPVerificationPage.jsx";
 
 import "./App.css";
 
@@ -89,7 +90,7 @@ function GoogleOAuthHandler() {
       }
     };
 
-    handleGoogleCallback();
+
   }, [location, navigate, setUser]);
 
   return (
@@ -208,6 +209,8 @@ function LayoutWrapper() {
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/pricing" element={<PricingPage />} />
+                            <Route path="/verify-otp" element={<VerifyOTPPage />} />
+                            
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </main>

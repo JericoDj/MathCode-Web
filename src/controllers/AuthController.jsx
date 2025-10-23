@@ -6,7 +6,7 @@ export default class AuthController {
     
     // this.baseUrl = "https://mathcode-backend.onrender.com/api/users";
     // this.baseUrl = "http://localhost:4000/api/users";
-        this.baseUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
+        this.baseUrl = `${import.meta.env.VITE_API_URL}/api/users` || "http://localhost:4000/api/user";
   }
 
   async getCurrentUser() {
@@ -17,14 +17,14 @@ export default class AuthController {
 
 
   
-    const response = await fetch(`${API_BASE_URL}/me`, {
+    const response = await fetch(`${this.baseUrl}/me`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${JSON.parse(savedAuth)}`,
       },
     });
-    if (!response.ok) return null; // fail silently
+    if (!response.ok) return null;
     return response.json();
   } catch (e) {
     console.warn('Failed to parse saved auth or fetch user:', e);
