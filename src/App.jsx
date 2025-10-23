@@ -41,6 +41,7 @@ function GoogleOAuthHandler() {
   const { setUser } = useContext(UserContext);
   const location = useLocation();
   const navigate = useNavigate();
+      const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
   useEffect(() => {
     const handleGoogleCallback = async () => {
@@ -57,7 +58,7 @@ function GoogleOAuthHandler() {
           localStorage.setItem('token', JSON.stringify(token));
           
           // Fetch user data with the token
-          const response = await fetch('http://localhost:4000/api/users/me', {
+          const response = await fetch(`${API_BASE_URL}/api/users/me`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json',
