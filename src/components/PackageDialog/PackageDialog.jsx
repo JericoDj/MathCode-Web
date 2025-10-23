@@ -12,6 +12,9 @@ export default function PackageDialog({ package: pkg, onClose }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasExistingPayment, setHasExistingPayment] = useState(false);
 
+  const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+
+
   // Safe package data
   const safePackage = pkg || {};
 
@@ -182,7 +185,7 @@ export default function PackageDialog({ package: pkg, onClose }) {
     try {
       const token = JSON.parse(localStorage.getItem('token'));
 
-      const response = await fetch(`http://localhost:4000/api/packages/${packageId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/packages/${packageId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

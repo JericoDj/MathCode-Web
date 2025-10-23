@@ -13,6 +13,8 @@ const passOk = (v) => (v?.length || 0) >= 8;
 // Get Google Client ID from environment variable
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+
 // Working Frontend Google OAuth Component
 const GoogleOAuth = () => {
   const { setUser, closeAuthModal } = useContext(UserContext);
@@ -75,7 +77,7 @@ const GoogleOAuth = () => {
     console.log('Google sign-in successful, sending token to backend...');
     
     // Send the Google credential to your backend
-    const result = await fetch('http://localhost:4000/api/users/auth/google', {
+    const result = await fetch(`${API_BASE_URL}/api/users/auth/google`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

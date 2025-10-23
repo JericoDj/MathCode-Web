@@ -13,6 +13,9 @@ export function StudentProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Base URL from environment variable
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+
   // ✅ Fetch user data (and guardiansOf list) when user changes
   useEffect(() => {
     if (user) {
@@ -28,7 +31,7 @@ export function StudentProvider({ children }) {
 
       const token = JSON.parse(localStorage.getItem("token")); // ensure your app stores the JWT here
 
-      const res = await fetch("http://localhost:4000/api/users/me", {
+      const res = await fetch(`${API_BASE_URL}/api/users/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

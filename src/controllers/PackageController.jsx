@@ -6,7 +6,7 @@ function daysFrom(ts) {
 }
 
 export default class PackageController {
-  constructor({ analytics = null, baseUrl = "https://mathcode-backend.onrender.com/api/request-packages" } = {}) {
+  constructor({ analytics = null, baseUrl = "math-code-backend.vercel.app/api/request-packages" } = {}) {
     this.analytics = analytics;
     this.baseUrl = baseUrl;
   }

@@ -2,8 +2,11 @@ export default class AuthController {
   constructor() {
     // place to inject dependencies later (analytics, endpoints, etc.)
     
+  // const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+    
     // this.baseUrl = "https://mathcode-backend.onrender.com/api/users";
-    this.baseUrl = "http://localhost:4000/api/users";
+    // this.baseUrl = "http://localhost:4000/api/users";
+        this.baseUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
   }
 
   async getCurrentUser() {
@@ -14,7 +17,7 @@ export default class AuthController {
 
 
   
-    const response = await fetch(`${this.baseUrl}/me`, {
+    const response = await fetch(`${API_BASE_URL}/me`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

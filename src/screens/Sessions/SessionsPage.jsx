@@ -9,6 +9,7 @@ export default function SessionsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState('all'); // 'all', 'scheduled', 'completed', 'cancelled'
+    const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
   useEffect(() => {
     fetchUserSessions();
@@ -28,7 +29,7 @@ export default function SessionsPage() {
       }
 
       // Use the user/:userId endpoint
-      const response = await fetch(`http://localhost:4000/api/sessions/user/${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/sessions/user/${userId}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

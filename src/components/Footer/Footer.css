@@ -12,7 +12,7 @@
               radial-gradient(80rem 40rem at 100% 10%, rgba(18,32,84,0.10), transparent 60%),
               linear-gradient(180deg, #0b1230, #0a1230 60%, #0a122c);
   color: var(--text);
-  margin-top: auto;
+
   position: relative;
   overflow: hidden;
   border-top: 1px solid rgba(255,255,255,0.06);
@@ -28,7 +28,7 @@
 /* Inner */
 .footer-inner{
   max-width: 1200px;
-  margin: 0 auto;
+
   padding: 1.6rem 1.25rem;
 }
 
@@ -66,7 +66,8 @@
   background: linear-gradient(90deg, #ffffff, #bfe2c6);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
-.brand-blurb{ margin: .5rem 0 0 0; max-width: 40ch; opacity: .85; }
+.brand-blurb{ 
+  max-width: 40ch; opacity: .85; }
 
 /* Socials */
 .socials{ display: flex; gap: .5rem; margin-top: .6rem; }
@@ -124,7 +125,7 @@
   gap: .75rem;
   align-items: center;
   border-top: 1px solid rgba(255,255,255,0.06);
-  margin-top: 1.25rem;
+ 
   padding-top: 1rem;
 }
 .bottom-links{ display: flex; gap: .75rem; flex-wrap: wrap; }
@@ -136,7 +137,7 @@
 
 /* Back to top */
 .to-top{
-  margin-left: auto;
+
   width: 36px; height: 36px; border-radius: 999px;
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.22);

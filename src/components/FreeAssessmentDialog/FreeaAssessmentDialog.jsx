@@ -2,7 +2,10 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { UserContext } from '../../context/UserContext.jsx';
 import "./FreeAssessmentDialog.css";
 
-const localDev = "http://localhost:4000";
+// const localDev = "http://localhost:4000";
+
+  const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+
 
 export default function FreeAssessmentDialog({ open, onClose }) {
   const { openAuthModal } = useContext(UserContext); // ✅ Get openAuthModal from context
@@ -65,7 +68,7 @@ export default function FreeAssessmentDialog({ open, onClose }) {
 
     const fetchUser = async () => {
       try {
-        const res = await fetch(`${localDev}/api/users/me`, {
+        const res = await fetch(`${API_BASE_URL}/api/users/me`, {
           headers: { Authorization: `Bearer ${JSON.parse(storedToken)}` },
         });
         
@@ -181,7 +184,7 @@ export default function FreeAssessmentDialog({ open, onClose }) {
       : newChild;
 
     try {
-      const res = await fetch(`${localDev}/api/packages/`, {
+      const res = await fetch(`${API_BASE_URL}/api/packages/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -11,6 +11,8 @@ export function UserProvider({ children }) {
   const [googleSignupData, setGoogleSignupData] = useState(null); // Store Google user data for password setup
   const ctrl = new AuthController();
 
+  const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+
   // Fetch current session user on load
   useEffect(() => {
     async function fetchUser() {
@@ -21,7 +23,7 @@ export function UserProvider({ children }) {
           return;
         }
 
-        const res = await fetch("http://localhost:4000/api/users/me", {
+        const res = await fetch(`${API_BASE_URL}/api/users/me`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

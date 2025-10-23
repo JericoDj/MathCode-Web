@@ -28,7 +28,7 @@
 }
 
 /* ================= Container ================= */
-.navbar-container {
+.navbar-container { 
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem clamp(1.5rem, 4vw, 3rem);
