@@ -4,126 +4,124 @@ import { Link } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext.jsx';
 import './AuthModal.css';
 
-
-
 // Validators
 const emailOk = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 const passOk = (v) => (v?.length || 0) >= 8;
-
-
 
 // Get Google Client ID from environment variable
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
-// Fixed Google OAuth Component - Prevents multiple mounts
-const GoogleOAuth = () => {
-  const { setUser, closeAuthModal } = useContext(UserContext);
-  const googleButtonRef = useRef(null);
-  const [scriptLoaded, setScriptLoaded] = useState(false);
-  const [initialized, setInitialized] = useState(false);
+// Updated Google OAuth Component - Uses backend route with body
+const GoogleOAuth = ({ mode = 'login' }) => {
+  const { setUser, closeAuthModal, openAuthModal, setGoogleSignupData } = useContext(UserContext);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    // Only load script once
-    if (scriptLoaded || !GOOGLE_CLIENT_ID) return;
-
-
-
-    const script = document.createElement('script');
-    script.src = 'https://accounts.google.com/gsi/client';
-    script.async = true;
-    script.defer = true;
-    
-    script.onload = () => {
-
-      setScriptLoaded(true);
-    };
-
-    script.onerror = () => {
-      console.error('❌ Failed to load Google Sign-In script');
-    };
-
-    document.head.appendChild(script);
-
-    return () => {
-      // Don't remove the script - keep it loaded for the app lifetime
-    };
-  }, [scriptLoaded]);
-
-  useEffect(() => {
-    // Only initialize once when script is loaded
-    if (scriptLoaded && window.google && !initialized && googleButtonRef.current) {
-     
-      
-      try {
-        window.google.accounts.id.initialize({
-          client_id: GOOGLE_CLIENT_ID,
-          callback: handleCredentialResponse,
-          auto_select: false,
-          cancel_on_tap_outside: true,
-        });
-
-        // Render the button
-        window.google.accounts.id.renderButton(googleButtonRef.current, {
-          theme: 'outline',
-          size: 'large',
-          width: 400,
-          text: 'signin_with',
-          logo_alignment: 'left',
-        });
-
-        setInitialized(true);
-       
-      } catch (error) {
-        console.error('❌ Google Sign-In initialization failed:', error);
-      }
-    }
-  }, [scriptLoaded, initialized]);
-
-  const handleCredentialResponse = async (response) => {
+  const handleGoogleAuth = async () => {
     try {
-     
-      
-      const result = await fetch(`${API_BASE_URL}/api/users/auth/google`, {
+      setLoading(true);
+      setError('');
+
+      // Step 1: Initialize Google OAuth with backend
+      const initResponse = await fetch(`${API_BASE_URL}/api/users/auth/google/init`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          token: response.credential,
+          redirectUri: `${window.location.origin}/auth/callback`,
+          mode: mode // 'login' or 'signup'
         }),
       });
 
-      if (result.ok) {
-        const data = await result.json();
-        console.log('✅ Google auth success:', data);
-        
-        localStorage.setItem('token', JSON.stringify(data.token));
-        localStorage.setItem('auth', JSON.stringify(data.user));
-        setUser(data.user);
-        closeAuthModal();
-      } else {
-        const errorData = await result.json();
-        console.error('❌ Backend authentication failed:', errorData);
-        throw new Error(errorData.message || 'Backend authentication failed');
+      if (!initResponse.ok) {
+        const errorData = await initResponse.json();
+        throw new Error(errorData.message || 'Failed to initialize Google OAuth');
       }
+
+      const { authUrl, state } = await initResponse.json();
+      
+      // Step 2: Open Google OAuth in a popup window
+      const width = 500;
+      const height = 600;
+      const left = (window.screen.width - width) / 2;
+      const top = (window.screen.height - height) / 2;
+
+      const authWindow = window.open(
+        authUrl,
+        'google_auth',
+        `width=${width},height=${height},left=${left},top=${top}`
+      );
+
+      // Step 3: Listen for the callback
+      const handleMessage = (event) => {
+        // Security check - only accept messages from same origin
+        if (event.origin !== window.location.origin) return;
+
+        if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
+          const { token, user, isNewUser } = event.data.payload;
+          
+          if (isNewUser) {
+            // New user - show additional info form
+            setGoogleSignupData({ ...user, token });
+            openAuthModal('google-signup');
+          } else {
+            // Existing user - complete login
+            localStorage.setItem('token', token);
+            localStorage.setItem('auth', JSON.stringify(user));
+            setUser(user);
+            closeAuthModal();
+          }
+          
+          // Clean up
+          window.removeEventListener('message', handleMessage);
+          if (authWindow) authWindow.close();
+        }
+
+        if (event.data.type === 'GOOGLE_AUTH_ERROR') {
+          setError(event.data.payload.error || 'Google authentication failed');
+          window.removeEventListener('message', handleMessage);
+          if (authWindow) authWindow.close();
+        }
+      };
+
+      window.addEventListener('message', handleMessage);
+
+      // Fallback: Check if window closed without completing auth
+      const checkWindow = setInterval(() => {
+        if (authWindow.closed) {
+          clearInterval(checkWindow);
+          window.removeEventListener('message', handleMessage);
+          if (!error) {
+            setError('Authentication window closed');
+          }
+        }
+      }, 1000);
+
     } catch (error) {
-      console.error('❌ Google authentication failed:', error);
+      console.error('❌ Google OAuth failed:', error);
+      setError(error.message || 'Google authentication failed');
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (!GOOGLE_CLIENT_ID) {
-    return (
-      <div className="google-config-error">
-        Google Sign-In is not configured. Please check your environment variables.
-      </div>
-    );
-  }
-
   return (
-    <div>
-      <div ref={googleButtonRef}></div>
-      {!scriptLoaded && <div>Loading Google Sign-In...</div>}
+    <div className="google-auth-container">
+      <button
+        type="button"
+        className="google-auth-button"
+        onClick={handleGoogleAuth}
+        disabled={loading}
+      >
+        {loading ? (
+          <span>Connecting to Google...</span>
+        ) : (
+          <span>Continue with Google</span>
+        )}
+      </button>
+      {error && <div className="form-error">{error}</div>}
     </div>
   );
 };
@@ -146,7 +144,15 @@ function GoogleSignupForm({ onClose }) {
     setBusy(true);
     
     try {
-      await completeGoogleSignup(password, phone);
+      await completeGoogleSignup({
+        token: googleSignupData.token,
+        password,
+        phone,
+        additionalData: {
+          // Add any additional data you want to save
+          childAge: '', // You can add a field for this if needed
+        }
+      });
       onClose();
     } catch (ex) {
       setErr(ex?.message || 'Failed to complete registration.');
@@ -412,7 +418,7 @@ function RegisterForm({ onClose, switchToLogin }) {
   );
 }
 
-// ✅ SINGLE AuthModal export default - REMOVED THE DUPLICATE
+// Main AuthModal Component
 export default function AuthModal() {
   const { 
     authModalOpen, 
@@ -446,9 +452,15 @@ export default function AuthModal() {
         </header>
 
         {authModalMode === 'login' ? (
-          <LoginForm onClose={closeAuthModal} switchToRegister={() => openAuthModal('register')} />
+          <LoginForm 
+            onClose={closeAuthModal} 
+            switchToRegister={() => openAuthModal('register')} 
+          />
         ) : (
-          <RegisterForm onClose={closeAuthModal} switchToLogin={() => openAuthModal('login')} />
+          <RegisterForm 
+            onClose={closeAuthModal} 
+            switchToLogin={() => openAuthModal('login')} 
+          />
         )}
 
         {/* Google Sign In Button */}
@@ -457,7 +469,7 @@ export default function AuthModal() {
             <span>or</span>
           </div>
           <div className="google-box">
-            <GoogleOAuth />
+            <GoogleOAuth mode={authModalMode} />
           </div>
         </div>
       </div>
