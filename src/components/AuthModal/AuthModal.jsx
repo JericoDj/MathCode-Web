@@ -107,11 +107,7 @@ const handleCredentialResponse = async (response) => {
       
       if (data.isNewUser) {
         // New user - show additional info form
-        console.log('🔄 New user detected, showing signup form');
-        console.log('Setting Google signup data with:', {
-          userData: data.user,
-          token: data.token
-        });
+       
         
         // Safe way to set Google signup data
         const signupData = {
@@ -119,7 +115,8 @@ const handleCredentialResponse = async (response) => {
           token: data.token
         };
         
-        console.log('Final signup data:', signupData);
+        localStorage.setItem('token', JSON.stringify(data.token));
+        localStorage.setItem('auth', JSON.stringify(data.user));
         setUser(signupData);
         closeAuthModal();
       } else {
@@ -151,30 +148,7 @@ const handleCredentialResponse = async (response) => {
     );
   }
 
-  return (
-    <div className="google-oauth-container">
-      {error && (
-        <div className="form-error">
-          {error}
-          <button 
-            onClick={() => setError('')}
-            className="error-close-btn"
-          >
-            ×
-          </button>
-        </div>
-      )}
-      
-      {loading && (
-        <div className="google-loading">
-          Signing in with Google...
-        </div>
-      )}
-      
-      <div ref={googleButtonRef}></div>
-      {!scriptLoaded && <div>Loading Google Sign-In...</div>}
-    </div>
-  );
+  
 };
 
 // --- Google Signup Form (for setting password after Google OAuth) ---
