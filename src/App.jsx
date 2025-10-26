@@ -1,6 +1,6 @@
 // App.jsx
 import { useState, useEffect, useContext } from "react";
-import { BrowserRouter as Router, Route, Routes, useLocation, Link, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, useLocation, Link, useNavigate,   createBrowserRouter, } from "react-router-dom";
 import { HiMenu } from "react-icons/hi";
 
 import AppNavBar from "./components/AppNavBar/AppNavBar.jsx";
@@ -36,6 +36,18 @@ import ContactPage from "./screens/Contact/ContactPage.jsx";
 import VerifyOTPPage from "./screens/Auth/OTPVerificationPage.jsx";
 
 import "./App.css";
+
+const router = createBrowserRouter([
+  {
+    path: "/*",
+    element: <LayoutWrapper />,
+  }
+], {
+  future: {
+    v7_startTransition: true,
+    v7_relativeSplatPath: true
+  }
+});
 
 // Simple component to handle Google OAuth success
 function GoogleOAuthHandler() {
@@ -224,7 +236,11 @@ function LayoutWrapper() {
 export default function App() {
   return (
     <UserProvider>
-      <Router>
+      <Router  future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true
+        }}
+        >
         <PackageProvider>
           <StudentProvider>
             <PlanProvider>

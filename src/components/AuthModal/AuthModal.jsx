@@ -11,11 +11,11 @@ const passOk = (v) => (v?.length || 0) >= 8;
 // Get Google Client ID from environment variable
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const API_BASE_URL = import.meta.env.VITE_API_URL  || "https://math-code-backend.vercel.app" || "http://localhost:4000";
-console.log(API_BASE_URL);
+
 
 // Fixed Google OAuth Component - No infinite loops
 const GoogleOAuth = () => {
-  const { setUser, closeAuthModal, openAuthModal } = useContext(UserContext);
+  const { setUser, closeAuthModal } = useContext(UserContext);
   const googleButtonRef = useRef(null);
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [initialized, setInitialized] = useState(false);
@@ -32,7 +32,7 @@ const GoogleOAuth = () => {
     script.defer = true;
     
     script.onload = () => {
-      console.log('✅ Google Sign-In script loaded');
+
       setScriptLoaded(true);
     };
 
@@ -48,7 +48,7 @@ const GoogleOAuth = () => {
   useEffect(() => {
     if (scriptLoaded && window.google && !initialized && googleButtonRef.current) {
       try {
-        console.log('🔄 Initializing Google Sign-In...');
+      
         
         window.google.accounts.id.initialize({
           client_id: GOOGLE_CLIENT_ID,
@@ -67,7 +67,7 @@ const GoogleOAuth = () => {
         });
 
         setInitialized(true);
-        console.log('✅ Google Sign-In initialized successfully');
+
        
       } catch (error) {
         console.error('❌ Google Sign-In initialization failed:', error);
@@ -81,8 +81,7 @@ const handleCredentialResponse = async (response) => {
   try {
     setLoading(true);
     setError('');
-    console.log('🔄 Processing Google authentication...');
-    console.log('Google credential received:', response.credential);
+
 
     const result = await fetch(`${API_BASE_URL}/api/users/auth/google`, {
       method: 'POST',
@@ -94,17 +93,17 @@ const handleCredentialResponse = async (response) => {
       }),
     });
 
-    console.log('Backend response status:', result.status);
+    // console.log('Backend response status:', result.status);
     
     if (result.ok) {
       const data = await result.json();
-      console.log('✅ Google auth success - Full response:', data);
-      console.log('✅ Data structure check:', {
-        hasUser: !!data.user,
-        userKeys: data.user ? Object.keys(data.user) : 'No user object',
-        hasToken: !!data.token,
-        isNewUser: data.isNewUser
-      });
+      // console.log('✅ Google auth success - Full response:', data);
+      // console.log('✅ Data structure check:', {
+      //   hasUser: !!data.user,
+      //   userKeys: data.user ? Object.keys(data.user) : 'No user object',
+      //   hasToken: !!data.token,
+      //   isNewUser: data.isNewUser
+      // });
       
       if (data.isNewUser) {
         // New user - show additional info form
@@ -125,8 +124,8 @@ const handleCredentialResponse = async (response) => {
         closeAuthModal();
       } else {
         // Existing user - complete login
-        console.log('✅ Existing user, logging in...');
-        localStorage.setItem('token', data.token);
+      
+        localStorage.setItem('token', JSON.stringify(data.token));
         localStorage.setItem('auth', JSON.stringify(data.user));
         setUser(data.user);
         closeAuthModal();
