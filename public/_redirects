@@ -1,0 +1,10 @@
+# SPA Routing - All routes to index.html
+/*    /index.html   200
+
+# Specific redirects (optional)
+/help       /help-center   301
+/billing    /manage-billing 301
+/account    /profile-settings 301
+
+# Remove .html extensions (if any)
+/*.html /:splat 301

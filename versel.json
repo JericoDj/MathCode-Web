@@ -1,0 +1,69 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+
+    {
+      "src": "/api/(.*)",
+      "dest": "https://math-code-backend.vercel.app/api/$1"
+    },
+
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "redirects": [
+
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/signin",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/signup", 
+      "destination": "/",
+      "permanent": true
+    },
+
+    {
+      "source": "/pricing",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/contact-us",
+      "destination": "/contact",
+      "permanent": true
+    },
+
+    {
+      "source": "/auth/callback",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/google-oauth-callback",
+      "destination": "/", 
+      "permanent": false
+    }
+  ]
+}
