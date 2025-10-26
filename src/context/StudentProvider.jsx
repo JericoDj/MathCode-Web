@@ -14,7 +14,7 @@ export function StudentProvider({ children }) {
   const [error, setError] = useState(null);
 
   // Base URL from environment variable
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
   // ✅ Fetch user data (and guardiansOf list) when user changes
   useEffect(() => {
@@ -96,7 +96,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
     const token = JSON.parse(localStorage.getItem("token"));
     console.log(studentId);
 
-    const res = await fetch(`http://localhost:4000/api/students/${studentId}`, {
+    const res = await fetch(`${API_BASE_URL}}/api/students/${studentId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

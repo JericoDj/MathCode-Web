@@ -11,7 +11,7 @@ import AuthModal from "./components/AuthModal/AuthModal.jsx";
 
 import MathCodeLogo from '../src/assets/MathCodeNoBGcropped.png';
 
-import { UserProvider } from "./context/UserProvider.jsx"; // Import UserContext
+import { UserProvider} from "./context/UserProvider.jsx";
 import { PackageProvider } from "./context/PackageProvider.jsx";
 import { StudentProvider } from "./context/StudentProvider.jsx";
 import { PlanProvider } from "./context/PlanProvider.jsx";
@@ -34,7 +34,6 @@ import ManageBilling from "./screens/ManageBilling/ManageBilling.jsx";
 import HelpCenter from "./screens/HelpCenter/HelpCenter.jsx";
 import ContactPage from "./screens/Contact/ContactPage.jsx";
 import VerifyOTPPage from "./screens/Auth/OTPVerificationPage.jsx";
-import AuthCallback from "./screens/Auth/AuthCallback.jsx"; // Import the new AuthCallback component
 
 import "./App.css";
 
@@ -43,7 +42,7 @@ function GoogleOAuthHandler() {
   const { setUser } = useContext(UserContext);
   const location = useLocation();
   const navigate = useNavigate();
-  const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+      const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
   useEffect(() => {
     const handleGoogleCallback = async () => {
@@ -91,7 +90,7 @@ function GoogleOAuthHandler() {
       }
     };
 
-    handleGoogleCallback();
+
   }, [location, navigate, setUser]);
 
   return (
@@ -201,9 +200,8 @@ function LayoutWrapper() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/about" element={<AboutPage />} />
-              {/* Google OAuth callback handlers */}
+              {/* Google OAuth callback handler */}
               <Route path="/google-oauth-callback" element={<GoogleOAuthHandler />} />
-              <Route path="/auth/callback" element={<AuthCallback />} /> {/* Add this route */}
               <Route path="/logout" element={<LogoutPage />} />
               <Route path="/reset-password" element={<ForgotPasswordPage />} />
               <Route path="/reset-password/confirm" element={<ResetPasswordPage />} />
@@ -211,7 +209,8 @@ function LayoutWrapper() {
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/pricing" element={<PricingPage />} />
-              <Route path="/verify-otp" element={<VerifyOTPPage />} />
+                            <Route path="/verify-otp" element={<VerifyOTPPage />} />
+                            
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </main>

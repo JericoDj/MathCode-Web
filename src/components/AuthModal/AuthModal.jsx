@@ -10,118 +10,148 @@ const passOk = (v) => (v?.length || 0) >= 8;
 
 // Get Google Client ID from environment variable
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API_BASE_URL = import.meta.env.VITE_API_URL  || "https://math-code-backend.vercel.app" || "http://localhost:4000";
+console.log(API_BASE_URL);
 
-// Updated Google OAuth Component - Uses backend route with body
-const GoogleOAuth = ({ mode = 'login' }) => {
+// Fixed Google OAuth Component - No infinite loops
+const GoogleOAuth = () => {
   const { setUser, closeAuthModal, openAuthModal, setGoogleSignupData } = useContext(UserContext);
+  const googleButtonRef = useRef(null);
+  const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [initialized, setInitialized] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleGoogleAuth = async () => {
+  // Load Google script - runs only once
+  useEffect(() => {
+    if (scriptLoaded || !GOOGLE_CLIENT_ID) return;
+
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    
+    script.onload = () => {
+      console.log('✅ Google Sign-In script loaded');
+      setScriptLoaded(true);
+    };
+
+    script.onerror = () => {
+      console.error('❌ Failed to load Google Sign-In script');
+      setError('Failed to load Google Sign-In. Please refresh the page.');
+    };
+
+    document.head.appendChild(script);
+  }, []); // Empty dependency array - runs only once
+
+  // Initialize Google Sign-In - runs when script loads
+  useEffect(() => {
+    if (scriptLoaded && window.google && !initialized && googleButtonRef.current) {
+      try {
+        console.log('🔄 Initializing Google Sign-In...');
+        
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleCredentialResponse,
+          auto_select: false,
+          cancel_on_tap_outside: true,
+        });
+
+        // Render the button
+        window.google.accounts.id.renderButton(googleButtonRef.current, {
+          theme: 'outline',
+          size: 'large',
+          width: 400,
+          text: 'signin_with',
+          logo_alignment: 'left',
+        });
+
+        setInitialized(true);
+        console.log('✅ Google Sign-In initialized successfully');
+       
+      } catch (error) {
+        console.error('❌ Google Sign-In initialization failed:', error);
+        setError('Failed to initialize Google Sign-In. Please try again.');
+      }
+    }
+  }, [scriptLoaded]); // Only depends on scriptLoaded
+
+  const handleCredentialResponse = async (response) => {
     try {
       setLoading(true);
       setError('');
+      console.log('🔄 Processing Google authentication...');
 
-      // Step 1: Initialize Google OAuth with backend
-      const initResponse = await fetch(`${API_BASE_URL}/api/users/auth/google/init`, {
+      const result = await fetch(`${API_BASE_URL}/api/users/auth/google`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          redirectUri: `${window.location.origin}/auth/callback`,
-          mode: mode // 'login' or 'signup'
+          token: response.credential,
         }),
       });
 
-      if (!initResponse.ok) {
-        const errorData = await initResponse.json();
-        throw new Error(errorData.message || 'Failed to initialize Google OAuth');
+      if (result.ok) {
+        const data = await result.json();
+        console.log('✅ Google auth success:', data);
+        
+        if (data.isNewUser) {
+          // New user - show additional info form
+          console.log('🔄 New user detected, showing signup form');
+          setGoogleSignupData({ ...data.user, token: data.token });
+          openAuthModal('google-signup');
+        } else {
+          // Existing user - complete login
+          console.log('✅ Existing user, logging in...');
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('auth', JSON.stringify(data.user));
+          setUser(data.user);
+          closeAuthModal();
+        }
+      } else {
+        const errorData = await result.json();
+        console.error('❌ Backend authentication failed:', errorData);
+        throw new Error(errorData.message || 'Backend authentication failed');
       }
-
-      const { authUrl, state } = await initResponse.json();
-      
-      // Step 2: Open Google OAuth in a popup window
-      const width = 500;
-      const height = 600;
-      const left = (window.screen.width - width) / 2;
-      const top = (window.screen.height - height) / 2;
-
-      const authWindow = window.open(
-        authUrl,
-        'google_auth',
-        `width=${width},height=${height},left=${left},top=${top}`
-      );
-
-      // Step 3: Listen for the callback
-      const handleMessage = (event) => {
-        // Security check - only accept messages from same origin
-        if (event.origin !== window.location.origin) return;
-
-        if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
-          const { token, user, isNewUser } = event.data.payload;
-          
-          if (isNewUser) {
-            // New user - show additional info form
-            setGoogleSignupData({ ...user, token });
-            openAuthModal('google-signup');
-          } else {
-            // Existing user - complete login
-            localStorage.setItem('token', token);
-            localStorage.setItem('auth', JSON.stringify(user));
-            setUser(user);
-            closeAuthModal();
-          }
-          
-          // Clean up
-          window.removeEventListener('message', handleMessage);
-          if (authWindow) authWindow.close();
-        }
-
-        if (event.data.type === 'GOOGLE_AUTH_ERROR') {
-          setError(event.data.payload.error || 'Google authentication failed');
-          window.removeEventListener('message', handleMessage);
-          if (authWindow) authWindow.close();
-        }
-      };
-
-      window.addEventListener('message', handleMessage);
-
-      // Fallback: Check if window closed without completing auth
-      const checkWindow = setInterval(() => {
-        if (authWindow.closed) {
-          clearInterval(checkWindow);
-          window.removeEventListener('message', handleMessage);
-          if (!error) {
-            setError('Authentication window closed');
-          }
-        }
-      }, 1000);
-
     } catch (error) {
-      console.error('❌ Google OAuth failed:', error);
-      setError(error.message || 'Google authentication failed');
+      console.error('❌ Google authentication failed:', error);
+      setError(error.message || 'Google authentication failed. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
+  if (!GOOGLE_CLIENT_ID) {
+    return (
+      <div className="google-config-error">
+        Google Sign-In is not configured. Please check your environment variables.
+      </div>
+    );
+  }
+
   return (
-    <div className="google-auth-container">
-      <button
-        type="button"
-        className="google-auth-button"
-        onClick={handleGoogleAuth}
-        disabled={loading}
-      >
-        {loading ? (
-          <span>Connecting to Google...</span>
-        ) : (
-          <span>Continue with Google</span>
-        )}
-      </button>
-      {error && <div className="form-error">{error}</div>}
+    <div className="google-oauth-container">
+      {error && (
+        <div className="form-error">
+          {error}
+          <button 
+            onClick={() => setError('')}
+            className="error-close-btn"
+          >
+            ×
+          </button>
+        </div>
+      )}
+      
+      {loading && (
+        <div className="google-loading">
+          Signing in with Google...
+        </div>
+      )}
+      
+      <div ref={googleButtonRef}></div>
+      {!scriptLoaded && <div>Loading Google Sign-In...</div>}
     </div>
   );
 };
@@ -149,13 +179,12 @@ function GoogleSignupForm({ onClose }) {
         password,
         phone,
         additionalData: {
-          // Add any additional data you want to save
-          childAge: '', // You can add a field for this if needed
+          childAge: '',
         }
       });
       onClose();
     } catch (ex) {
-      setErr(ex?.message || 'Failed to complete registration.');
+      setErr(ex?.message || 'Failed to complete registration. Please try again.');
     } finally {
       setBusy(false);
     }
@@ -181,6 +210,9 @@ function GoogleSignupForm({ onClose }) {
             src={googleSignupData?.photoURL} 
             alt="Profile" 
             className="google-user-avatar"
+            onError={(e) => {
+              e.target.style.display = 'none';
+            }}
           />
           <div className="google-user-details">
             <div className="google-user-name">
@@ -263,7 +295,7 @@ function LoginForm({ onClose, switchToRegister }) {
       await login({ email, password: pass });
       onClose();
     } catch (ex) {
-      setErr(ex?.message || 'Sign in failed.');
+      setErr(ex?.message || 'Sign in failed. Please check your credentials.');
     } finally {
       setBusy(false);
     }
@@ -352,7 +384,7 @@ function RegisterForm({ onClose, switchToLogin }) {
       });
       onClose();
     } catch (ex) {
-      setErr(ex?.message || 'Sign up failed.');
+      setErr(ex?.message || 'Sign up failed. Please try again.');
     } finally {
       setBusy(false);
     }
@@ -469,7 +501,7 @@ export default function AuthModal() {
             <span>or</span>
           </div>
           <div className="google-box">
-            <GoogleOAuth mode={authModalMode} />
+            <GoogleOAuth />
           </div>
         </div>
       </div>
