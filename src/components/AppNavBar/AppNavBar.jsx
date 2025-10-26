@@ -149,10 +149,7 @@ export default function AppNavBar() {
     }
   };
 
-  const handleDialogSubmit = (data) => {
-    console.log("Booking submitted:", data);
-    // TODO: call your submission controller here
-  };
+
 
   // ✅ Handle assessment button click
   const handleAssessmentClick = () => {

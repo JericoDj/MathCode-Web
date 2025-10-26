@@ -15,7 +15,7 @@ console.log(API_BASE_URL);
 
 // Fixed Google OAuth Component - No infinite loops
 const GoogleOAuth = () => {
-  const { setUser, closeAuthModal, openAuthModal, setGoogleSignupData } = useContext(UserContext);
+  const { setUser, closeAuthModal, openAuthModal } = useContext(UserContext);
   const googleButtonRef = useRef(null);
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [initialized, setInitialized] = useState(false);
@@ -76,51 +76,73 @@ const GoogleOAuth = () => {
     }
   }, [scriptLoaded]); // Only depends on scriptLoaded
 
-  const handleCredentialResponse = async (response) => {
-    try {
-      setLoading(true);
-      setError('');
-      console.log('🔄 Processing Google authentication...');
+  // components/AuthModal/AuthModal.jsx - Update handleCredentialResponse
+const handleCredentialResponse = async (response) => {
+  try {
+    setLoading(true);
+    setError('');
+    console.log('🔄 Processing Google authentication...');
+    console.log('Google credential received:', response.credential);
 
-      const result = await fetch(`${API_BASE_URL}/api/users/auth/google`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          token: response.credential,
-        }),
+    const result = await fetch(`${API_BASE_URL}/api/users/auth/google`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        token: response.credential,
+      }),
+    });
+
+    console.log('Backend response status:', result.status);
+    
+    if (result.ok) {
+      const data = await result.json();
+      console.log('✅ Google auth success - Full response:', data);
+      console.log('✅ Data structure check:', {
+        hasUser: !!data.user,
+        userKeys: data.user ? Object.keys(data.user) : 'No user object',
+        hasToken: !!data.token,
+        isNewUser: data.isNewUser
       });
-
-      if (result.ok) {
-        const data = await result.json();
-        console.log('✅ Google auth success:', data);
+      
+      if (data.isNewUser) {
+        // New user - show additional info form
+        console.log('🔄 New user detected, showing signup form');
+        console.log('Setting Google signup data with:', {
+          userData: data.user,
+          token: data.token
+        });
         
-        if (data.isNewUser) {
-          // New user - show additional info form
-          console.log('🔄 New user detected, showing signup form');
-          setGoogleSignupData({ ...data.user, token: data.token });
-          openAuthModal('google-signup');
-        } else {
-          // Existing user - complete login
-          console.log('✅ Existing user, logging in...');
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('auth', JSON.stringify(data.user));
-          setUser(data.user);
-          closeAuthModal();
-        }
+        // Safe way to set Google signup data
+        const signupData = {
+          ...(data.user || {}), // Fallback to empty object if user is undefined
+          token: data.token
+        };
+        
+        console.log('Final signup data:', signupData);
+        setUser(signupData);
+        closeAuthModal();
       } else {
-        const errorData = await result.json();
-        console.error('❌ Backend authentication failed:', errorData);
-        throw new Error(errorData.message || 'Backend authentication failed');
+        // Existing user - complete login
+        console.log('✅ Existing user, logging in...');
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('auth', JSON.stringify(data.user));
+        setUser(data.user);
+        closeAuthModal();
       }
-    } catch (error) {
-      console.error('❌ Google authentication failed:', error);
-      setError(error.message || 'Google authentication failed. Please try again.');
-    } finally {
-      setLoading(false);
+    } else {
+      const errorData = await result.json();
+      console.error('❌ Backend authentication failed:', errorData);
+      throw new Error(errorData.message || 'Backend authentication failed');
     }
-  };
+  } catch (error) {
+    console.error('❌ Google authentication failed:', error);
+    setError(error.message || 'Google authentication failed. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   if (!GOOGLE_CLIENT_ID) {
     return (

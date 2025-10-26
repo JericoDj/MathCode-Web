@@ -1,291 +1,271 @@
-/* App.css - Horizontal Dashboard Styles */
-
-/* ================= Dashboard Layout Variables ================= */
-:root {
-  --navy: #122054;
-  --green: #60b64d;
-  --text: #1F2937;
-  --text-strong: #111827;
-  --muted: #6B7280;
-  --light-bg: #ffffff;
-  --border-light: #E5E7EB;
-  --hover-bg: #F9FAFB;
-  --sidebar-width: 280px;
-  --topbar-height: 70px;
+/* ---------- Dashboard Layout (Grid & Flex) ---------- */
+.dashboard-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f9fafb;
+  font-family: 'Inter', sans-serif;
 }
 
-/* ================= Horizontal Dashboard Topbar ================= */
+/* ---------- Topbar (Full-width) ---------- */
 .dashboard-topbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: var(--topbar-height);
-  background: var(--light-bg);
-  border-bottom: 1px solid var(--border-light);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-}
-
-.dashboard-topbar-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 clamp(1.5rem, 4vw, 3rem);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 100%;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  padding: 0.75rem 1.5rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
-/* Left Section */
-.dashboard-topbar-left {
+/* Topbar left (Hamburger + logo optional) */
+.topbar-left {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  flex-shrink: 0;
+  gap: 1rem;
 }
 
+/* Topbar right (Nav buttons / icons) */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  height: 80px;
+ 
+  gap: 1rem;
+}
+.menu-button {
+
+
+}
+
+/* ---------- Dashboard Content ---------- */
+.dashboard-content {
+  display: grid;
+  grid-template-columns: 250px 1fr; /* sidebar + main */
+  flex: 1;
+  min-height: calc(100vh - 60px);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Sidebar */
+.dashboard-sidebar {
+  background-color: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.03);
+  height: 100vh;
+  overflow-y: auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 1000;
+}
+
+/* Sidebar hover effect */
+.dashboard-sidebar:hover {
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.06);
+}
+
+/* Floating nav icons (Web Only) */
+.sidebar-nav-icons {
+  position: absolute;
+  top: 1rem;
+  right: 2rem;
+  z-index: 50;
+}
+
+/* Main content */
+.dashboard-main {
+  background-color: #f9fafb;
+  padding: 2rem;
+  overflow-y: auto;
+  transition: padding 0.3s ease;
+}
+
+/* Hamburger button (Mobile Only) */
 .hamburger-btn {
   display: none;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 8px;
-  transition: background-color 0.2s ease;
-  color: var(--text-strong);
+  
+  border-radius: 6px;
+  transition: all 0.2s ease;
 }
 
 .hamburger-btn:hover {
-  background: var(--hover-bg);
+  background-color: #e5e7eb;
 }
 
-.dashboard-logo img {
-  height: 50px;
-  object-fit: contain;
-}
-
-/* Center Navigation Menu */
-.dashboard-nav-menu {
+/* ---------- Active & Hover States ---------- */
+.dashboard-sidebar a,
+.dashboard-sidebar .sidebar-link {
   display: flex;
   align-items: center;
-  gap: 2rem;
-  flex: 1;
-  justify-content: center;
-  margin: 0 3rem;
-}
-
-.dashboard-nav-link {
+  gap: 0.75rem;
+  color: #64748b;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
   text-decoration: none;
-  color: var(--text-strong);
-  padding: 0.75rem 1.25rem;
-  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.dashboard-sidebar a:hover,
+.dashboard-sidebar .sidebar-link:hover {
+  background-color: #f1f5f9;
+  color: #1d2b64;
+  transform: translateX(2px);
+}
+
+.dashboard-sidebar a.active,
+.dashboard-sidebar .sidebar-link.active {
+  background-color: #1d2b64;
+  color: #ffffff;
+  box-shadow: inset 4px 0 #3fb96e;
+}
+
+/* ---------- Overlay ---------- */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 150;
+  display: none;
+}
+
+/* ---------- Visibility Classes ---------- */
+.web-only {
+  display: flex;
+}
+
+.mobile-only {
+  display: none;
+  
+}
+
+
+  .logo img{
+    display: none;
+    margin-top: 5px;
+    margin: 25px !important;
+    height: 80px;
+
+
+}
+
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1400px) {
+  .dashboard-content {
+    display: block;
+
+    
+  }
+
+
+  .logo img{
+    display: flex;
+    margin-top: 5px;
+    margin: 25px !important;
+    height: 80px;
+
+
+}
+
+  .dashboard-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh; 
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 200;
+    overflow-y: auto;
+  }
+
+  .dashboard-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .dashboard-main {
+
+ 
+  }
+
+  .hamburger-btn {
+    display: block;
+  }
+
+  .web-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: flex;
+  }
+
+  .sidebar-overlay {
+    display: block;
+  }
+
+  /* Prevent body scrolling when sidebar is open */
+  body.sidebar-open {
+    overflow: hidden;
+  }
+}
+
+/* ---------- Clean Spacing ---------- */
+.dashboard-topbar,
+.dashboard-content,
+.dashboard-main,
+.dashboard-sidebar {
+  margin: 0;
+  padding: 0;
+}
+
+/* ---------- Professional Shadows ---------- */
+.dashboard-sidebar,
+.dashboard-topbar {
   transition: all 0.3s ease;
-  font-weight: 600;
-  font-size: 0.95rem;
-  position: relative;
-  white-space: nowrap;
 }
 
-.dashboard-nav-link:hover {
-  color: var(--green);
-  background: var(--hover-bg);
-  transform: translateY(-1px);
+
+/* ---------- Smooth Scroll ---------- */
+.dashboard-main,
+.dashboard-sidebar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.2) transparent;
 }
 
-.dashboard-nav-link.active {
-  color: var(--green);
-  background: var(--hover-bg);
-  font-weight: 700;
+.dashboard-main::-webkit-scrollbar,
+.dashboard-sidebar::-webkit-scrollbar {
+  width: 8px;
 }
 
-.dashboard-nav-link.active::after {
-  content: "";
-  position: absolute;
-  left: 1.25rem;
-  right: 1.25rem;
-  bottom: -2px;
-  height: 2px;
-  background: var(--green);
-  border-radius: 2px;
+.dashboard-main::-webkit-scrollbar-thumb,
+.dashboard-sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 4px;
 }
 
-/* Right Section */
-.dashboard-topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  flex-shrink: 0;
+.dashboard-main::-webkit-scrollbar-track,
+.dashboard-sidebar::-webkit-scrollbar-track {
+  background-color: transparent;
 }
 
-.dashboard-user-info {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.5rem 1rem;
-  border-radius: 12px;
-  background: var(--hover-bg);
-  border: 1px solid var(--border-light);
-  transition: all 0.3s ease;
-}
-
-.dashboard-user-info:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.user-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--green), #6fd45b);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 700;
-  font-size: 0.9rem;
-  box-shadow: 0 2px 8px rgba(96, 182, 77, 0.3);
-}
-
-.user-details {
+/* Site layout styles (non-dashboard) */
+.site-layout {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-.user-name {
-  font-weight: 700;
-  color: var(--text-strong);
-  font-size: 0.9rem;
-  line-height: 1.2;
-}
-
-.user-email {
-  color: var(--muted);
-  font-size: 0.8rem;
-  line-height: 1.2;
-}
-
-/* ================= Horizontal Dashboard Content ================= */
-.dashboard-content-horizontal {
-  margin-top: var(--topbar-height);
-  min-height: calc(100vh - var(--topbar-height));
-  background: #f8fafc;
-}
-
-.dashboard-main-horizontal {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem clamp(1.5rem, 4vw, 3rem);
-  min-height: calc(100vh - var(--topbar-height) - 4rem);
-}
-
-/* ================= Mobile Sidebar ================= */
-.dashboard-sidebar-mobile {
-  position: fixed;
-  top: var(--topbar-height);
-  left: -100%;
-  width: 300px;
-  height: calc(100vh - var(--topbar-height));
-  background: var(--light-bg);
-  border-right: 1px solid var(--border-light);
-  transition: left 0.3s ease-in-out;
-  z-index: 999;
-  overflow-y: auto;
-}
-
-.dashboard-sidebar-mobile.open {
-  left: 0;
-}
-
-.sidebar-overlay {
-  position: fixed;
-  top: var(--topbar-height);
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 998;
-}
-
-/* ================= Mobile Responsive Design ================= */
-@media (max-width: 1024px) {
-  .dashboard-nav-menu {
-    gap: 1rem;
-    margin: 0 1.5rem;
-  }
-  
-  .dashboard-nav-link {
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .hamburger-btn {
-    display: block;
-  }
-  
-  .dashboard-nav-menu {
-    display: none;
-  }
-  
-  .dashboard-user-info .user-details {
-    display: none;
-  }
-  
-  .dashboard-topbar-container {
-    padding: 0 1rem;
-  }
-  
-  .dashboard-logo img {
-    height: 45px;
-  }
-}
-
-@media (max-width: 480px) {
-  .dashboard-topbar {
-    height: 60px;
-  }
-  
-  .dashboard-content-horizontal {
-    margin-top: 60px;
-  }
-  
-  .dashboard-main-horizontal {
-    padding: 1.5rem 1rem;
-  }
-  
-  .dashboard-sidebar-mobile {
-    top: 60px;
-    height: calc(100vh - 60px);
-  }
-  
-  .sidebar-overlay {
-    top: 60px;
-  }
-}
-
-/* ================= Existing App Layout Styles ================= */
-.app-layout {
-  min-height: 100vh;
-}
-
-.dashboard-layout {
-  background: #f8fafc;
-}
-
-.site-layout {
-  background: var(--light-bg);
-}
-
 .app-main {
-  min-height: calc(100vh - 200px); /* Adjust based on your header/footer height */
-}
-
-/* Ensure proper spacing for fixed topbar */
-body {
-  margin: 0;
-  padding: 0;
+  flex: 1;
 }
