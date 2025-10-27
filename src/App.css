@@ -1,3 +1,12 @@
+/* Minimal CSS Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+
+
 /* ---------- Dashboard Layout (Grid & Flex) ---------- */
 .dashboard-layout {
   display: flex;
