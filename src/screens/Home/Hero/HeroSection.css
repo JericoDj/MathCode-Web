@@ -154,3 +154,46 @@
 }
 
 
+.chip-wrapper {
+  position: relative;
+}
+
+.chip-preview {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+
+  width: 40vw;
+  max-width: 360px;
+  min-width: 200px;
+
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.18);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 30;
+}
+
+.chip-wrapper:hover .chip-preview {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.chip-preview video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 📱 Mobile phones */
+@media (max-width: 768px) {
+  .chip-preview {
+    width: 80vw;
+    max-width: none;
+  }
+}

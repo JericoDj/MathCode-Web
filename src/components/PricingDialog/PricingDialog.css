@@ -1,0 +1,159 @@
+/* Overlay */
+.pricing-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  z-index: 999;
+}
+
+/* Dialog */
+.pricing-dialog {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  max-width: 850px;
+  width: 100%;
+  text-align: center;
+  font-family: "Inter", sans-serif;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  animation: fadeIn 0.25s ease;
+}
+
+.pricing-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #047857;
+  margin-bottom: 0.5rem;
+}
+
+.pricing-sub {
+  color: #4b5563;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+/* Cards inside dialog */
+.pricing-dialog-cards {
+  display: grid;
+  gap: 1.5rem;
+  padding-bottom: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+/* Inherit original card styling */
+.pricing-card {
+  background: #ffffff;
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  border: 2px solid transparent;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  transition: 0.25s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+}
+
+.pricing-card.highlight {
+  border-color: #10b981;
+  background: #f0fdf4;
+}
+
+.pricing-card h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #047857;
+  margin-bottom: 0.5rem;
+}
+
+.price {
+  font-size: 1.3rem;
+  color: #065f46;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+/* Features */
+.features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+  text-align: left;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.features li {
+  margin-bottom: 0.4rem;
+  padding-left: 1.6rem;
+  position: relative;
+}
+
+.features li::before {
+  content: "✔";
+  color: #10b981;
+  position: absolute;
+  left: 0;
+  top: 0.1rem;
+  font-weight: bold;
+}
+
+/* Select Button */
+.btn-select {
+  width: 100%;
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 0.6rem;
+  border-radius: 0.45rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+.btn-select:hover {
+  background: #059669;
+}
+
+/* Close Button */
+.btn-close {
+  margin-top: 1rem;
+  background: #e5e7eb;
+  padding: 0.6rem 1.3rem;
+  border-radius: 0.45rem;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-close:hover {
+  background: #d1d5db;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .pricing-dialog {
+    padding: 1.8rem;
+  }
+
+  .pricing-title {
+    font-size: 1.6rem;
+  }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

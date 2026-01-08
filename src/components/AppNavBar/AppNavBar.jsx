@@ -95,14 +95,14 @@ export default function AppNavBar() {
   }, [acctOpen, drawerOpen]);
 
   const onHome = location.pathname === '/';
-  const activeId = useScrollSpy(['home', 'pricing', 'program', 'contact', 'faq'], {
+  const activeId = useScrollSpy(['home', 'singapore-maths', 'program', 'contact', 'faq'], {
     offset: 80,
     enabled: onHome,
   });
 
   const navLinks = [
     { id: 'home', label: 'Home' },
-    { id: 'pricing', label: 'Pricing' },
+    { id: 'singapore-maths', label: 'Singapore Maths' },
     { id: 'program', label: 'Program' },
     { id: 'contact', label: 'Contact' },
     { id: 'faq', label: 'FAQ' },

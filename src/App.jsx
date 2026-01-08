@@ -34,6 +34,9 @@ import ManageBilling from "./screens/ManageBilling/ManageBilling.jsx";
 import HelpCenter from "./screens/HelpCenter/HelpCenter.jsx";
 import ContactPage from "./screens/Contact/ContactPage.jsx";
 import VerifyOTPPage from "./screens/Auth/OTPVerificationPage.jsx";
+import BookDemoPage from "./screens/BookDemo/BookDemoPage.jsx";
+import SingaporeMathsPage from "./screens/SingaporeMaths/SingaporeMathsPage.jsx";
+import KidsCoding from "./screens/KidsCoding/KidsCoding.jsx";
 
 import "./App.css";
 
@@ -200,6 +203,7 @@ function LayoutWrapper() {
                 <Route path="/help-center" element={<HelpCenter />} />
                 <Route path="/packages" element={<PackagePage />} />
                 <Route path="/sessions" element={<SessionsPage />} />
+               
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </main>
@@ -221,7 +225,10 @@ function LayoutWrapper() {
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/pricing" element={<PricingPage />} />
-                            <Route path="/verify-otp" element={<VerifyOTPPage />} />
+              <Route path="/verify-otp" element={<VerifyOTPPage />} />
+              <Route path="/book-demo" element={<BookDemoPage />} />
+                <Route path="/singapore-maths" element={<SingaporeMathsPage />} />
+            
                             
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
