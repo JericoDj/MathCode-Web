@@ -95,7 +95,7 @@ export default function AppNavBar() {
   }, [acctOpen, drawerOpen]);
 
   const onHome = location.pathname === '/';
-  const activeId = useScrollSpy(['home', 'singapore-maths', 'program', 'contact', 'faq'], {
+  const activeId = useScrollSpy(['home', 'singapore-maths', 'kids-coding'], {
     offset: 80,
     enabled: onHome,
   });
@@ -103,9 +103,9 @@ export default function AppNavBar() {
   const navLinks = [
     { id: 'home', label: 'Home' },
     { id: 'singapore-maths', label: 'Singapore Maths' },
-    { id: 'program', label: 'Program' },
+    { id: 'kids-coding', label: 'Kids Coding' },
     { id: 'contact', label: 'Contact' },
-    { id: 'faq', label: 'FAQ' },
+    // { id: 'faq', label: 'FAQ' },
   ];
 
   const handleNavLinkClick = (id, e) => {
@@ -114,13 +114,19 @@ export default function AppNavBar() {
     setAcctOpen(false);
 
     const scrollToSection = () => {
-      if (id === 'faq') {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-      } else {
-        const el = document.getElementById(id);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    };
+  if (id === 'faq') {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  } else {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    const offset = 120; // adjust 80 → 120 if navbar is bigger
+    const y = el.getBoundingClientRect().top + window.pageYOffset - offset;
+
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+};
+
 
     if (location.pathname !== '/' || location.hash !== `#${id}`) {
       navigate(`/#${id}`, { replace: false });

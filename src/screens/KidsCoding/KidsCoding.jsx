@@ -15,7 +15,7 @@ export default function KidsCoding() {
     {
       title: "Beginner",
       icon: beginnerIcon,
-      desc: "Learn basic commands, sequences, and problem solving",
+      desc: "Learn basic commands and problem solving",
       skills: ["Logic", "Sequencing", "Patterns"],
     },
     {
@@ -47,6 +47,8 @@ export default function KidsCoding() {
   return (
     <main className="coding-page">
       <section className="coding-hero">
+    
+        
         <h1>Kids Coding</h1>
         <p>
           Empowering kids to think logically, create boldly,
@@ -55,16 +57,23 @@ export default function KidsCoding() {
       </section>
 
       <section className="coding-journey">
-        <h2>The Coding Journey</h2>
-
+                    <h2>Coding Journey</h2>
+        
+   
         <div className="coding-carousel">
-  <div className="coding-track">
-    {journey.map((stage, i) => (
-      <div key={i} className="coding-item">
-        <img src={stage.icon} alt={stage.title} />
-      </div>
-    ))}
+
+            <div className="coding-track">
+              <br />
+              {journey.map((stage, i) => (
+                <div key={i} className="coding-item">
+                  <img src={stage.icon} alt={stage.title} />
+
+                  <h3 className="coding-title">{stage.title}</h3>
+                  <p className="coding-desc">{stage.desc}</p>
+                </div>
+          ))}
   </div>
+
 </div>
 
         <div className="coding-actions center mt-32">

@@ -2,10 +2,10 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import "./SingaporeMaths.css";
 
-import concreteImage from "../../assets/CoreConcepts/jar3d.png";
-import barModelImage from "../../assets/CoreConcepts/jar3d.png";
-import heuristicsImage from "../../assets/CoreConcepts/jar3d.png";
-import variationsImage from "../../assets/CoreConcepts/jar3d.png";
+import concreteImage from "../../assets/CoreConcepts/SingaporeMath/jar3d.png";
+import barModelImage from "../../assets/CoreConcepts/SingaporeMath/BarModel.png";
+import heuristicsImage from "../../assets/CoreConcepts/SingaporeMath/heuristics.png";
+import variationsImage from "../../assets/CoreConcepts/SingaporeMath/problem_variation.png";
 
 import codeVideo from "../../assets/CoreConcepts/CodingVideo.mp4"; // your video
 
@@ -16,6 +16,7 @@ export default function SingaporeMaths() {
     <main className="sg-page">
        <br />
        <br />
+       
        
 
       {/* HERO */}
@@ -67,6 +68,8 @@ export default function SingaporeMaths() {
           </div>
         </div>
 
+        <br />
+
         {/* CTA AFTER PRINCIPLES */}
         <div className="sg-actions center mt-32">
           <button className="btn primary" onClick={() => setDemoOpen(true)}>
@@ -87,7 +90,7 @@ export default function SingaporeMaths() {
       </section> */}
 
       {/* VIDEO + SUPERCHARGED */}
-      <section className="sg-section">
+      {/* <section className="sg-section"> */}
         
         {/* VIDEO CLIP */}
         {/* <video 
@@ -105,7 +108,7 @@ export default function SingaporeMaths() {
           they bring them to life using code, strengthening logic,
           sequencing, and computational thinking.
         </p> */}
-      </section>
+      {/* </section> */}
 
       {/* DIALOG */}
       {demoOpen && (

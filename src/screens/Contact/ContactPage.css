@@ -1,9 +1,11 @@
 /* Layout */
 .contact-page {
+    display: flex;
     min-height: 100vh;
     background: linear-gradient(to bottom, #f9fafb, #ffffff);
     font-family: 'Inter', sans-serif;
     padding: 4rem 1rem;
+    margin: 5rem;
 }
 
 .contact-article {

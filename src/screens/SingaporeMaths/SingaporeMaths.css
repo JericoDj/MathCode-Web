@@ -3,7 +3,7 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 48px 24px;
+
   font-family: "Inter", sans-serif;
   color: #1a1a1a;
   line-height: 1.6;
@@ -36,7 +36,7 @@
 .sg-section h2 {
   font-size: 36px;
   font-weight: 700;
-  margin-bottom: 28px;
+ 
   text-align: center;
 }
 

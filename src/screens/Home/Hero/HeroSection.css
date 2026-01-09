@@ -122,9 +122,11 @@
 }
 
 .primary {
-  background: var(--brand-green); color: #fff;
-  box-shadow: 0 6px 16px rgba(96,182,77,.30);
+  background: var(--brand-green) !important; color: #fff;
+
+  box-shadow: 0 6px 16px rgba(96,182,77,.30) ;
 }
+
 .primary:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(96,182,77,.42); }
 
 .secondary {
