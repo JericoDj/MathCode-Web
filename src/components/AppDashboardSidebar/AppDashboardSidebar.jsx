@@ -37,7 +37,7 @@ export default function AppDashboardSidebar({ sidebarOpen, setSidebarOpen }) {
   }, [menuOpen]);
 
   const navItems = [
-    { to: "/dashboard", label: "Dashboard", icon: <FiHome />, hideForStudent: true },
+    // { to: "/dashboard", label: "Dashboard", icon: <FiHome />, hideForStudent: true },
     { to: "/packages", label: "Packages", icon: <FiPackage />, hideForStudent: true },
     { to: "/sessions", label: "Sessions", icon: <FiBarChart2 /> },
     { to: "/profile-settings", label: "Profile", icon: <FiUser /> },

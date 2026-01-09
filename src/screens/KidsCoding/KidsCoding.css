@@ -6,7 +6,7 @@
 /* HERO */
 .coding-hero {
   text-align: center;
-   margin-bottom: 80px;
+   margin-bottom: 40px;
 }
 
 .coding-hero h1 {
@@ -28,6 +28,19 @@
   font-weight: 700;
  
   text-align: center;
+}
+
+.coding-actions button{
+  font-size: 18px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  background-color: #10b981;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 3rem;
+  
 }
 
 

@@ -1,0 +1,90 @@
+/* Dimmed backdrop */
+.cs-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+/* Dialog Card */
+.cs-dialog {
+  width: 92%;
+  max-width: 480px;
+  background: #ffffff;
+  border-radius: 1.25rem;
+  padding: 2.2rem 2rem 2.5rem;
+  position: relative;
+  text-align: center;
+
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 10px 35px rgba(0,0,0,0.12);
+
+  animation: popup 0.25s ease-out;
+}
+
+@keyframes popup {
+  from { opacity: 0; transform: scale(.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Close Button */
+.cs-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-size: 22px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.55;
+}
+.cs-close:hover { opacity: 1; }
+
+/* Title */
+.cs-title {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+/* Text */
+.cs-message {
+  font-size: 1rem;
+  color: #64748b;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  padding: 0 0.5rem;
+}
+
+/* Coming Soon Tag */
+.cs-tag {
+  display: inline-block;
+  background: #f0fdf4;
+  color: #166534;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 1.7rem;
+}
+
+/* Confirm Button */
+.cs-btn {
+  width: 100%;
+  background: #22c55e; /* green like your design */
+  color: white;
+  border: none;
+  padding: 0.9rem 1.2rem;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.cs-btn:hover {
+  background: #16a34a;
+}

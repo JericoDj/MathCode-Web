@@ -7,10 +7,15 @@ import barModelImage from "../../assets/CoreConcepts/SingaporeMath/BarModel.png"
 import heuristicsImage from "../../assets/CoreConcepts/SingaporeMath/heuristics.png";
 import variationsImage from "../../assets/CoreConcepts/SingaporeMath/problem_variation.png";
 
-import codeVideo from "../../assets/CoreConcepts/CodingVideo.mp4"; // your video
+import SingaporeMathVideo1 from "../../assets/BarModel.mp4";
+import SingaporeMathVideo2 from "../../assets/WordProblems.mp4";
+import SingaporeMathVideo3 from "../../assets/ProblemVariation.mp4"
+
+import FreeAssessmentDialog from "../../components/FreeAssessmentDialog/FreeaAssessmentDialog.jsx";
+
 
 export default function SingaporeMaths() {
-  const [demoOpen, setDemoOpen] = useState(false);
+  const [assessmentOpen, setAssessmentOpen] = useState(false);
 
   return (
     <main className="sg-page">
@@ -27,6 +32,20 @@ export default function SingaporeMaths() {
           problem-solving skills, and mathematical confidence.
         </p>
       </section>
+
+      {/* VIDEO SHOWCASE */}
+{/* VIDEO SHOWCASE */}
+<section className="sg-showcase">
+  <video src={SingaporeMathVideo1} autoPlay loop muted playsInline className="sg-showcase-video" />
+  <video src={SingaporeMathVideo2} autoPlay loop muted playsInline className="sg-showcase-video" />
+  <video src={SingaporeMathVideo3} autoPlay loop muted playsInline className="sg-showcase-video" />
+</section>
+
+<div className="center-row">
+  <button className="btn primary" onClick={() => setAssessmentOpen(true)}>
+    Book Free Assessment
+  </button>
+</div>
 
       {/* CORE PRINCIPLES */}
       <section className="sg-section">
@@ -72,9 +91,7 @@ export default function SingaporeMaths() {
 
         {/* CTA AFTER PRINCIPLES */}
         <div className="sg-actions center mt-32">
-          <button className="btn primary" onClick={() => setDemoOpen(true)}>
-            Book a Demo
-          </button>
+
         </div>
       </section>
 
@@ -111,22 +128,10 @@ export default function SingaporeMaths() {
       {/* </section> */}
 
       {/* DIALOG */}
-      {demoOpen && (
-        <div className="demo-dialog-overlay" onClick={() => setDemoOpen(false)}>
-          <div className="demo-dialog" onClick={(e) => e.stopPropagation()}>
-            <h3>Book a Demo</h3>
-            <p>Walk through MathCode and see the platform in action.</p>
-
-            {/* Placeholder — can integrate Calendly or form */}
-            <button className="btn primary mt-16">
-              Continue
-            </button>
-            <button className="btn secondary mt-8" onClick={() => setDemoOpen(false)}>
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+          <FreeAssessmentDialog
+        open={assessmentOpen}
+        onClose={() => setAssessmentOpen(false)}
+      />
     </main>
   );
 }

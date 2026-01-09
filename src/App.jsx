@@ -140,7 +140,7 @@ function LayoutWrapper() {
   }, [sidebarOpen]);
 
   const isDashboardRoute =
-    location.pathname.startsWith("/dashboard") ||
+    // location.pathname.startsWith("/dashboard") ||
     location.pathname.startsWith("/profile-settings") ||
     location.pathname.startsWith("/sessions") ||
     location.pathname.startsWith("/manage-billing") ||
@@ -228,6 +228,7 @@ function LayoutWrapper() {
               <Route path="/verify-otp" element={<VerifyOTPPage />} />
               <Route path="/book-demo" element={<BookDemoPage />} />
                 <Route path="/singapore-maths" element={<SingaporeMathsPage />} />
+              <Route path="/kids-coding" element={<KidsCoding />} />
             
                             
               <Route path="*" element={<NotFoundPage />} />

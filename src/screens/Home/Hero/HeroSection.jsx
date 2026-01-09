@@ -1,15 +1,21 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import "./HeroSection.css";
+import { Link } from "react-router-dom";
+
 import PricingDialog from "../../../components/PricingDialog/PricingDialog.jsx";
+import KidsCodingPricingDialog from "../../../components/KidsCodingDialog/KidsCodingDialogPrice.jsx";
+import ComingSoonDialog from "../../../components/ComingSoon/ComingSoonDialog.jsx";
 
 import HoverVideoChip from "./helpers/HoverVideoChip";
 import barModelVideo from "../../../assets/BarModel.mp4";
 import wordProblemVideo from "../../../assets/WordProblems.mp4";
 import problemVariationVideo from "../../../assets/ProblemVariation.mp4";
 
+
 export default function Hero() {
-  const [openPricing, setOpenPricing] = useState(false);
+  const [openMathPricing, setOpenMathPricing] = useState(false);
+  // const [openCodingPricing, setOpenCodingPricing] = useState(false);
+  const [comingSoon, setComingSoon] = useState(false);
 
   return (
     <>
@@ -27,28 +33,44 @@ export default function Hero() {
           </ul>
 
           <div className="actions">
-            <button className="btn primary" onClick={() => setOpenPricing(true)}>
+            <button
+              className="btn primary"
+              onClick={() => setOpenMathPricing(true)}
+            >
               Singapore Maths
             </button>
 
-            <Link
-              to="#"
-              className="btn tertiary"
-              onClick={(e) => e.preventDefault()}
-            >
-              Kids Coding <span className="soon-pill">Soon</span>
-            </Link>
+            <button
+  className="btn tertiary"
+  onClick={() => setComingSoon(true)}
+>
+  Kids Coding
+</button>
           </div>
         </div>
 
         <span className="scroll-hint">▼</span>
       </section>
 
-      {/* Dialog Controlled Here */}
+      {/* SG Math Pricing Dialog */}
       <PricingDialog
-        open={openPricing}
-        onClose={() => setOpenPricing(false)}
+        open={openMathPricing}
+        onClose={() => setOpenMathPricing(false)}
       />
+
+      {/* Kids Coding Pricing Dialog
+      <KidsCodingPricingDialog
+        open={openCodingPricing}
+        onClose={() => setOpenCodingPricing(false)}
+      /> */}
+
+
+      <ComingSoonDialog
+  open={comingSoon}
+  onClose={() => setComingSoon(false)}
+  title="Kids Coding"
+  message="Our coding program is launching soon with tracks like Scratch, Game Dev, Python, AI, and Robotics!"
+/>
     </>
   );
 }

@@ -95,7 +95,7 @@ export default function AppNavBar() {
   }, [acctOpen, drawerOpen]);
 
   const onHome = location.pathname === '/';
-  const activeId = useScrollSpy(['home', 'singapore-maths', 'kids-coding'], {
+  const activeId = useScrollSpy(['home', 'singapore-maths', 'kids-coding', 'contact'], {
     offset: 80,
     enabled: onHome,
   });
@@ -241,8 +241,9 @@ export default function AppNavBar() {
                           </div>
                         </div>
 
-                        <button className="acct-item acct-primary" onClick={() => navigateAndScrollTop('/dashboard')}>Dashboard</button>
+                        {/* <button className="acct-item acct-primary" onClick={() => navigateAndScrollTop('/dashboard')}>Dashboard</button> */}
                         <button className="acct-item" onClick={() => navigateAndScrollTop('/packages')}>My Packages</button>
+                        <button className="acct-item" onClick={() => navigateAndScrollTop('/sessions')}>My Sessions</button>
                         <button className="acct-item" onClick={() => navigateAndScrollTop('/profile-settings')}>Profile & Settings</button>
                         <button className="acct-item" onClick={() => navigateAndScrollTop('/manage-billing')}>Manage Plan / Billing</button>
                         <button className="acct-item" onClick={() => navigateAndScrollTop('/help-center')}>Help Center</button>

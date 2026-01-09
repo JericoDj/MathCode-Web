@@ -89,13 +89,13 @@ export default function ContactSection() {
 
               <div className="form-row compact">
                 <label className="checkbox">
-                  <input type="checkbox" name="updates" defaultChecked />
-                  <span>Send me practice tips and updates</span>
-                </label>
+  <input type="checkbox" name="updates" defaultChecked />
+  <span>Send me practice tips and updates</span>
+</label>
 
                 <div className="contact-actions">
                   <button type="submit" className="btn btn-primary">Send message</button>
-                  <Link to="/packages" className="btn btn-outline">See packages</Link>
+          
                 </div>
               </div>
             </form>
