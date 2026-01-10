@@ -205,6 +205,12 @@ export default function FreeAssessmentDialog({ open, onClose }) {
 
       if (!res.ok) throw new Error("Failed to submit package request.");
 
+if (typeof onSuccess === "function") {
+  onSuccess();
+} else {
+  onClose();
+}
+
       onClose();
     } catch (err) {
       console.error(err);

@@ -157,69 +157,49 @@ export default class PackageController {
 
   /** Fetch all packages for the current user */
   async getAllPackages() {
-    try {
-      // Get token from localStorage - handle both string and object formats
-      let token = localStorage.getItem("token");
+  try {
+    // 1. Get auth token
+    let token = localStorage.getItem("token");
+    if (!token) return [];
 
-      // Handle case where token might be stored as a JSON string
-      if (token) {
-        try {
-          // Try to parse if it's a JSON string
-          const parsed = JSON.parse(token);
-          token = typeof parsed === 'string' ? parsed : parsed.token || parsed.accessToken || token;
-        } catch (e) {
-          // If parsing fails, it's already a string token
-          console.log("Token is already a string, using as-is");
-        }
-      }
+    try { token = JSON.parse(token); } catch {}
 
-      // Clean up token - remove any quotes if present
-      if (token && typeof token === 'string') {
-        token = token.replace(/^"(.*)"$/, '$1'); // Remove surrounding quotes if any
-      }
+    // 2. Resolve userId directly from auth storage (not UI)
+    const auth = JSON.parse(localStorage.getItem("auth") || "{}");
+    const userId = auth?.user?.id || auth?.id;
 
-
-
-      if (!token || token === 'null' || token === 'undefined') {
-        throw new Error("No valid token found");
-      }
-
-      const res = await fetch(`${this.baseUrl}/api/packages/`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-
-
-      if (!res.ok) {
-        if (res.status === 401) {
-          // Token is invalid/expired - clear it
-          localStorage.removeItem("token");
-          throw new Error("Invalid or expired token. Please login again.");
-        }
-        
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData?.message || `Failed to fetch packages: ${res.status}`);
-      }
-      
-      const data = await res.json();
-
-      return data.items || data;
-    } catch (err) {
-      console.error("getAllPackages failed:", err);
-      
-      // If it's an auth error, you might want to redirect to login
-      if (err.message.includes('token') || err.message.includes('401')) {
-        // Optionally trigger a logout or redirect
-        this.handleAuthError();
-      }
-      
+    if (!userId) {
+      console.warn("⚠ No userId available, skipping getAllPackages()");
       return [];
     }
+
+    // 3. Request only user's packages
+    const res = await fetch(`${this.baseUrl}/api/packages/mine`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ userId }),
+    });
+
+    if (!res.ok) {
+      if (res.status === 401) {
+        localStorage.removeItem("token");
+        throw new Error("Session expired, please login again.");
+      }
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.message || "Failed to fetch user packages.");
+    }
+
+    const data = await res.json();
+    return data.items || [];
+  } catch (err) {
+    console.error("❌ getAllPackages() failed:", err);
+    return [];
   }
+}
+
 
   /** Handle authentication errors */
   handleAuthError() {

@@ -415,10 +415,56 @@ color: #E5E7EB;
 
   /* Hide desktop CTA buttons, Book Free Assessment, and account dropdown on mobile */
   .btn-cta,
-  .btn-outline,
-  .acct-dropdown {
-    display: none !important; /* Force hide on mobile */
+.acct-dropdown {
+  display: none !important;
+}
+
+
+/* Login / Sign Up button */
+.btn-login {
+  border: 2px solid var(--navy);
+  background: transparent;
+  color: var(--navy);
+  font-weight: 600;
+  padding: 0.65rem 1.4rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-login:hover {
+  border-color: var(--green);
+  color: var(--green);
+  background: var(--hover-bg);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(96, 182, 77, 0.2);
+}
+
+.btn-login:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Desktop only (show) */
+@media (min-width: 992px) {
+  .btn-login {
+    display: inline-flex;
   }
+}
+
+/* Mobile (hide like old behavior, or change if you want to show) */
+@media (max-width: 991px) {
+  .btn-login {
+    display: none !important;
+  }
+}
+
 
   /* Mobile drawer styles */
   .navbar-menu.mobile-open {
@@ -529,5 +575,49 @@ color: #E5E7EB;
   .navbar-toggle {
     width: 36px;
     height: 36px;
+  }
+}
+
+.btn-login {
+  border: 2px solid var(--navy);
+  background: transparent;
+  color: var(--navy);
+  font-weight: 600;
+  padding: 0.65rem 1.4rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-login:hover {
+  border-color: var(--green);
+  color: var(--green);
+  background: var(--hover-bg);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(96, 182, 77, 0.2);
+}
+
+.btn-login:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Desktop only */
+@media (min-width: 992px) {
+  .btn-login {
+    display: inline-flex;
+  }
+}
+
+/* Hide on mobile */
+@media (max-width: 991px) {
+  .btn-login {
+    display: none;
   }
 }

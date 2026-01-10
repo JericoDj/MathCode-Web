@@ -46,15 +46,16 @@ export function PackageProvider({ children, analytics = null, config = {} }) {
   };
 
   const fetchAllPackages = async () => {
-    setLoading(true);
-    try {
-      const packages = await ctrl.getAllPackages();
-      setAllPackages(packages);
-    } finally {
-      setLoading(false);
-    }
-  };
+  setLoading(true);
+  try {
+    const packages = await ctrl.getAllPackages();
 
+    console.log("📦 [PackageProvider] Fetched packages:", packages);
+    setAllPackages(packages);
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <PackageContext.Provider
       value={{

@@ -199,3 +199,10 @@
     max-width: none;
   }
 }
+
+/* Hide chip video previews on mobile */
+@media (max-width: 768px) {
+  .chip-preview {
+    display: none !important;
+  }
+}

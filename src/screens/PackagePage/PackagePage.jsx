@@ -12,9 +12,17 @@ export default function PackagesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const packagesPerPage = 10;
 
+  const { fetchAllPackages } = useContext(PackageContext);
+
+useEffect(() => {
+  fetchAllPackages();
+}, []);
+
+
   const packageArray = Array.isArray(allPackages)
     ? allPackages
     : Object.values(allPackages || {});
+
 
   // Filter packages by status
   const requestAssessmentPackages = packageArray.filter(
@@ -45,6 +53,8 @@ export default function PackagesPage() {
   const noShowPackages = packageArray.filter(
     pkg => pkg.status?.toLowerCase() === "no-show"
   );
+
+
 
   const getPackagesByTab = () => {
     switch (activeTab) {

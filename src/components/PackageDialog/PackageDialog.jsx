@@ -333,6 +333,8 @@ export default function PackageDialog({ package: pkg, onClose }) {
             </div>
           </div>
 
+        
+
           {/* Package Type Information */}
           {safePackage.packageType && (
             <div className="package-type-section">
@@ -365,7 +367,11 @@ export default function PackageDialog({ package: pkg, onClose }) {
           <div className="details-list">
             <div className="detail-row">
               <span className="detail-label">Student Name</span>
-              <span className="detail-value">{safePackage.studentName || safePackage.requestedBy || 'Not specified'}</span>
+   <span className="detail-value">
+  {safePackage.child?.firstName && safePackage.child?.lastName
+    ? `${safePackage.child.firstName} ${safePackage.child.lastName}`
+    : 'Not specified'}
+</span>
             </div>
             
             {safePackage.tutorName && (
@@ -380,18 +386,48 @@ export default function PackageDialog({ package: pkg, onClose }) {
                 <span className="detail-value">{safePackage.tutorId}</span>
               </div>
             )}
+
+            {/* Student / Child Info */}
+{safePackage.child && (
+  <>
+    {safePackage.child.school && (
+      <div className="detail-row">
+        <span className="detail-label">School</span>
+        <span className="detail-value">{safePackage.child.school}</span>
+      </div>
+    )}
+
+    {safePackage.child.age && (
+      <div className="detail-row">
+        <span className="detail-label">Age</span>
+        <span className="detail-value">{safePackage.child.age}</span>
+      </div>
+    )}
+
+   
+  </>
+)}
             {safePackage.childId && (
               <div className="detail-row">
                 <span className="detail-label">Child ID</span>
                 <span className="detail-value">{safePackage.childId}</span>
               </div>
             )}
-            {safePackage.date && (
-              <div className="detail-row">
-                <span className="detail-label">Date & Time</span>
-                <span className="detail-value">{formatDateTime(safePackage.date, safePackage.time)}</span>
-              </div>
-            )}
+            {safePackage.preferredDate && (
+  <div className="detail-row">
+    <span className="detail-label">Date & Time</span>
+    <span className="detail-value">{formatDateTime(safePackage.preferredDate, safePackage.preferredTime)}</span>
+  </div>
+)}  
+{safePackage.timezone && (
+      <div className="detail-row">
+        <span className="detail-label">Timezone</span>
+        <span className="detail-value">{safePackage.timezone}</span>
+      </div>
+    )}
+
+
+
             {safePackage.duration && (
               <div className="detail-row">
                 <span className="detail-label">Duration</span>
@@ -409,8 +445,12 @@ export default function PackageDialog({ package: pkg, onClose }) {
                 <span className="detail-label">Meeting Link</span>
                 <span className="detail-value">
                   <a href={safePackage.meetingLink} target="_blank" rel="noopener noreferrer" className="meeting-link">
-                    🔗 Click to join meeting
+                    Click to join meeting
                   </a>
+                  <p>
+                    {safePackage.meetingLink}
+
+                  </p>
                 </span>
               </div>
             )}

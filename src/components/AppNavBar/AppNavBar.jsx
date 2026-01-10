@@ -38,7 +38,7 @@ function useScrollSpy(ids, { offset = 80, enabled = true } = {}) {
 
 export default function AppNavBar() {
   const { user, setUser, getCurrentUser, logout, openAuthModal } = useContext(UserContext);
-  const [isLoading, setIsLoading] = useState(false);
+const [isLoading, setIsLoading] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [assessmentDialogOpen, setAssessmentDialogOpen] = useState(false);
@@ -159,9 +159,16 @@ export default function AppNavBar() {
 
   // ✅ Handle assessment button click
   const handleAssessmentClick = () => {
-    console.log('🎯 Book Free Assessment button clicked');
-    setAssessmentDialogOpen(true);
-  };
+  console.log('🎯 Book Free Assessment button clicked');
+
+  if (!user) {
+    openAuthModal('login');
+    return;
+  }
+
+  setAssessmentDialogOpen(true);
+};
+
 
   // ✅ Handle login/join button click
   const handleLoginJoinClick = () => {
@@ -253,12 +260,12 @@ export default function AppNavBar() {
                     )}
                   </div>
                 ) : (
-                  <button 
-                    className="btn-outline d-none d-lg-inline" 
-                    onClick={handleLoginJoinClick}
-                  >
-                    Login / Join
-                  </button>
+                  <button
+  className="btn-login"
+  onClick={handleLoginJoinClick}
+>
+  Login / Sign Up
+</button>
                 )}
               </>
             )}
@@ -296,16 +303,15 @@ export default function AppNavBar() {
 
       {/* Free Assessment Dialog */}
       <FreeAssessmentDialog
-        open={assessmentDialogOpen}
-        onClose={() => {
-          console.log('Closing assessment dialog');
-          setAssessmentDialogOpen(false);
-        }}
-        onSubmit={(data) => {
-          console.log("Assessment booked:", data);
-          setAssessmentDialogOpen(false);
-        }}
-      />
+  user={user}
+  open={assessmentDialogOpen}
+  onClose={() => setAssessmentDialogOpen(false)}
+  onSuccess={() => {
+    setAssessmentDialogOpen(false);
+    fetchAllPackages(); // ← refresh packages
+  }}
+/>
+
 
       {/* Booking Dialog */}
       <BookingDialog
