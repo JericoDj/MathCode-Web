@@ -20,13 +20,12 @@ export default function SideDrawer({
   const navigate = useNavigate();
   const location = useLocation();
 
-  const navLinks = [
-    { id: "home", label: "Home" },
-    { id: "pricing", label: "Pricing" },
-    { id: "program", label: "Program" },
-    { id: "contact", label: "Contact" },
-    { id: "faq", label: "FAQ" },
-  ];
+ const navLinks = [
+  { id: 'home', label: 'Home' },
+  { id: 'singapore-maths', label: 'Singapore Maths' },
+  { id: 'kids-coding', label: 'Kids Coding' },
+  { id: 'contact', label: 'Contact' },
+];
 
   // Reset dropdown when user changes
   useEffect(() => {
@@ -67,19 +66,29 @@ export default function SideDrawer({
   }, [accountOpen]);
 
   const handleNavLinkClick = (id) => {
-    handleCloseDrawer();
-    const scrollToSection = () => {
-      const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-      else if (id === "faq")
-        window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-    };
+  handleCloseDrawer();
 
-    if (location.pathname !== "/" || location.hash !== `#${id}`) {
-      navigate(`/#${id}`, { replace: false });
-      setTimeout(scrollToSection, 50);
-    } else scrollToSection();
+  const scrollToSection = () => {
+  
+
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    const offset = 120; // match navbar height
+    const y = el.getBoundingClientRect().top + window.pageYOffset - offset;
+
+    window.scrollTo({ top: y, behavior: 'smooth' });
   };
+
+  // If not on home, navigate then scroll
+  if (location.pathname !== '/' || location.hash !== `#${id}`) {
+    navigate(`/#${id}`);
+    setTimeout(scrollToSection, 50);
+  } else {
+    scrollToSection();
+  }
+};
+
 
   const handleDialogSubmit = (data) => {
     console.log("Booking submitted:", data);
@@ -120,14 +129,14 @@ export default function SideDrawer({
         {user ? (
           <div className="sidedrawer-account-group">
             <button
-              className="sidedrawer-btn-dashboard"
-              onClick={() => {
-                handleCloseDrawer();
-                onDashboard?.();
-              }}
-            >
-              Dashboard
-            </button>
+  className="sidedrawer-btn-dashboard"
+  onClick={() => {
+    handleCloseDrawer();
+    navigate('/sessions');
+  }}
+>
+  Sessions
+</button>
 
             <div
               className="sidedrawer-account"

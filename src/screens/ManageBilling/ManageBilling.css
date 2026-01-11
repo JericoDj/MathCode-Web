@@ -1238,3 +1238,110 @@
 .payment-method-card:not(.real-card) {
   display: none;
 }
+
+
+.billing-action-buttons {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-start;
+}
+
+.small{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.btn-view {
+  background: var(--primary);
+
+  color: #fff;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-pay {
+  background: var(--success);
+  color: #fff;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-outline {
+  border: 1px solid var(--border);
+  background: transparent;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-view.small,
+.btn-pay.small,
+.btn-outline.small {
+  font-size: 12px;
+}
+
+
+
+.invoice-dialog {
+  width: 460px;
+  max-width: 94vw;
+}
+
+.invoice-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.invoice-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.invoice-label {
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.invoice-divider {
+  margin: 12px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.invoice-status {
+  text-transform: capitalize;
+}
+
+.invoice-paid {
+  color: var(--success);
+}
+
+.invoice-pending {
+  color: var(--warning);
+}
+
+.invoice-failed,
+.invoice-cancelled {
+  color: var(--danger);
+}
+
+
+
+.billing-table th,
+.billing-table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Make sure invoice child/package stack still looks good */
+.billing-table .invoice-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* center the text too */
+  gap: 2px;
+}

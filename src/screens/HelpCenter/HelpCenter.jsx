@@ -12,6 +12,8 @@ export default function HelpCenter() {
           Find answers to common questions or get in touch with our support team.
         </p>
 
+              <br />
+
         {/* Search */}
         <div className="search-box col-sm-12 col-md-10 mx-auto">
           <input type="text" placeholder="Search for help topics..." />

@@ -112,19 +112,31 @@
 .status-tag.active { background: #e8f5e8; color: #2e7d32; }
 .status-tag.expired { background: #f5f5f5; color: #757575; }
 
-.expand-btn {
-  background: none;
-  border: none;
-  font-size: 0.9rem;
-  cursor: pointer;
-  color: #1976d2;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  transition: background 0.2s;
+.view-btn {
+   background: #059a0a;
+  padding: .7em;
+  margin-top: 5px;
+  color: white;
+  border: solid #159e1a;
+  border-radius: 10px;
 }
 
-.expand-btn:hover {
-  background: #f8f9fa;
+
+.btn-primary{
+
+  font-size: .9rem !important;
+padding: 0.75rem 1.5rem !important;
+
+}
+.view-btn:hover {
+  background: #05cc0c;
+  padding: .7em;
+  margin-top: 5px;
+  color: white;
+  border: solid #09db10;
+  border-radius: 10px;
+  transition: all 0.2s;
+
 }
 
 /* Additional styles for new fields */

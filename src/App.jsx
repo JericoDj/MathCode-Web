@@ -15,6 +15,8 @@ import { UserProvider} from "./context/UserProvider.jsx";
 import { PackageProvider } from "./context/PackageProvider.jsx";
 import { StudentProvider } from "./context/StudentProvider.jsx";
 import { PlanProvider } from "./context/PlanProvider.jsx";
+import SessionsProvider from "./context/SessionsProvider.jsx";
+import BillingProvider from "./context/BillingProvider.jsx";
 
 // Screens
 import HomePage from "./screens/Home/HomePage.jsx";
@@ -39,6 +41,7 @@ import SingaporeMathsPage from "./screens/SingaporeMaths/SingaporeMathsPage.jsx"
 import KidsCoding from "./screens/KidsCoding/KidsCoding.jsx";
 
 import "./App.css";
+
 
 const router = createBrowserRouter([
   {
@@ -250,10 +253,16 @@ export default function App() {
         }}
         >
         <PackageProvider>
+          
           <StudentProvider>
+            <SessionsProvider>
             <PlanProvider>
+              <BillingProvider>
               <LayoutWrapper />
+              </BillingProvider>
             </PlanProvider>
+
+            </SessionsProvider>
           </StudentProvider>
         </PackageProvider>
       </Router>

@@ -269,3 +269,28 @@ body.sidebar-open {
   }
 }
 
+
+.sidebar-credits {
+  margin: 0.75rem 1rem 1.25rem;
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  background: var(--sidebar-hover); /* soft background */
+  text-align: center;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-credits .credits-title {
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.sidebar-credits .credits-amount {
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--sidebar-active);
+}

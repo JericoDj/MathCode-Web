@@ -25,9 +25,9 @@ export default function DashboardNavIcons() {
 
   return (
     <div className="dashboard-nav-icons">
-      <button className="icon-btn">
+      {/* <button className="icon-btn">
         <FiBell size={24} />
-      </button>
+      </button> */}
 
       {/* <div ref={menuRef} className="user-dropdown-wrapper">
         <img

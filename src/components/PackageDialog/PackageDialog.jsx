@@ -1,16 +1,21 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import "./PackageDialog.css";
 import { storage } from '../../firebase';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+import { PackageContext } from '../../context/PackageContext';
 
 export default function PackageDialog({ package: pkg, onClose }) {
   const fileInputRef = useRef(null);
   const [paymentProof, setPaymentProof] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState('pending_payment');
-  const [showPaymentOptions, setShowPaymentOptions] = useState(false);
+  const [showPaymentOptions, setShowPaymentOptions] = useState(true);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasExistingPayment, setHasExistingPayment] = useState(false);
+
+  const { fetchAllPackages } = useContext(PackageContext);
+
+
 
   const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
@@ -18,12 +23,16 @@ export default function PackageDialog({ package: pkg, onClose }) {
   // Safe package data
   const safePackage = pkg || {};
 
+
+
+
   // Check for existing payment data when package changes
   useEffect(() => {
     if (safePackage.payment || safePackage.paymentProof) {
       setHasExistingPayment(true);
       setPaymentStatus('submitted');
-      
+      console.log(paymentStatus);
+
       // If there's existing payment, show the upload section
       if (safePackage.payment?.method === 'bank-transfer') {
         setShowPaymentOptions(true);
@@ -47,6 +56,9 @@ export default function PackageDialog({ package: pkg, onClose }) {
   const formatDateTime = (dateString, timeString) => {
     if (!dateString) return 'Not scheduled';
     try {
+
+
+      
       const date = new Date(dateString);
       const formattedDate = date.toLocaleDateString('en-US', {
         weekday: 'long',
@@ -95,18 +107,18 @@ export default function PackageDialog({ package: pkg, onClose }) {
   // Delete old file from Firebase Storage
   const deleteOldFileFromFirebase = async (fileName) => {
     if (!fileName) return;
-    
+
     try {
       console.log('Attempting to delete old file:', fileName);
-      
+
       // If the fileName doesn't include the folder path, add it
       let fullPath = fileName;
       if (!fileName.startsWith('payment_proofs/')) {
         fullPath = `payment_proofs/${fileName}`;
       }
-      
+
       const oldFileRef = ref(storage, fullPath);
-      
+
       // Try to delete the file
       await deleteObject(oldFileRef);
       console.log('Old file deleted successfully:', fullPath);
@@ -133,14 +145,14 @@ export default function PackageDialog({ package: pkg, onClose }) {
       alert('File size too large. Please upload a file smaller than 5MB.');
       return;
     }
-    
+
     // Validate file type - DO THIS SECOND
     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
     if (!allowedTypes.includes(file.type)) {
       alert('Please upload a valid file type (JPEG, PNG, JPG, PDF).');
       return;
     }
-    
+
     // Set the file immediately for UI feedback
     setPaymentProof(file);
     setPaymentStatus('processing');
@@ -150,24 +162,24 @@ export default function PackageDialog({ package: pkg, onClose }) {
   const uploadToFirebaseStorage = async (file, packageId) => {
     try {
       console.log('Starting Firebase upload for file:', file.name);
-      
+
       // Create a unique filename
       const fileExtension = file.name.split('.').pop();
       const timestamp = Date.now();
       const fileName = `payment_proofs/${packageId}_${timestamp}.${fileExtension}`;
-      
+
       // Create a storage reference
       const storageRef = ref(storage, fileName);
-      
+
       // Upload the file
       console.log('Uploading to Firebase Storage...');
       const snapshot = await uploadBytes(storageRef, file);
       console.log('Upload completed:', snapshot);
-      
+
       // Get the download URL
       const downloadURL = await getDownloadURL(snapshot.ref);
       console.log('Download URL:', downloadURL);
-      
+
       return {
         downloadURL,
         fileName: snapshot.ref.name,
@@ -182,7 +194,11 @@ export default function PackageDialog({ package: pkg, onClose }) {
 
   // Submit payment to backend API
   const submitPaymentToAPI = async (packageId, paymentData) => {
+
     try {
+
+      console.log('Submitting payment data to API for package:', packageId);
+      console.log(paymentData);
       const token = JSON.parse(localStorage.getItem('token'));
 
       const response = await fetch(`${API_BASE_URL}/api/packages/${packageId}`, {
@@ -219,7 +235,7 @@ export default function PackageDialog({ package: pkg, onClose }) {
     }
 
     setIsSubmitting(true);
-    
+
     try {
       // 1. DELETE OLD FILE FIRST (if exists)
       let oldFileDeleted = false;
@@ -230,27 +246,30 @@ export default function PackageDialog({ package: pkg, onClose }) {
 
       // 2. Upload new file to Firebase Storage
       const uploadResult = await uploadToFirebaseStorage(paymentProof, safePackage._id);
-      
+
       // 3. Submit payment data to backend API
       const paymentData = {
         paymentMethod: 'bank-transfer',
         ...uploadResult
       };
-      
+
       await submitPaymentToAPI(safePackage._id, paymentData);
-      
+
       // 4. Update local state
       setPaymentStatus('completed');
       setShowPaymentOptions(false);
       setHasExistingPayment(true);
-      
-      alert('Payment proof updated successfully!');
-      
+
+      // alert('Payment proof updated successfully!');
+
+      await fetchAllPackages?.();
+
+
       // Close dialog after successful submission
       setTimeout(() => {
         onClose();
       }, 1000);
-      
+
     } catch (error) {
       console.error('Error submitting payment:', error);
       alert(`Error: ${error.message}`);
@@ -303,7 +322,13 @@ export default function PackageDialog({ package: pkg, onClose }) {
   const packageStatus = safePackage.status?.toLowerCase() || 'unknown';
   const canJoin = packageStatus === 'scheduled' && safePackage.meetingLink;
   const canUploadPayment = packageStatus === 'pending_payment' || packageStatus === 'under_review';
-  const canChat = packageStatus === 'pending_payment' || packageStatus === 'scheduled'|| packageStatus === 'requested_assessment';
+  const showPaymentDetailsOnly =
+    packageStatus === 'approved' ||
+    packageStatus === 'scheduled' ||
+    packageStatus === 'completed' ||
+    packageStatus === 'no-show' ||
+    packageStatus === 'cancelled';
+  const canChat = packageStatus === 'pending_payment' || packageStatus === 'scheduled' || packageStatus === 'requested_assessment';
   const canReschedule = packageStatus === 'scheduled';
 
   // Backdrop click
@@ -333,7 +358,7 @@ export default function PackageDialog({ package: pkg, onClose }) {
             </div>
           </div>
 
-        
+
 
           {/* Package Type Information */}
           {safePackage.packageType && (
@@ -367,13 +392,13 @@ export default function PackageDialog({ package: pkg, onClose }) {
           <div className="details-list">
             <div className="detail-row">
               <span className="detail-label">Student Name</span>
-   <span className="detail-value">
-  {safePackage.child?.firstName && safePackage.child?.lastName
-    ? `${safePackage.child.firstName} ${safePackage.child.lastName}`
-    : 'Not specified'}
-</span>
+              <span className="detail-value">
+                {safePackage.child?.firstName && safePackage.child?.lastName
+                  ? `${safePackage.child.firstName} ${safePackage.child.lastName}`
+                  : 'Not specified'}
+              </span>
             </div>
-            
+
             {safePackage.tutorName && (
               <div className="detail-row">
                 <span className="detail-label">Tutor</span>
@@ -388,25 +413,25 @@ export default function PackageDialog({ package: pkg, onClose }) {
             )}
 
             {/* Student / Child Info */}
-{safePackage.child && (
-  <>
-    {safePackage.child.school && (
-      <div className="detail-row">
-        <span className="detail-label">School</span>
-        <span className="detail-value">{safePackage.child.school}</span>
-      </div>
-    )}
+            {safePackage.child && (
+              <>
+                {safePackage.child.school && (
+                  <div className="detail-row">
+                    <span className="detail-label">School</span>
+                    <span className="detail-value">{safePackage.child.school}</span>
+                  </div>
+                )}
 
-    {safePackage.child.age && (
-      <div className="detail-row">
-        <span className="detail-label">Age</span>
-        <span className="detail-value">{safePackage.child.age}</span>
-      </div>
-    )}
+                {safePackage.child.age && (
+                  <div className="detail-row">
+                    <span className="detail-label">Age</span>
+                    <span className="detail-value">{safePackage.child.age}</span>
+                  </div>
+                )}
 
-   
-  </>
-)}
+
+              </>
+            )}
             {safePackage.childId && (
               <div className="detail-row">
                 <span className="detail-label">Child ID</span>
@@ -414,17 +439,17 @@ export default function PackageDialog({ package: pkg, onClose }) {
               </div>
             )}
             {safePackage.preferredDate && (
-  <div className="detail-row">
-    <span className="detail-label">Date & Time</span>
-    <span className="detail-value">{formatDateTime(safePackage.preferredDate, safePackage.preferredTime)}</span>
-  </div>
-)}  
-{safePackage.timezone && (
-      <div className="detail-row">
-        <span className="detail-label">Timezone</span>
-        <span className="detail-value">{safePackage.timezone}</span>
-      </div>
-    )}
+              <div className="detail-row">
+                <span className="detail-label">Date & Time</span>
+                <span className="detail-value">{formatDateTime(safePackage.preferredDate, safePackage.preferredTime)}</span>
+              </div>
+            )}
+            {safePackage.timezone && (
+              <div className="detail-row">
+                <span className="detail-label">Timezone</span>
+                <span className="detail-value">{safePackage.timezone}</span>
+              </div>
+            )}
 
 
 
@@ -463,14 +488,23 @@ export default function PackageDialog({ package: pkg, onClose }) {
           </div>
 
           {/* Payment Section */}
+          {/* Payment Section */}
           {canUploadPayment && (
             <div className="payment-section">
               <div className="payment-header">
                 <h4>Payment Options</h4>
                 <p>Choose your preferred payment method</p>
-                
+
                 <div className="payment-methods">
-                  <button className="payment-method-btn" onClick={() => handlePaymentMethodSelect('card')}>
+
+                  <button
+                    className="payment-method-btn"
+                    onClick={() => hasExistingPayment && (safePackage.payment || safePackage.paymentProof)
+                      ? null
+                      : handlePaymentMethodSelect('card')
+                    }
+                    disabled={hasExistingPayment && (safePackage.payment || safePackage.paymentProof)}
+                  >
                     <div className="payment-method-icon">💳</div>
                     <div className="payment-method-info">
                       <h5>Credit/Debit Card</h5>
@@ -479,7 +513,14 @@ export default function PackageDialog({ package: pkg, onClose }) {
                     <div className="payment-arrow">→</div>
                   </button>
 
-                  <button className="payment-method-btn" onClick={() => handlePaymentMethodSelect('paypal')}>
+                  <button
+                    className="payment-method-btn"
+                    onClick={() => hasExistingPayment && (safePackage.payment || safePackage.paymentProof)
+                      ? null
+                      : handlePaymentMethodSelect('paypal')
+                    }
+                    disabled={hasExistingPayment && (safePackage.payment || safePackage.paymentProof)}
+                  >
                     <div className="payment-method-icon">💰</div>
                     <div className="payment-method-info">
                       <h5>PayPal</h5>
@@ -488,7 +529,10 @@ export default function PackageDialog({ package: pkg, onClose }) {
                     <div className="payment-arrow">→</div>
                   </button>
 
-                  <button className="payment-method-btn" onClick={() => handlePaymentMethodSelect('bank-transfer')}>
+                  <button
+                    className="payment-method-btn"
+                    onClick={() => handlePaymentMethodSelect('bank-transfer')}
+                  >
                     <div className="payment-method-icon">📱</div>
                     <div className="payment-method-info">
                       <h5>QR Payment / Bank Transfer</h5>
@@ -496,16 +540,20 @@ export default function PackageDialog({ package: pkg, onClose }) {
                     </div>
                     <div className="payment-arrow">→</div>
                   </button>
+
                 </div>
+
               </div>
 
               {/* QR / Bank Transfer Upload Section */}
               {showPaymentOptions && (
                 <div className="bank-transfer-section">
+
                   {/* Existing Payment Information */}
                   {hasExistingPayment && (safePackage.payment || safePackage.paymentProof) && (
                     <div className="existing-payment-info">
                       <h5>📋 Existing Payment Submission</h5>
+
                       <div className="existing-payment-details">
                         <div className="payment-detail">
                           <strong>Method:</strong> {safePackage.payment?.method || safePackage.paymentMethod}
@@ -517,22 +565,27 @@ export default function PackageDialog({ package: pkg, onClose }) {
                           <strong>Submitted:</strong> {formatDate(safePackage.payment?.submittedAt || safePackage.paymentSubmittedAt)}
                         </div>
                         <div className="payment-detail">
-                          <strong>Status:</strong> 
+                          <strong>Status:</strong>
                           <span className={`payment-status-badge ${safePackage.payment?.status || 'submitted'}`}>
                             {safePackage.payment?.status || 'submitted'}
                           </span>
                         </div>
                       </div>
-                      <div className="existing-payment-actions">
-                        <button className="btn-outline" onClick={handleViewExistingFile}>
-                          👁️ View File
+
+                      <div className="payment-actions-column">
+                        <button className="payment-btn-view" onClick={handleViewExistingFile}>
+                          View File
                         </button>
-                        <button className="btn-secondary" onClick={triggerFileInput}>
-                          🔄 Change File
+
+                        <button
+                          className={`payment-btn-change ${(safePackage.payment?.method || safePackage.paymentMethod) !== 'bank-transfer' ? 'disabled' : ''}`}
+                          onClick={(safePackage.payment?.method || safePackage.paymentMethod) === 'bank-transfer' ? triggerFileInput : null}
+                          disabled={(safePackage.payment?.method || safePackage.paymentMethod) !== 'bank-transfer'}
+                        >
+                          Change File
                         </button>
                       </div>
-                      
-                      {/* NEW: Selected File Display */}
+
                       {paymentProof && (
                         <div className="selected-file-info">
                           <div className="selected-file-header">
@@ -548,13 +601,14 @@ export default function PackageDialog({ package: pkg, onClose }) {
                           </div>
                         </div>
                       )}
-                      
+
                       <div className="payment-note">
                         <p>💡 Your payment is under review. You can upload a new file if needed.</p>
                       </div>
                     </div>
                   )}
 
+                  {/* Bank Transfer Instructions */}
                   <div className="payment-instructions">
                     <h5>Bank Transfer & QR Payment Instructions</h5>
                     <div className="payment-details">
@@ -576,9 +630,10 @@ export default function PackageDialog({ package: pkg, onClose }) {
                     </p>
                   </div>
 
-                  {/* File Upload Section - ALWAYS RENDER FILE INPUT */}
+                  {/* File Upload Section */}
                   <div className="payment-upload">
                     <label>Upload Proof of Payment</label>
+
                     <div className="upload-controls">
                       <input
                         type="file"
@@ -588,9 +643,10 @@ export default function PackageDialog({ package: pkg, onClose }) {
                         style={{ display: 'none' }}
                         disabled={isSubmitting}
                       />
-                      <button 
+
+                      <button
                         type="button"
-                        className={`btn-outline upload-btn ${isSubmitting ? 'disabled' : ''}`}
+                        className={`payment-upload-btn ${isSubmitting ? 'disabled' : ''}`}
                         onClick={triggerFileInput}
                         disabled={isSubmitting}
                       >
@@ -604,10 +660,10 @@ export default function PackageDialog({ package: pkg, onClose }) {
                       Upload screenshot or PDF of your payment confirmation (Max: 5MB)
                     </p>
                   </div>
-                  
-                  <div className="payment-actions">
-                    <button 
-                      className="btn-secondary" 
+
+                  <div className="pay-actions">
+                    <button
+                      className="pay-btn-back"
                       onClick={() => {
                         setShowPaymentOptions(false);
                         setPaymentProof(null);
@@ -616,18 +672,16 @@ export default function PackageDialog({ package: pkg, onClose }) {
                     >
                       ← Back to Payment Methods
                     </button>
-                    {paymentProof && (
-                      <button 
-                        className="btn-primary" 
-                        onClick={handleSubmitPayment}
-                        disabled={isSubmitting}
-                      >
-                        {isSubmitting ? 'Submitting...' : hasExistingPayment ? 'Update Payment Proof' : 'Submit Payment Proof'}
-                      </button>
-                    )}
+
+                    <button
+                      className="pay-btn-primary"
+                      onClick={handleSubmitPayment}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? 'Submitting...' : hasExistingPayment ? 'Update Payment Proof' : 'Submit Payment Proof'}
+                    </button>
                   </div>
 
-                  {/* Upload Progress */}
                   {isSubmitting && (
                     <div className="upload-progress">
                       <div className="progress-text">
@@ -640,14 +694,51 @@ export default function PackageDialog({ package: pkg, onClose }) {
             </div>
           )}
 
+        {/* 🟣 PAYMENT DETAILS ONLY (NO ACTIONS)  */}
+          {showPaymentDetailsOnly && hasExistingPayment && (
+            <div className="payment-section">
+              <div className="payment-header">
+                <h4>Payment Details</h4>
+                <p>This payment is already submitted and processed.</p>
+              </div>
+
+              <div className="existing-payment-info">
+                <h5>📋 Payment Information</h5>
+
+                <div className="existing-payment-details">
+                  <div className="payment-detail">
+                    <strong>Method:</strong> {safePackage.payment?.method || safePackage.paymentMethod}
+                  </div>
+                  <div className="payment-detail">
+                    <strong>File:</strong> {safePackage.payment?.fileName || 'Payment Proof'}
+                  </div>
+                  <div className="payment-detail">
+                    <strong>Submitted:</strong> {formatDate(safePackage.payment?.submittedAt || safePackage.paymentSubmittedAt)}
+                  </div>
+                  <div className="payment-detail">
+                    <strong>Status:</strong>
+                    <span className={`payment-status-badge ${safePackage.payment?.status || 'submitted'}`}>
+                      {'Submitted'}
+                    </span>
+                  </div>
+                </div>
+
+                <button className="payment-btn-view" onClick={handleViewExistingFile}>
+                  View File
+                </button>
+              </div>
+            </div>
+          )}
+
+
           {/* Footer Actions */}
-          <div className="package-actions-footer">
+          <div className="dialog-actions">
             {canJoin && <button className="btn-primary" onClick={handleJoin}>🚀 Join Session</button>}
             {canChat && <button className="btn-outline">💬 Chat with Tutor</button>}
             {canReschedule && <button className="btn-outline">📅 Reschedule</button>}
-            {(packageStatus === 'pending_payment' || packageStatus === 'requested_assessment') && (
-              <button className="btn-danger">Cancel Request</button>
-            )}
+              {/* {(packageStatus === 'pending_payment' || packageStatus === 'requested_assessment') && (
+                <button className="btn-danger">Cancel Request</button>
+              )} */}
             <button className="btn-secondary ms-auto" onClick={onClose}>Close</button>
           </div>
         </div>

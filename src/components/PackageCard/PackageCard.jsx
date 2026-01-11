@@ -114,14 +114,14 @@ const requesterName = (auth.firstName && auth.lastName)
           </div>
           <div className="package-actions">
             {pkg.status === 'scheduled' && pkg.meetingLink && (
-              <button className="btn-join-sm" onClick={handleJoinClick}>
+              <button className="btn-primary " onClick={handleJoinClick}>
                 🚀 Join
               </button>
             )}
            <span className={`status-tag ${pkg.status?.toLowerCase() || 'unknown'}`}>
   {mapStatusLabel(pkg.status)}
 </span>
-            <button className="expand-btn">
+            <button className="view-btn">
               View Details
             </button>
           </div>

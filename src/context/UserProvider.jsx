@@ -34,6 +34,7 @@ export function UserProvider({ children }) {
         if (res.ok) {
           const u = await res.json();
           setUser(u);
+          console.log("Active user session found:", u);
         } else {
           localStorage.removeItem("auth");
           setUser(null);

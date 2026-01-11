@@ -23,6 +23,14 @@ export default function AppDashboardSidebar({ sidebarOpen, setSidebarOpen }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
+
+  const auth = JSON.parse(localStorage.getItem('auth'));
+const roles = Array.isArray(auth?.roles) ? auth.roles : [auth?.roles || user?.role].filter(Boolean);
+  console.log(auth);
+  
+
+console.log("User role:", roles);
+
   const userAvatar =
     user?.photoURL || `https://picsum.photos/seed/${user?.firstName || "u"}/60`;
 
@@ -37,21 +45,19 @@ export default function AppDashboardSidebar({ sidebarOpen, setSidebarOpen }) {
   }, [menuOpen]);
 
   const navItems = [
-    // { to: "/dashboard", label: "Dashboard", icon: <FiHome />, hideForStudent: true },
-    { to: "/packages", label: "Packages", icon: <FiPackage />, hideForStudent: true },
-    { to: "/sessions", label: "Sessions", icon: <FiBarChart2 /> },
-    { to: "/profile-settings", label: "Profile", icon: <FiUser /> },
-    { to: "/manage-billing", label: "Billing", icon: <FiCreditCard />, hideForStudent: true },
-    { to: "/help-center", label: "Help", icon: <FiHelpCircle /> },
-  ];
+  { to: "/packages", label: "Packages", icon: <FiPackage />, roles: ["parent", "tutor", "admin"] },
+  { to: "/sessions", label: "Sessions", icon: <FiBarChart2 />, roles: ["student", "parent", "tutor", "admin"] },
+  { to: "/profile-settings", label: "Profile", icon: <FiUser />, roles: ["student", "parent", "tutor", "admin"] },
+  { to: "/manage-billing", label: "Billing", icon: <FiCreditCard />, roles: ["parent", "tutor", "admin"] },
+  // { to: "/help-center", label: "Help", icon: <FiHelpCircle />, roles: ["student", "parent", "tutor", "admin"] },
+];
 
   // Filter nav items based on user role
-  const filteredNavItems = navItems.filter(item => {
-    if (user?.role === "student" && item.hideForStudent) {
-      return false;
-    }
-    return true;
-  });
+const filteredNavItems = navItems.filter(item => {
+  // item.roles is ["parent","admin"]
+  // roles is ["student"] or ["parent"]
+  return item.roles.some(r => roles.includes(r));
+});
 
   const handleLogout = async () => {
     await logout();
@@ -62,6 +68,9 @@ export default function AppDashboardSidebar({ sidebarOpen, setSidebarOpen }) {
     <>
       <aside className={`appdash-sidebar ${sidebarOpen ? "active" : ""}`}>
         <div className="sidebar-top">
+
+          {/* logo Section */}
+
           <Link to="/" className="sidebar-logo">
             <img src={MathCodeLogo} alt="MathCode Logo" />
           </Link>
@@ -84,15 +93,25 @@ export default function AppDashboardSidebar({ sidebarOpen, setSidebarOpen }) {
         </div>
 
         {/* Logout Button Section */}
-        <div className="sidebar-bottom">
-          <button 
-            className="sidebar-logout-btn"
-            onClick={handleLogout}
-          >
-            <FiLogOut size={20} />
-            <span>Logout</span>
-          </button>
-        </div>
+        {/* Credits Section for Parents */}
+{/* Credits Section */}
+{roles.includes("parent") && user?.credits !== undefined && (
+  <div className="sidebar-credits">
+    <div className="credits-title">Credits</div>
+    <div className="credits-amount">{user.credits}</div>
+  </div>
+)}
+
+{/* Logout Section */}
+<div className="sidebar-bottom">
+  <button 
+    className="sidebar-logout-btn"
+    onClick={handleLogout}
+  >
+    <FiLogOut size={20} />
+    <span>Logout</span>
+  </button>
+</div>
       </aside>
     </>
   );
