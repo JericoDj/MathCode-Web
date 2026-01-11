@@ -247,10 +247,7 @@ function LayoutWrapper() {
 export default function App() {
   return (
     <UserProvider>
-      <Router  future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true
-        }}
+      <Router 
         >
         <PackageProvider>
           
