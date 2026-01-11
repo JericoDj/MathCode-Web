@@ -15,6 +15,8 @@ export default class AuthController {
   try {
      const savedAuth = localStorage.getItem('token');
 
+     console.log(this.baseUrl);
+
 
   
     const response = await fetch(`${this.baseUrl}/me`, {

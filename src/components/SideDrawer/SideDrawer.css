@@ -343,3 +343,29 @@
     font-size: 0.9rem;
   }
 }
+
+
+.sidedrawer-credits {
+  margin: 0.75rem 0.5rem 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background: var(--sidebar-hover, #f3f4f6);
+  border: 1px solid var(--border-light, #e5e7eb);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.sidedrawer-credits-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted, #64748b);
+  margin-bottom: 2px;
+}
+
+.sidedrawer-credits-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--sidebar-active, #1d2b64);
+}

@@ -11,7 +11,7 @@ export function UserProvider({ children }) {
   const [googleSignupData, setGoogleSignupData] = useState(null);
   const ctrl = new AuthController();
 
-  const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+  const API_BASE_URL = import.meta.env.VITE_API_URL || "math-code-backend-fh0n8n7g3-jericos-projects-f568a5b3.vercel.app";
 
   // Fetch current session user on load
   useEffect(() => {
@@ -34,6 +34,7 @@ export function UserProvider({ children }) {
         if (res.ok) {
           const u = await res.json();
           setUser(u);
+          localStorage.setItem("auth", JSON.stringify(u));
           console.log("Active user session found:", u);
         } else {
           localStorage.removeItem("auth");

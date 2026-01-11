@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useContext } from "react";
+import { useState, useRef, useEffect, useContext, use } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../../context/UserContext.jsx";
 import MathCodeLogo from '../../assets/MathCodeNoBGcropped.png';
@@ -24,12 +24,12 @@ export default function AppDashboardSidebar({ sidebarOpen, setSidebarOpen }) {
   const menuRef = useRef(null);
 
 
+
   const auth = JSON.parse(localStorage.getItem('auth'));
 const roles = Array.isArray(auth?.roles) ? auth.roles : [auth?.roles || user?.role].filter(Boolean);
-  console.log(auth);
-  
 
-console.log("User role:", roles);
+  
+  
 
   const userAvatar =
     user?.photoURL || `https://picsum.photos/seed/${user?.firstName || "u"}/60`;
@@ -92,15 +92,17 @@ const filteredNavItems = navItems.filter(item => {
           </nav>
         </div>
 
+
+
         {/* Logout Button Section */}
         {/* Credits Section for Parents */}
 {/* Credits Section */}
-{roles.includes("parent") && user?.credits !== undefined && (
+
   <div className="sidebar-credits">
     <div className="credits-title">Credits</div>
-    <div className="credits-amount">{user.credits}</div>
+    <div className="credits-amount">{auth.credits}</div>
   </div>
-)}
+
 
 {/* Logout Section */}
 <div className="sidebar-bottom">

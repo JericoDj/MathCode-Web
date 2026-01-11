@@ -82,7 +82,7 @@ export default function PricingDialog({ open, onClose }) {
                 ))}
               </ul>
 
-              <button className="btn-select">Select Plan</button>
+              {/* <button className="btn-select">Select Plan</button> */}
 
               {plan.duration === "QUARTERLY" && (
                 <span className="badge-popular">Most Popular</span>

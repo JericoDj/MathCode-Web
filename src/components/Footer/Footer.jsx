@@ -111,8 +111,8 @@ export default function Footer() {
           <nav className="col links">
             <h4>Company</h4>
             <ul>
-              <li><Link to="/about">About</Link></li>
-              <li><Link to="/contact">Contact</Link></li>
+              {/* <li><Link to="/about">About</Link></li>
+              <li><Link to="/contact">Contact</Link></li> */}
               <li><Link to="/privacy">Privacy</Link></li>
               <li><Link to="/terms">Terms</Link></li>
             </ul>

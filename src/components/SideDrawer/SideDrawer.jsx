@@ -24,11 +24,13 @@ export default function SideDrawer({
   { id: 'home', label: 'Home' },
   { id: 'singapore-maths', label: 'Singapore Maths' },
   { id: 'kids-coding', label: 'Kids Coding' },
-  { id: 'contact', label: 'Contact' },
+  // { id: 'contact', label: 'Contact' },
 ];
 
   // Reset dropdown when user changes
   useEffect(() => {
+
+    console.log(user);
     setAccountOpen(false);
   }, [user]);
 
@@ -184,6 +186,17 @@ export default function SideDrawer({
                 >
                   Help Center
                 </button>
+
+
+
+                {/* Credits */}
+                {(typeof user?.credits === "number" && user.credits >= 0) && (
+  <div className="sidedrawer-credits">
+    <div className="sidedrawer-credits-title">Credits</div>
+    <div className="sidedrawer-credits-value">{user.credits}</div>
+  </div>
+)}
+
                 <button
                   className="danger"
                   onClick={() => {

@@ -253,7 +253,7 @@ const [isLoading, setIsLoading] = useState(true);
                         <button className="acct-item" onClick={() => navigateAndScrollTop('/sessions')}>My Sessions</button>
                         <button className="acct-item" onClick={() => navigateAndScrollTop('/profile-settings')}>Profile & Settings</button>
                         <button className="acct-item" onClick={() => navigateAndScrollTop('/manage-billing')}>Manage Plan / Billing</button>
-                        <button className="acct-item" onClick={() => navigateAndScrollTop('/help-center')}>Help Center</button>
+                        {/* <button className="acct-item" onClick={() => navigateAndScrollTop('/help-center')}>Help Center</button> */}
                         <div className="acct-sep" />
                         <button className="acct-item danger" onClick={handleLogout}>Logout</button>
                       </div>
