@@ -10,6 +10,8 @@ const passOk = (v) => (v?.length || 0) >= 8;
 
 // Get Google Client ID from environment variable
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+console.log("Google Client ID:", GOOGLE_CLIENT_ID);
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? "https://math-code-backend.vercel.app";
 
 // Fixed Google OAuth Component - No infinite loops
