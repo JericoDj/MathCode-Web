@@ -21,12 +21,19 @@
   margin-bottom: 3rem;
 }
 
+.pricing-select-group{
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem !important;
+}
 /* Pricing Cards */
 .pricing-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 2rem;
   justify-items: center;
+  margin-left: 100rem;;
 }
 
 .pricing-card {
