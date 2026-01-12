@@ -251,7 +251,6 @@ export default function App() {
       <Router 
         >
         <PackageProvider>
-          
           <StudentProvider>
             <SessionsProvider>
             <PlanProvider>
