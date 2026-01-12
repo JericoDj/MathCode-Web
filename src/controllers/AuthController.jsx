@@ -1,3 +1,5 @@
+
+
 export default class AuthController {
   constructor() {
     // place to inject dependencies later (analytics, endpoints, etc.)
@@ -6,7 +8,9 @@ export default class AuthController {
     
     // this.baseUrl = "https://mathcode-backend.onrender.com/api/users";
     // this.baseUrl = "http://localhost:4000/api/users";
-       const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
+       const api = import.meta.env.VITE_API_URL || "http://localhost:4000";
+    this.API_BASE = api;
+    this.baseUrl = `${api}/api/users`;
   }
 
   async getCurrentUser() {
