@@ -6,20 +6,22 @@ export default class AuthController {
     
     // this.baseUrl = "https://mathcode-backend.onrender.com/api/users";
     // this.baseUrl = "http://localhost:4000/api/users";
-        this.baseUrl = `${import.meta.env.VITE_API_URL}/api/users` || "http://localhost:4000/api/user";
+       const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
   }
 
   async getCurrentUser() {
+
    
 
   try {
+    
      const savedAuth = localStorage.getItem('token');
 
-     console.log(this.baseUrl);
+     console.log(API_BASE_URL);
 
 
   
-    const response = await fetch(`${this.baseUrl}/me`, {
+    const response = await fetch(`${API_BASE}/api/users/me`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -45,7 +47,7 @@ export default class AuthController {
       
 
       // 1️⃣ Log in to get token
-      const res = await fetch(`${this.baseUrl}/login`, {
+      const res = await fetch(`${API_BASE}/api/users/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -105,7 +107,7 @@ export default class AuthController {
         });
       }
 
-      const res = await fetch(`${this.baseUrl}/register`, {
+      const res = await fetch(`${API_BASE}/api/users/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -120,7 +122,7 @@ export default class AuthController {
       const data = await res.json();
 
       // Optionally fetch user profile after registration
-      const profileRes = await fetch(`${this.baseUrl}/me`, {
+      const profileRes = await fetch(`${API_BASE}/api/users/me`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
