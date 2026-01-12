@@ -100,10 +100,10 @@ export default function Footer() {
                   Kids Coding
                 </button>
               </li>
-
+{/* 
               <li>
                 <Link to="/pricing">Pricing</Link>
-              </li>
+              </li> */}
             </ul>
           </nav>
 
