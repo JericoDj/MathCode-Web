@@ -18,95 +18,64 @@ console.log("Google Client ID =", GOOGLE_CLIENT_ID);
 // === GOOGLE OAUTH FIXED COMPONENT ===
 const GoogleOAuth = () => {
   const { setUser, closeAuthModal } = useContext(UserContext);
-  const buttonRef = useRef(null);
+  const googleButtonRef = useRef(null);
+  const [scriptReady, setReady] = useState(false);
 
-  const [scriptLoaded, setScriptLoaded] = useState(false);
-  const [buttonRendered, setButtonRendered] = useState(false);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  const API_BASE_URL = import.meta.env.VITE_API_URL ?? "https://math-code-backend.vercel.app";
 
-  // Load script once
+  // Load SDK once
   useEffect(() => {
-    if (scriptLoaded || !GOOGLE_CLIENT_ID) return;
-
     const script = document.createElement('script');
     script.src = "https://accounts.google.com/gsi/client";
     script.async = true;
     script.defer = true;
-
-    script.onload = () => setScriptLoaded(true);
-    script.onerror = () => setError("Google script failed to load");
-
+    script.onload = () => setReady(true);
     document.head.appendChild(script);
   }, []);
 
-  // Render button + initialize popup
+  // Init popup mode
   useEffect(() => {
-    if (!scriptLoaded || !window.google || !buttonRef.current || buttonRendered) return;
-    try {
-      window.google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleCredential,
-        ux_mode: "popup",
-        auto_select: false,
-        is_fedcm: false,        // ← THIS FIXES NETLIFY 403 BUTTON ISSUE
-        itp_support: true,
-      });
+    if (!scriptReady || !window.google || !googleButtonRef.current) return;
 
-      window.google.accounts.id.renderButton(buttonRef.current, {
-        theme: "outline",
-        size: "large",
-        width: 300,
-        text: "signin_with",
-        logo_alignment: "left",
-      });
+    window.google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: async ({ credential }) => {
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/users/auth/google`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: credential }),
+          });
 
-      setButtonRendered(true);
-    } catch (e) {
-      console.error("Google init error:", e);
-      setError("Google Sign-In failed to initialize");
-    }
-  }, [scriptLoaded]);
+          const data = await res.json();
 
-  async function handleCredential(response) {
-    try {
-      setLoading(true);
-      setError("");
+          localStorage.setItem("auth", JSON.stringify(data.user));
+          localStorage.setItem("token", JSON.stringify(data.token));
+          setUser(data.user);
+          closeAuthModal();
+        } catch (err) {
+          console.error("Google login failed:", err);
+        }
+      },
+      ux_mode: "popup",
+      auto_select: false,
+      itp_support: false,
+      fast_setup: false,
+      use_fedcm_for_prompt: false, // << key for Netlify
+    });
 
-      const result = await fetch(`${API_BASE_URL}/api/users/auth/google`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: response.credential }),
-      });
+    window.google.accounts.id.renderButton(googleButtonRef.current, {
+      theme: 'outline',
+      size: 'large',
+      width: 300,
+    });
 
-      const data = await result.json();
-      if (!result.ok) throw new Error(data.message || "Authentication failed");
+  }, [scriptReady]);
 
-      // Store + login
-      localStorage.setItem("token", JSON.stringify(data.token));
-      localStorage.setItem("auth", JSON.stringify(data.user));
-      setUser(data.user);
-      closeAuthModal();
-    } catch (err) {
-      console.error("Google auth failed:", err);
-      setError(err.message || "Google authentication failed");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  if (!GOOGLE_CLIENT_ID) {
-    return <div className="google-error">Missing Google Client ID</div>;
-  }
-
-  return (
-    <div className="google-oauth-container">
-      {error && <div className="google-error">{error}</div>}
-      {loading && <div className="google-loading">Signing in…</div>}
-      <div ref={buttonRef} className="google-signin-button" />
-    </div>
-  );
+  return <div ref={googleButtonRef} />;
 };
+
 
 
 
