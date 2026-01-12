@@ -98,10 +98,10 @@ const filteredNavItems = navItems.filter(item => {
         {/* Credits Section for Parents */}
 {/* Credits Section */}
 
-  <div className="sidebar-credits">
-    <div className="credits-title">Credits</div>
-    <div className="credits-amount">{auth.credits}</div>
-  </div>
+<div className="sidebar-credits">
+  <div className="credits-title">Credits</div>
+  <div className="credits-amount">{auth?.credits ?? 0}</div>
+</div>
 
 
 {/* Logout Section */}
