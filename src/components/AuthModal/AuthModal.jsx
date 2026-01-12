@@ -5,151 +5,111 @@ import { UserContext } from '../../context/UserContext.jsx';
 import './AuthModal.css';
 
 // Validators
+// Validators
 const emailOk = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 const passOk = (v) => (v?.length || 0) >= 8;
 
-// Get Google Client ID from environment variable
+// ENV
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-
-console.log("Google Client ID:", GOOGLE_CLIENT_ID);
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? "https://math-code-backend.vercel.app";
 
-// Fixed Google OAuth Component - No infinite loops
+console.log("Google Client ID =", GOOGLE_CLIENT_ID);
+
+// === GOOGLE OAUTH FIXED COMPONENT ===
 const GoogleOAuth = () => {
   const { setUser, closeAuthModal } = useContext(UserContext);
-  const googleButtonRef = useRef(null);
-  const [scriptLoaded, setScriptLoaded] = useState(false);
-  const [initialized, setInitialized] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const buttonRef = useRef(null);
 
-  // Load Google script - runs only once
+  const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [buttonRendered, setButtonRendered] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  // Load script once
   useEffect(() => {
     if (scriptLoaded || !GOOGLE_CLIENT_ID) return;
 
     const script = document.createElement('script');
-    script.src = 'https://accounts.google.com/gsi/client';
+    script.src = "https://accounts.google.com/gsi/client";
     script.async = true;
     script.defer = true;
-    
-    script.onload = () => {
-      setScriptLoaded(true);
-    };
 
-    script.onerror = () => {
-      console.error('❌ Failed to load Google Sign-In script');
-      setError('Failed to load Google Sign-In. Please refresh the page.');
-    };
+    script.onload = () => setScriptLoaded(true);
+    script.onerror = () => setError("Google script failed to load");
 
     document.head.appendChild(script);
-  }, []); // Empty dependency array - runs only once
+  }, []);
 
-  // Initialize Google Sign-In - runs when script loads
+  // Render button + initialize popup
   useEffect(() => {
-    if (scriptLoaded && window.google && !initialized && googleButtonRef.current) {
-      try {
-        window.google.accounts.id.initialize({
-          client_id: GOOGLE_CLIENT_ID,
-          callback: handleCredentialResponse,
-          auto_select: false,
-          cancel_on_tap_outside: true,
-        });
+    if (!scriptLoaded || !window.google || !buttonRef.current || buttonRendered) return;
+    try {
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleCredential,
+        ux_mode: "popup",
+        auto_select: false,
+        is_fedcm: false,        // ← THIS FIXES NETLIFY 403 BUTTON ISSUE
+        itp_support: true,
+      });
 
-        // Render the button
-        window.google.accounts.id.renderButton(googleButtonRef.current, {
-          theme: 'outline',
-          size: 'large',
-          width: 400,
-          text: 'signin_with',
-          logo_alignment: 'left',
-        });
+      window.google.accounts.id.renderButton(buttonRef.current, {
+        theme: "outline",
+        size: "large",
+        width: 300,
+        text: "signin_with",
+        logo_alignment: "left",
+      });
 
-        setInitialized(true);
-      } catch (error) {
-        console.error('❌ Google Sign-In initialization failed:', error);
-        setError('Failed to initialize Google Sign-In. Please try again.');
-      }
+      setButtonRendered(true);
+    } catch (e) {
+      console.error("Google init error:", e);
+      setError("Google Sign-In failed to initialize");
     }
-  }, [scriptLoaded]); // Only depends on scriptLoaded
+  }, [scriptLoaded]);
 
-  const handleCredentialResponse = async (response) => {
+  async function handleCredential(response) {
     try {
       setLoading(true);
-      setError('');
+      setError("");
 
       const result = await fetch(`${API_BASE_URL}/api/users/auth/google`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          token: response.credential,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: response.credential }),
       });
 
-      // console.log('Backend response status:', result.status);
-      
-      if (result.ok) {
-        const data = await result.json();
-        console.log('✅ Google auth success - Full response:', data);
-        console.log('✅ Data structure check:', {
-          hasUser: !!data.user,
-          userKeys: data.user ? Object.keys(data.user) : 'No user object',
-          hasToken: !!data.token,
-          isNewUser: data.isNewUser
-        });
-        
-        if (data.isNewUser) {
-          // New user - show additional info form
-        
-          // Safe way to set Google signup data
-          const signupData = {
-            ...(data.user || {}), // Fallback to empty object if user is undefined
-            token: data.token
-          };
-          
-          localStorage.setItem('token', JSON.stringify(data.token));
-          localStorage.setItem('auth', JSON.stringify(data.user));
-          setUser(signupData);
-          closeAuthModal();
-        } else {
-          // Existing user - complete login
-        
-          localStorage.setItem('token', JSON.stringify(data.token));
-          localStorage.setItem('auth', JSON.stringify(data.user));
-          setUser(data.user);
-          closeAuthModal();
-        }
-      } else {
-        const errorData = await result.json();
-        console.error('❌ Backend authentication failed:', errorData);
-        throw new Error(errorData.message || 'Backend authentication failed');
-      }
-    } catch (error) {
-      console.error('❌ Google authentication failed:', error);
-      setError(error.message || 'Google authentication failed. Please try again.');
+      const data = await result.json();
+      if (!result.ok) throw new Error(data.message || "Authentication failed");
+
+      // Store + login
+      localStorage.setItem("token", JSON.stringify(data.token));
+      localStorage.setItem("auth", JSON.stringify(data.user));
+      setUser(data.user);
+      closeAuthModal();
+    } catch (err) {
+      console.error("Google auth failed:", err);
+      setError(err.message || "Google authentication failed");
     } finally {
       setLoading(false);
     }
-  };
-
-  if (!GOOGLE_CLIENT_ID) {
-    return (
-      <div className="google-config-error">
-        Google Sign-In is not configured. Please check your environment variables.
-      </div>
-    );
   }
 
-  // FIX: Return JSX for the Google button
+  if (!GOOGLE_CLIENT_ID) {
+    return <div className="google-error">Missing Google Client ID</div>;
+  }
+
   return (
     <div className="google-oauth-container">
       {error && <div className="google-error">{error}</div>}
-      {loading && <div className="google-loading">Signing in with Google...</div>}
-      <div ref={googleButtonRef} className="google-signin-button"></div>
+      {loading && <div className="google-loading">Signing in…</div>}
+      <div ref={buttonRef} className="google-signin-button" />
     </div>
   );
 };
+
+
+
 
 // --- Google Signup Form (for setting password after Google OAuth) ---
 function GoogleSignupForm({ onClose }) {
@@ -420,7 +380,7 @@ function RegisterForm({ onClose, switchToLogin }) {
           <option value="8-10">Ages 8–10</option>
           <option value="11-12">Ages 11–12</option>
         </select>
-      </label>
+      </label>  
 
       <label className="check">
         <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} />
