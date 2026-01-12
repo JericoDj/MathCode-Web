@@ -258,7 +258,6 @@ export default function App() {
               <LayoutWrapper />
               </BillingProvider>
             </PlanProvider>
-
             </SessionsProvider>
           </StudentProvider>
         </PackageProvider>
