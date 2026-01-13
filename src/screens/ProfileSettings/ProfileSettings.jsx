@@ -446,13 +446,13 @@ const handleChangePassword = async (e) => {
                                     {!isStudent && students.length === 0 && (
                                         <div className="empty-state">
                                             <p>No child profiles added yet.</p>
-                                            <button
+                                            {/* <button
                                                 className="btn-primary"
                                                 onClick={openAddDialog}
                                                 disabled={loading}
                                             >
                                                 Add Your First Child
-                                            </button>
+                                            </button> */}
                                         </div>
                                     )}
                                 </div>

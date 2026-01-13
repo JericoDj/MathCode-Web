@@ -236,8 +236,9 @@
 }
 
 .google-box{
-  margin: auto;
-  
+  margin-left: auto !important;
+  margin-right: auto !important;  
+  justify-content: center ;
 }
 
 .google-section {

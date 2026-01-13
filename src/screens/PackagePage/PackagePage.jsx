@@ -73,9 +73,21 @@ useEffect(() => {
   const packagesToShow = getPackagesByTab();
 
   // Sort packages by creation date (newest first)
-  const sortedPackages = [...packagesToShow].sort((a, b) => {
-    return new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date);
-  });
+  // Sort packages by creation date (newest first)
+const sortedPackages = [...packagesToShow].sort((a, b) => {
+  const getTime = (pkg) => {
+    if (pkg.createdAt) return new Date(pkg.createdAt).getTime();
+    if (pkg.date) return new Date(pkg.date).getTime();
+
+    // Fallback MongoDB ObjectId timestamp
+    if (pkg._id) return parseInt(pkg._id.substring(0, 8), 16) * 1000;
+
+    return 0;
+  };
+
+  return getTime(b) - getTime(a);
+});
+
 
   // Pagination
   const totalPages = Math.ceil(sortedPackages.length / packagesPerPage);
@@ -293,9 +305,15 @@ useEffect(() => {
         )}
 
         {/* Booking Dialog */}
-        {showBookingDialog && (
-          <BookingDialog onClose={() => setShowBookingDialog(false)} />
-        )}
+       {showBookingDialog && (
+  <BookingDialog
+    onClose={() => setShowBookingDialog(false)}
+    onSuccess={() => {
+      fetchAllPackages();
+      setShowBookingDialog(false);
+    }}
+  />
+)}
       </div>
     </>
   );

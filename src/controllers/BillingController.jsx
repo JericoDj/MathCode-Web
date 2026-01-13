@@ -1,6 +1,7 @@
 // src/controllers/billing.controller.js
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const BASE_URL = `${import.meta.env.VITE_API_URL || "http://localhost:4000"}/api/billing`;
+
 
 export const billingController = {
   
@@ -14,7 +15,7 @@ export const billingController = {
 
 
     try {
-      const res = await fetch(`${BASE_URL}//${auth.id}`, {
+      const res = await fetch(`${BASE_URL}/${auth.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -47,19 +47,17 @@ export default function PricingDialog({ open, onClose }) {
         </div>
 
         {/* Sessions Selector */}
-        <div className="pricing-select-sub">
-          {sessionKeys.map((sk) => (
-            <button
-              key={sk}
-              className={`pricing-chip small ${
-                selectedSessions === sk ? "active" : ""
-              }`}
-              onClick={() => setSelectedSessions(sk)}
-            >
-              {sk}x/week
-            </button>
-          ))}
-        </div>
+<div className="pricing-session-select">
+  {sessionKeys.map((sk) => (
+    <button
+      key={sk}
+      className={`pricing-session-chip ${selectedSessions === sk ? "active" : ""}`}
+      onClick={() => setSelectedSessions(sk)}
+    >
+      {sk}x/week
+    </button>
+  ))}
+</div>
 
         {/* Cards */}
         <section className="pricing-cards">
@@ -99,3 +97,4 @@ export default function PricingDialog({ open, onClose }) {
     </div>
   );
 }
+

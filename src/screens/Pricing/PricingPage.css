@@ -1,143 +1,209 @@
-/* Layout */
-.pricing-page {
+/* =========================================================
+   Root Layout (Grid paper aesthetic)
+   ========================================================= */
+.pricing-page-container {
   min-height: 100vh;
-  background: linear-gradient(to bottom, #f9fafb, #ffffff);
-  font-family: 'Inter', sans-serif;
-  padding: 4rem 1rem;
+  padding: 4rem 2rem;
+  background:
+    radial-gradient(ellipse at top, rgba(160,205,147,0.12), transparent 65%),
+    url("/grid.png");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+}
+
+.pricing-page-content {
+  width: 100%;
+  max-width: 1050px;
   text-align: center;
 }
 
-/* Header */
-.pricing-header h1 {
-  font-size: 3rem;
-  color: #047857;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
+
+/* =========================================================
+   Titles
+   ========================================================= */
+.pricing-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  font-family: "Georgia", "Times New Roman", serif;
+  color: #0b1a45;
+  margin-bottom: .6rem;
 }
 
-.pricing-header p {
-  font-size: 1.125rem;
-  color: #4b5563;
-  margin-bottom: 3rem;
+.pricing-sub {
+  font-size: 1rem;
+  color: #4e5a6f;
+  margin-bottom: 1rem;
+  max-width: 200px !important;
+
 }
 
-.pricing-select-group{
-  margin-bottom: 2rem;
+
+/* =========================================================
+   Selectors (chips for types & sessions)
+   ========================================================= */
+.pricing-select-group,
+.pricing-select-sub {
   display: flex;
   justify-content: center;
-  gap: 1rem !important;
+  flex-wrap: wrap;
+  gap: .6rem;
+  margin-bottom: 1.4rem;
 }
-/* Pricing Cards */
+
+.pricing-chip {
+  padding: .45rem 1rem;
+  border-radius: 999px;
+  font-size: .9rem;
+  font-weight: 600;
+  background: #fff;
+  border: 1px solid rgba(24,50,87,.18);
+  color: #0b1a45;
+  transition: all .18s ease;
+  cursor: pointer;
+}
+
+.pricing-chip.small {
+  font-size: .82rem;
+  padding: .28rem .6rem;
+}
+
+
+
+
+
+
+
+
+.pricing-chip.active {
+  background: #3ca049;
+  border-color: #3ca049;
+  color: #fff;
+}
+
+.pricing-chip:hover:not(.active) {
+  background: rgba(24,50,87,0.05);
+}
+
+
+/* =========================================================
+   Pricing Cards
+   ========================================================= */
 .pricing-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 2rem;
-  justify-items: center;
-  margin-left: 100rem;;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.6rem;
+  margin-top: 1.8rem;
+  margin-bottom: 2.4rem;
 }
 
 .pricing-card {
-  background: #ffffff;
-  border-radius: 1.5rem;
-  padding: 2rem 1.5rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 2px solid transparent;
-}
-
-.pricing-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-}
-
-.pricing-card.highlight {
-  border-color: #10b981;
-  background: #f0fdf4;
+  position: relative;
+  border-radius: 16px;
+  padding: 1.8rem 1.6rem;
+  background: #fff;
+  border: 1px solid rgba(24, 50, 87, .12);
+  box-shadow: 0 8px 30px rgba(24, 50, 87, .06);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: .55rem;
+  min-height: 280px;
 }
 
 .pricing-card h2 {
-  font-size: 1.75rem;
-  color: #047857;
-  font-weight: 600;
-  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0b1a45;
+  margin: 0;
 }
 
 .pricing-card .price {
-  font-size: 1.5rem;
+  font-size: 1.65rem;
   font-weight: 700;
-  color: #065f46;
-  margin-bottom: 1rem;
+  color: #3ca049;
+}
+
+.pricing-card .sub {
+  font-size: .9rem;
+  color: #4e5a6f;
 }
 
 .pricing-card .features {
   list-style: none;
   padding: 0;
-  margin: 0 0 2rem 0;
-  color: #374151;
-  text-align: left;
+  margin: .6rem 0 0;
 }
 
 .pricing-card .features li {
-  margin-bottom: 0.5rem;
+  font-size: .85rem;
+  color: #0b1a45;
+  margin-bottom: .35rem;
   padding-left: 1rem;
   position: relative;
 }
 
 .pricing-card .features li::before {
-  content: "✔";
+  content: "•";
+  color: #3ca049;
+  font-weight: 700;
   position: absolute;
-  left: 0;
-  color: #10b981;
-  font-weight: bold;
+  left: .3rem;
 }
 
-/* Button */
-.btn-select {
-  background: #10b981;
-  color: #ffffff;
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
 
-.btn-select:hover {
-  background: #059669;
-}
-
-.pricing-card .features li {
-  margin-bottom: 0.5rem;
-  padding-left: 1.8rem; /* increased space from the checkmark to the text */
-  position: relative;
-}
-
-.pricing-card .features li::before {
-  content: "✔";
+/* =========================================================
+   Most Popular badge
+   ========================================================= */
+.badge-popular {
   position: absolute;
-  left: 0;
-  top: 0.1rem; /* vertically center the checkmark better */
-  color: #10b981;
-  font-weight: bold;
+  top: -10px;
+  right: 1rem;
+  background: #3ca049;
+  color: #fff;
+  font-size: .75rem;
+  font-weight: 700;
+  padding: .3rem .7rem;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(24,50,87,.12);
 }
 
 
-/* Responsive */
-@media screen and (max-width: 768px) {
-  .pricing-header h1 {
-    font-size: 2.25rem;
+/* =========================================================
+   Custom note
+   ========================================================= */
+.pricing-custom-note {
+  font-size: .9rem;
+  color: #4e5a6f;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.35;
+  padding-bottom: 2rem;
+}
+
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+@media (max-width: 620px) {
+  .pricing-title {
+    font-size: 1.8rem;
   }
-
+  .pricing-cards {
+    gap: 1.2rem;
+  }
   .pricing-card {
-    padding: 1.5rem 1rem;
+    padding: 1.5rem 1.3rem;
   }
+}
 
-  .pricing-card h2 {
-    font-size: 1.5rem;
+@media (max-width: 420px) {
+  .pricing-chip {
+    font-size: .85rem;
   }
-
-  .pricing-card .price {
-    font-size: 1.25rem;
+  .badge-popular {
+    top: -8px;
+    right: .8rem;
   }
 }

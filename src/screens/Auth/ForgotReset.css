@@ -1,35 +1,215 @@
-/* Reuses design tokens from AuthPage.css; only adds notices + small tweaks */
-
-.notice{
-  border:1px solid rgba(18,32,84,.14);
-  border-radius:12px;
-  padding:.7rem .85rem;
-  margin-top:.75rem;
-  background:#fff;
-  color:#0b1a45;
-  box-shadow:0 8px 20px rgba(18,32,84,.06);
-}
-.notice.success{
-  border-color: rgba(96,182,77,.35);
-  background: linear-gradient(0deg, rgba(96,182,77,.08), rgba(96,182,77,.08)), #fff;
-}
-.notice.error{
-  border-color:#ffd3d3;
-  background: linear-gradient(0deg, rgba(255,99,99,.10), rgba(255,99,99,.10)), #fff;
-  color:#7f1d1d;
+/* =========================================================
+   Global Background (Grid sheet + soft gradient wash)
+   ========================================================= */
+.auth {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background:
+    radial-gradient(ellipse at bottom, rgba(160, 205, 147, 0.16), transparent 65%),
+    url("/grid.png"); /* replace with your grid svg/png */
+  background-size: cover;
+  background-position: center;
 }
 
-.auth--single{
-  /* uses centered column layout from your AuthPage.css replacement */
+
+/* =========================================================
+   Centered Auth Card
+   ========================================================= */
+.auth-card {
+  background: #fff;
+  width: 100%;
+  max-width: 480px;
+  border-radius: 18px;
+  padding: 2.2rem 2.4rem;
+  box-shadow: 0 12px 45px rgba(24, 50, 87, 0.08);
+  border: 1px solid rgba(24, 50, 87, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
 }
 
-.linklike.small{
-  font-size:.9rem;
+
+/* =========================================================
+   Header Typography (matches hero serif + weight)
+   ========================================================= */
+.auth-header h1 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  font-family: "Georgia", "Times New Roman", serif;
+  color: #0b1a45;
+  line-height: 1.22;
+  text-align: center;
+  margin: 0 0 .4rem;
 }
 
-/* Meter tweaks shared with reset page (if not already present) */
-.meter{ height:8px; background:#eef2ff; border-radius:999px; margin-top:.35rem; overflow:hidden; }
-.meter .bar{ display:block; height:100%; width:25%; background:#ffb3b3; transition:width .2s ease, background .2s ease; border-radius:999px; }
-.meter .bar.s2{ width:50%; background:#ffd27f; }
-.meter .bar.s3{ width:75%; background:#c7ea9a; }
-.meter .bar.s4{ width:100%; background:#7bd87b; }
+.auth-subtitle {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #5a6475;
+  line-height: 1.4;
+}
+
+
+/* =========================================================
+   Field Styling
+   ========================================================= */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+
+.field span {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #0b1a45;
+}
+
+.field input {
+  height: 42px;
+  padding: 0 .9rem;
+  border-radius: 10px;
+  border: 1px solid rgba(24, 50, 87, 0.18);
+  background: #fff;
+  font-size: .95rem;
+  color: #0b1a45;
+  outline: none;
+  transition: border .2s ease, box-shadow .2s ease;
+}
+
+.field input:focus {
+  border-color: #3ca049;
+  box-shadow: 0 0 0 3px rgba(60,160,73,.22);
+}
+
+.hint.error {
+  font-size: 0.8rem;
+  color: #8b1a1a;
+}
+
+
+/* =========================================================
+   Notice (Success/Error feedback)
+   ========================================================= */
+.notice {
+  border: 1px solid rgba(24, 50, 87, 0.12);
+  border-radius: 12px;
+  padding: .75rem 1rem;
+  background: #fff;
+  color: #132b51;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  box-shadow: 0 4px 14px rgba(24, 50, 87, 0.06);
+}
+
+.notice.success {
+  border-color: rgba(88, 171, 64, 0.33);
+  background: linear-gradient(0deg, rgba(88,171,64,0.07), rgba(88,171,64,0.07)), #fff;
+}
+
+.notice.error {
+  border-color: rgba(229, 77, 77, 0.27);
+  background: linear-gradient(0deg, rgba(229, 77, 77, 0.09), rgba(229, 77, 77, 0.09)), #fff;
+  color: #7f1d1d;
+}
+
+
+/* =========================================================
+   Buttons (pill style, matches green CTA)
+   ========================================================= */
+.btn-primary {
+  height: 42px;
+  border-radius: 999px;
+  background: #3ca049;
+  border: none;
+  font-size: .95rem;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  padding: 0 1.4rem;
+  transition: background .18s ease, opacity .18s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #338b3f;
+}
+
+.btn-primary:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.btn-outline {
+  height: 42px;
+  border-radius: 999px;
+  border: 1px solid rgba(24,50,87,.28);
+  background: #fff;
+  padding: 0 1.4rem;
+  font-size: .95rem;
+  font-weight: 500;
+  color: #0b1a45;
+  cursor: pointer;
+  transition: border .18s ease, background .18s ease;
+}
+
+.btn-outline:hover {
+  background: rgba(24,50,87,.05);
+}
+
+.form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: .7rem;
+  margin-top: .5rem;
+}
+
+
+/* =========================================================
+   Footer Links
+   ========================================================= */
+.auth-footer {
+  text-align: center;
+  margin-top: .6rem;
+}
+
+.auth-footer a {
+  font-size: .85rem;
+  color: #0b1a45;
+  text-decoration: underline;
+  opacity: .85;
+}
+
+.auth-footer a:hover {
+  opacity: 1;
+}
+
+
+/* =========================================================
+   Responsive (Mobile-first)
+   ========================================================= */
+@media (max-width: 560px) {
+  .auth-card {
+    padding: 1.8rem 1.6rem;
+    max-width: 100%;
+  }
+
+  .auth-header h1 {
+    font-size: 1.55rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 380px) {
+  .auth {
+    padding: 1.4rem;
+  }
+  .auth-card {
+    padding: 1.55rem 1.3rem;
+  }
+}

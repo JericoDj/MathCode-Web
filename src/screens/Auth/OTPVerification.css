@@ -1,319 +1,298 @@
+/* =========================================================
+   Global Background — same grid sheet aesthetic
+   ========================================================= */
 .otp-verification {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 2rem 1rem;
+  padding: 2rem;
+  background:
+    radial-gradient(ellipse at bottom, rgba(160, 205, 147, 0.16), transparent 65%),
+    url("/grid.png");
+  background-size: cover;
+  background-position: center;
 }
 
+
+/* =========================================================
+   Layout container — centered card + optional aside
+   ========================================================= */
 .otp-container {
-  display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 3rem;
-  max-width: 900px;
+  max-width: 1050px;
   width: 100%;
-  align-items: start;
-}
-
-.otp-card {
-  background: white;
-  padding: 3rem 2.5rem;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-}
-
-.otp-header {
-  text-align: center;
-  margin-bottom: 2.5rem;
-}
-
-.otp-icon {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 1.5rem;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  border-radius: 50%;
   display: flex;
-  align-items: center;
+  gap: 2.5rem;
+  align-items: flex-start;
   justify-content: center;
-  color: white;
 }
 
+
+/* =========================================================
+   Main Card
+   ========================================================= */
+.otp-card {
+  background: #fff;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 18px;
+  padding: 2.2rem 2.4rem;
+  border: 1px solid rgba(24, 50, 87, 0.12);
+  box-shadow: 0 12px 45px rgba(24, 50, 87, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+
+/* =========================================================
+   Header Typography — matches hero
+   ========================================================= */
 .otp-header h1 {
-  font-size: 2rem;
+  font-size: 1.8rem;
+  font-family: "Georgia", "Times New Roman", serif;
   font-weight: 700;
-  color: #1a202c;
-  margin: 0 0 0.5rem;
+  color: #0b1a45;
+  text-align: center;
+  margin: 0 0 .4rem;
 }
 
-.otp-subtitle {
-  color: #718096;
-  font-size: 1.1rem;
-  margin: 0;
-  line-height: 1.5;
+.otp-header .otp-subtitle {
+  text-align: center;
+  font-size: .95rem;
+  line-height: 1.4;
+  color: #4e5a6f;
+  max-width: 380px;
+  margin: 0 auto;
 }
 
-.otp-subtitle strong {
-  color: #2d3748;
+.otp-header strong {
+  color: #0b1a45;
   font-weight: 600;
 }
 
-.otp-form {
-  margin-bottom: 2rem;
+
+/* =========================================================
+   Icon styling
+   ========================================================= */
+.otp-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: .4rem;
+  color: #3ca049;
 }
 
+
+/* =========================================================
+   OTP Inputs row
+   ========================================================= */
 .otp-inputs-container {
-  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
 }
 
 .otp-label {
-  display: block;
-  font-size: 0.9rem;
+  font-size: .85rem;
   font-weight: 600;
-  color: #4a5568;
-  margin-bottom: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  color: #0b1a45;
 }
 
 .otp-inputs {
   display: flex;
-  gap: 0.75rem;
+  gap: .5rem;
   justify-content: center;
 }
 
 .otp-input {
-  width: 50px;
-  height: 60px;
-  border: 2px solid #e2e8f0;
+  width: 42px;
+  height: 48px;
   border-radius: 12px;
+  border: 1px solid rgba(24, 50, 87, .18);
+  font-size: 1.25rem;
   text-align: center;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #1a202c;
-  background: #f7fafc;
-  transition: all 0.2s ease;
-  outline: none;
+  color: #0b1a45;
+  transition: border .2s ease, box-shadow .2s ease;
 }
 
 .otp-input:focus {
-  border-color: #667eea;
-  background: white;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-  transform: translateY(-2px);
+  border-color: #3ca049;
+  box-shadow: 0 0 0 3px rgba(60,160,73,.22);
+  outline: none;
 }
 
-.otp-input:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+
+/* =========================================================
+   Password Fields
+   ========================================================= */
+.password-fields {
+  display: flex;
+  flex-direction: column;
+  gap: .9rem;
 }
 
-.otp-error {
-  background: #fed7d7;
-  color: #c53030;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-  border: 1px solid #feb2b2;
-}
-
-.otp-submit-btn {
+.password-input {
   width: 100%;
-  padding: 1rem 2rem;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
-  border: none;
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid rgba(24,50,87,.18);
+  padding: 0 .9rem;
+  font-size: .95rem;
+  color: #0b1a45;
+  transition: border .2s ease, box-shadow .2s ease;
+}
+
+.password-input:focus {
+  border-color: #3ca049;
+  box-shadow: 0 0 0 3px rgba(60,160,73,.22);
+  outline: none;
+}
+
+
+/* =========================================================
+   Error handling
+   ========================================================= */
+.otp-error {
+  background: linear-gradient(0deg, rgba(229, 77, 77, 0.09), rgba(229, 77, 77, 0.09)), #fff;
+  border: 1px solid rgba(229, 77, 77, 0.27);
   border-radius: 12px;
-  font-size: 1.1rem;
+  padding: .7rem .9rem;
+  color: #7f1d1d;
+  font-size: .9rem;
+  line-height: 1.35;
+}
+
+
+/* =========================================================
+   Submit Button — same CTA pill
+   ========================================================= */
+.otp-submit-btn {
+  height: 46px;
+  border-radius: 999px;
+  background: #3ca049;
+  border: none;
+  font-size: .96rem;
   font-weight: 600;
+  color: #fff;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  width: 100%;
+  margin-top: .3rem;
+  transition: background .18s ease, opacity .18s ease;
 }
 
 .otp-submit-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  background: #338b3f;
 }
 
 .otp-submit-btn:disabled {
-  opacity: 0.6;
+  opacity: .55;
   cursor: not-allowed;
-  transform: none;
 }
 
+
+/* =========================================================
+   Resend row
+   ========================================================= */
 .otp-resend {
   text-align: center;
-  margin-bottom: 2rem;
-  padding: 1rem;
-  background: #f7fafc;
-  border-radius: 12px;
-}
-
-.otp-resend p {
-  margin: 0;
-  color: #718096;
-  font-size: 0.95rem;
+  font-size: .9rem;
+  color: #0b1a45;
 }
 
 .otp-resend-btn {
   background: none;
   border: none;
-  color: #667eea;
+  padding: 0;
+  color: #3ca049;
   font-weight: 600;
   cursor: pointer;
   text-decoration: underline;
-  transition: color 0.2s ease;
-}
-
-.otp-resend-btn:hover:not(:disabled) {
-  color: #5a67d8;
-}
-
-.otp-resend-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 
 .otp-countdown {
-  color: #a0aec0;
-  font-weight: 600;
+  color: #53607c;
 }
 
+
+/* =========================================================
+   Footer link
+   ========================================================= */
 .otp-footer {
   text-align: center;
-  border-top: 1px solid #e2e8f0;
-  padding-top: 1.5rem;
 }
 
 .otp-back-link {
-  color: #667eea;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
+  font-size: .85rem;
+  color: #0b1a45;
+  text-decoration: underline;
+  opacity: .85;
 }
 
 .otp-back-link:hover {
-  color: #5a67d8;
+  opacity: 1;
 }
 
+
+/* =========================================================
+   Aside Tips Panel
+   ========================================================= */
 .otp-aside {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  padding: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  max-width: 280px;
+  width: 100%;
+}
+
+.otp-tips {
+  background: #fff;
+  border-radius: 18px;
+  border: 1px solid rgba(24, 50, 87, .12);
+  box-shadow: 0 8px 30px rgba(24, 50, 87, .06);
+  padding: 1.6rem 1.4rem;
 }
 
 .otp-tips h3 {
-  color: white;
-  margin: 0 0 1rem;
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0b1a45;
+  margin-bottom: .6rem;
 }
 
 .otp-tips ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  font-size: .85rem;
+  color: #4e5a6f;
+  line-height: 1.4;
 }
 
-.otp-tips li {
-  color: rgba(255, 255, 255, 0.9);
-  padding: 0.5rem 0;
-  position: relative;
-  padding-left: 1.5rem;
+.otp-tips li + li {
+  margin-top: .35rem;
 }
 
-.otp-tips li:before {
-  content: "•";
-  color: rgba(255, 255, 255, 0.7);
-  position: absolute;
-  left: 0;
-}
 
-/* Responsive Design */
-@media (max-width: 768px) {
+/* =========================================================
+   Responsive
+   ========================================================= */
+@media (max-width: 850px) {
   .otp-container {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+    flex-direction: column;
+    align-items: center;
   }
-  
-  .otp-card {
-    padding: 2rem 1.5rem;
-  }
-  
-  .otp-inputs {
-    gap: 0.5rem;
-  }
-  
-  .otp-input {
-    width: 45px;
-    height: 55px;
-    font-size: 1.25rem;
-  }
-  
   .otp-aside {
-    display: none;
+    max-width: 100%;
   }
 }
 
-/* Animation for successful verification */
-@keyframes successPulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-
-.otp-success {
-  animation: successPulse 0.6s ease;
-}
-
-/* Add to your existing OTPVerification.css */
-
-.password-fields {
-  margin: 1.5rem 0;
-}
-
-.form-group {
-  margin-bottom: 1rem;
-}
-
-.password-input {
-  width: 100%;
-  padding: 1rem;
-  border: 2px solid #e2e8f0;
-  border-radius: 12px;
-  font-size: 1rem;
-  background: #f7fafc;
-  transition: all 0.2s ease;
-  outline: none;
-  box-sizing: border-box;
-}
-
-.password-input:focus {
-  border-color: #667eea;
-  background: white;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.password-input:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Adjust card padding for additional fields */
-.otp-card {
-  padding: 2.5rem 2rem;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
+@media (max-width: 560px) {
   .otp-card {
-    padding: 2rem 1.5rem;
+    padding: 1.8rem 1.6rem;
+    max-width: 100%;
+  }
+  .otp-inputs {
+    gap: .4rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .otp-input {
+    width: 36px;
+    height: 44px;
   }
 }

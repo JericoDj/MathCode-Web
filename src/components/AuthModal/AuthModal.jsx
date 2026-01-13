@@ -18,64 +18,95 @@ console.log("Google Client ID =", GOOGLE_CLIENT_ID);
 // === GOOGLE OAUTH FIXED COMPONENT ===
 const GoogleOAuth = () => {
   const { setUser, closeAuthModal } = useContext(UserContext);
-  const googleButtonRef = useRef(null);
-  const [scriptReady, setReady] = useState(false);
+  const buttonRef = useRef(null);
 
-  const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-  const API_BASE_URL = import.meta.env.VITE_API_URL ?? "https://math-code-backend.vercel.app";
+  const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [buttonRendered, setButtonRendered] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  // Load SDK once
+  // Load script once
   useEffect(() => {
+    if (scriptLoaded || !GOOGLE_CLIENT_ID) return;
+
     const script = document.createElement('script');
     script.src = "https://accounts.google.com/gsi/client";
     script.async = true;
     script.defer = true;
-    script.onload = () => setReady(true);
+
+    script.onload = () => setScriptLoaded(true);
+    script.onerror = () => setError("Google script failed to load");
+
     document.head.appendChild(script);
   }, []);
 
-  // Init popup mode
+  // Render button + initialize popup
   useEffect(() => {
-    if (!scriptReady || !window.google || !googleButtonRef.current) return;
+    if (!scriptLoaded || !window.google || !buttonRef.current || buttonRendered) return;
+    try {
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleCredential,
+        ux_mode: "popup",
+        auto_select: false,
+        is_fedcm: false,        // ← THIS FIXES NETLIFY 403 BUTTON ISSUE
+        itp_support: true,
+      });
 
-    window.google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: async ({ credential }) => {
-        try {
-          const res = await fetch(`${API_BASE_URL}/api/users/auth/google`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token: credential }),
-          });
+      window.google.accounts.id.renderButton(buttonRef.current, {
+        theme: "outline",
+        size: "large",
+        width: 300,
+        text: "signin_with",
+        logo_alignment: "left",
+      });
 
-          const data = await res.json();
+      setButtonRendered(true);
+    } catch (e) {
+      console.error("Google init error:", e);
+      setError("Google Sign-In failed to initialize");
+    }
+  }, [scriptLoaded]);
 
-          localStorage.setItem("auth", JSON.stringify(data.user));
-          localStorage.setItem("token", JSON.stringify(data.token));
-          setUser(data.user);
-          closeAuthModal();
-        } catch (err) {
-          console.error("Google login failed:", err);
-        }
-      },
-      ux_mode: "popup",
-      auto_select: false,
-      itp_support: false,
-      fast_setup: false,
-      use_fedcm_for_prompt: false, // << key for Netlify
-    });
+  async function handleCredential(response) {
+    try {
+      setLoading(true);
+      setError("");
 
-    window.google.accounts.id.renderButton(googleButtonRef.current, {
-      theme: 'outline',
-      size: 'large',
-      width: 300,
-    });
+      const result = await fetch(`${API_BASE_URL}/api/users/auth/google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: response.credential }),
+      });
 
-  }, [scriptReady]);
+      const data = await result.json();
+      if (!result.ok) throw new Error(data.message || "Authentication failed");
 
-  return <div ref={googleButtonRef} />;
+      // Store + login
+      localStorage.setItem("token", JSON.stringify(data.token));
+      localStorage.setItem("auth", JSON.stringify(data.user));
+      setUser(data.user);
+      closeAuthModal();
+    } catch (err) {
+      console.error("Google auth failed:", err);
+      setError(err.message || "Google authentication failed");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (!GOOGLE_CLIENT_ID) {
+    return <div className="google-error">Missing Google Client ID</div>;
+  }
+
+  return (
+    <div className="google-oauth-container">
+      {error && <div className="google-error">{error}</div>}
+      {loading && <div className="google-loading">Signing in…</div>}
+      <div ref={buttonRef} className="google-signin-button" />
+    </div>
+  );
 };
-
 
 
 

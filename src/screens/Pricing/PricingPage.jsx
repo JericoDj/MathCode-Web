@@ -16,8 +16,7 @@ export default function PricingPage() {
   return (
     <main className="pricing-page-container">
       <div className="pricing-page-content">
-        <br />
-            <br />
+     
         <br />        <br />        <br />
         {/* Title */}
         <h1 className="pricing-title">Tuition Pricing Plans</h1>
@@ -42,19 +41,17 @@ export default function PricingPage() {
         </div>
 
         {/* Sessions Selector */}
-        <div className="pricing-select-sub">
-          {sessionKeys.map((sk) => (
-            <button
-              key={sk}
-              className={`pricing-chip small ${
-                selectedSessions === sk ? "active" : ""
-              }`}
-              onClick={() => setSelectedSessions(sk)}
-            >
-              {sk}x/week
-            </button>
-          ))}
-        </div>
+       <div className="pricing-session-select">
+  {sessionKeys.map((sk) => (
+    <button
+      key={sk}
+      className={`pricing-session-chip ${selectedSessions === sk ? "active" : ""}`}
+      onClick={() => setSelectedSessions(sk)}
+    >
+      {sk}x/week
+    </button>
+  ))}
+</div>
 
         {/* Cards */}
         <section className="pricing-cards">
@@ -71,7 +68,7 @@ export default function PricingPage() {
                 {plan.sessions} • {plan.perSession}
               </p>
 
-              <ul className="features p-3">
+              <ul className="features p-5">
                 {plan.features.map((feature, i) => (
                   <li key={i}>{feature}</li>
                 ))}

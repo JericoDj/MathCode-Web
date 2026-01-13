@@ -237,17 +237,7 @@ export default function OTPVerificationPage() {
           </footer>
         </div>
 
-        <aside className="otp-aside">
-          <div className="otp-tips">
-            <h3>Tips</h3>
-            <ul>
-              <li>Check your spam or junk folder</li>
-              <li>Make sure you entered the correct email</li>
-              <li>Codes expire after 10 minutes for security</li>
-              <li>Use a strong password with 8+ characters</li>
-            </ul>
-          </div>
-        </aside>
+        
       </div>
     </main>
   );

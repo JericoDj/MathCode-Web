@@ -492,12 +492,12 @@ export default function PackageDialog({ package: pkg, onClose }) {
           {canUploadPayment && (
             <div className="payment-section">
               <div className="payment-header">
-                <h4>Payment Options</h4>
+                <h4>Payment Option</h4>
                 <p>Choose your preferred payment method</p>
 
                 <div className="payment-methods">
 
-                  <button
+                  {/* <button
                     className="payment-method-btn"
                     onClick={() => hasExistingPayment && (safePackage.payment || safePackage.paymentProof)
                       ? null
@@ -511,9 +511,9 @@ export default function PackageDialog({ package: pkg, onClose }) {
                       <p>Pay securely with your card</p>
                     </div>
                     <div className="payment-arrow">→</div>
-                  </button>
+                  </button> */}
 
-                  <button
+                  {/* <button
                     className="payment-method-btn"
                     onClick={() => hasExistingPayment && (safePackage.payment || safePackage.paymentProof)
                       ? null
@@ -527,7 +527,7 @@ export default function PackageDialog({ package: pkg, onClose }) {
                       <p>Pay with your PayPal account</p>
                     </div>
                     <div className="payment-arrow">→</div>
-                  </button>
+                  </button> */}
 
                   <button
                     className="payment-method-btn"
@@ -613,13 +613,43 @@ export default function PackageDialog({ package: pkg, onClose }) {
                     <h5>Bank Transfer & QR Payment Instructions</h5>
                     <div className="payment-details">
                       <div className="bank-detail">
-                        <strong>Bank Name:</strong> Sample Bank
+                        <strong>Bank Name:</strong> GoTyme Bank
                       </div>
                       <div className="bank-detail">
-                        <strong>Account Name:</strong> Tutoring Services Inc.
+                        <strong>Account Name:</strong> Jerico De Jesus
                       </div>
                       <div className="bank-detail">
-                        <strong>Account Number:</strong> 1234 5678 9012 3456
+                        <strong>Account Number:</strong> 0166 6085 9420
+                      </div>
+                      <div className="bank-detail">
+                        <strong>Amount:</strong> ${safePackage.price || '0.00'}
+                      </div>
+                    </div>
+
+                    <div className="payment-details">
+                      <div className="bank-detail">
+                        <strong>Bank Name:</strong> GCASH
+                      </div>
+                      <div className="bank-detail">
+                        <strong>Account Name:</strong> Jerico De Jesus
+                      </div>
+                      <div className="bank-detail">
+                        <strong>Account Number:</strong> 0976 041 3260
+                      </div>
+                      <div className="bank-detail">
+                        <strong>Amount:</strong> ${safePackage.price || '0.00'}
+                      </div>
+                    </div>
+
+                    <div className="payment-details">
+                      <div className="bank-detail">
+                        <strong>Bank Name:</strong> MAYA
+                      </div>
+                      <div className="bank-detail">
+                        <strong>Account Name:</strong> Genevieve Baldevarona
+                      </div>
+                      <div className="bank-detail">
+                        <strong>Account Number:</strong> 0908 228 9971
                       </div>
                       <div className="bank-detail">
                         <strong>Amount:</strong> ${safePackage.price || '0.00'}

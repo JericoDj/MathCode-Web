@@ -234,7 +234,10 @@ if (typeof onSuccess === "function") {
         </header>
 
         {loading ? (
-          <p>Loading user info...</p>
+          <div className="fad-loading">
+    <div className="fad-spinner" />
+    <p>Loading your account…</p>
+  </div>
         ) : (
           <form id="assessmentForm" onSubmit={handleSubmit} className="fad-form">
             {/* Existing Students */}

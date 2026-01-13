@@ -75,8 +75,17 @@ export default function ForgotPasswordPage() {
 
   return (
     <main className="auth auth--single">
+
       <section className="auth-card" aria-labelledby="fp-title">
         <header className="auth-header">
+
+
+      <br />
+      <br />
+      <br />
+       <br />
+      <br />
+      <br />
           <h1 id="fp-title">Forgot your password?</h1>
           <p className="auth-subtitle">Enter your email and we'll send you a verification code.</p>
         </header>
@@ -122,17 +131,7 @@ export default function ForgotPasswordPage() {
       </section>
 
       <aside className="auth-aside">
-        <div className="aside-inner">
-          <h2>Tip</h2>
-          <ul>
-            <li>Look in <strong>Spam</strong> or <strong>Promotions</strong> if you don't see it.</li>
-            <li>Verification codes expire for security—use it soon.</li>
-          </ul>
-          <div className="aside-cta">
-            <Link to="/#program" className="btn-light">Explore program</Link>
-            <Link to="/#pricing" className="btn-ghost">See pricing</Link>
-          </div>
-        </div>
+        
       </aside>
     </main>
   );
