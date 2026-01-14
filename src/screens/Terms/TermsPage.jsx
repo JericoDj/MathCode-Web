@@ -4,7 +4,7 @@ import "./TermsPage.css";
 export default function TermsPage({
     companyName = "MathCode",
     effectiveDate = "September 24, 2025",
-    contactEmail = "support@mathcode.example",
+    contactEmail = "dejesusjerico528@gmail.com",
 }) {
     return (
         <>

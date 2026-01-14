@@ -1,15 +1,35 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { submitInquiryController } from "../../../controllers/InquiryController";
+import LoadingSpinner from "../../../components/LoadingSpinner/LoadingSpinner";
 import "./ContactSection.css";
 
 export default function ContactSection() {
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    setSubmitted(true);
-    e.currentTarget.reset();
+    setLoading(true);
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    console.log("Inquiry email:", data.email); // << HERE
+
+    try {
+      await submitInquiryController(data);
+
+      setSubmitted(true);
+      form.reset();
+    } catch (err) {
+      console.error("Inquiry submit failed:", err);
+    }
+
+    setLoading(false);
   }
+
 
   return (
     <section className="contact" aria-labelledby="contact-heading">
@@ -44,7 +64,7 @@ export default function ContactSection() {
                     type="email"
                     required
                     inputMode="email"
-                    placeholder="you@domain.com"
+                    placeholder="LetsTalk@mail.com"
                   />
                 </div>
               </div>
@@ -89,19 +109,33 @@ export default function ContactSection() {
 
               <div className="form-row compact">
                 <label className="checkbox">
-  <input type="checkbox" name="updates" defaultChecked />
-  <span>Send me practice tips and updates</span>
-</label>
+                  <input type="checkbox" name="updates" defaultChecked />
+                  <span>Send me practice tips and updates</span>
+                </label>
 
                 <div className="contact-actions">
-                  <button type="submit" className="btn btn-primary">Send message</button>
-          
-                </div>
+  <button type="submit" className="btn btn-primary" disabled={loading}>
+    {loading ? "Sending..." : "Send message"}
+  </button>
+
+  {loading && <LoadingSpinner text="Sending inquiry..." />}
+</div>
               </div>
             </form>
 
             <p className="meta">
-              Prefer chat? <Link to="/contact?mode=chat">Talk to us</Link> · We typically reply within 24 hours.
+              Need help choosing a plan?
+              Email us at{" "}
+              <a href="mailto:dejesusjerico528@gmail.com">dejesusjerico528@gmail.com</a>.
+              <br />
+              No mail app?{" "}
+              <a
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=dejesusjerico528@gmail.com&su=MathCode%20Inquiry"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Open Gmail
+              </a>
             </p>
           </article>
         </div>

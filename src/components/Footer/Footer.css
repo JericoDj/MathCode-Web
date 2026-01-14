@@ -295,3 +295,18 @@
     margin-top: .4rem;
   }
 }
+
+
+.brand-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  display: block;
+
+  border-radius: 5px;
+}
+
+
+.brand-name{
+  font-size: 1rem  ;
+}
