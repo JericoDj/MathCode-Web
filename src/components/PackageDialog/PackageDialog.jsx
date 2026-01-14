@@ -497,7 +497,7 @@ export default function PackageDialog({ package: pkg, onClose }) {
 
                 <div className="payment-methods">
 
-                  {/* <button
+                  <button
                     className="payment-method-btn"
                     onClick={() => hasExistingPayment && (safePackage.payment || safePackage.paymentProof)
                       ? null
@@ -511,7 +511,7 @@ export default function PackageDialog({ package: pkg, onClose }) {
                       <p>Pay securely with your card</p>
                     </div>
                     <div className="payment-arrow">→</div>
-                  </button> */}
+                  </button>
 
                   {/* <button
                     className="payment-method-btn"
